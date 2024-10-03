@@ -1,13 +1,17 @@
+import { CoreService } from './../core/core.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { RegisterDto } from './dtos/auth.dto';
 import { hash } from 'bcrypt'
 import { Prisma, Role, Gender, AccountStatus, User } from '@prisma/client';
+import { BaseService } from 'src/base/base.service';
 
 @Injectable()
-export class AuthService {
+export class AuthService extends BaseService{
 
-    constructor(private prismaService: PrismaService){}
+    constructor(coreService: CoreService ,private prismaService: PrismaService){
+        super(coreService)
+    }
     register = async (userData: RegisterDto): Promise<User> => {
         const user = await this.prismaService.user.findUnique({
             where: {
@@ -20,6 +24,7 @@ export class AuthService {
 
         const hashPassword = await hash(userData.password, 10);
 
+        this.ma
         const data: Prisma.UserCreateInput = {
             fullName: "1",
             email: userData.email,

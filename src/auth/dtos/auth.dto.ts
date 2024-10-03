@@ -14,7 +14,7 @@ import {
 import { Gender, AccountStatus } from '@prisma/client'; // Import enums từ Prisma
 import { BaseDto } from 'src/base/dto/base.dto';
 
-export class UserDto extends BaseDto{
+export class RegisterDto extends BaseDto{
     @IsNotEmpty()
     @IsString()
     @MaxLength(255)
