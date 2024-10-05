@@ -8,8 +8,6 @@ export class UserRepository extends BaseRepository<User> {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return this.model.findUnique({
-      where: { email },
-    });
+    return this.model.findByField("email", email);
   }
 }

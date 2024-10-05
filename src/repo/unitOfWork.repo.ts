@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 import { UserRepository } from './user.repo';
 
 @Injectable()
-export class UnitOfWorkService extends PrismaClient implements OnModuleDestroy {
+export class UnitOfWork extends PrismaClient implements OnModuleDestroy {
   public userRepo: UserRepository;
 
   constructor() {
