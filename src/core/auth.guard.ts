@@ -3,9 +3,26 @@ import { Injectable, CanActivate, ExecutionContext, HttpException, HttpStatus } 
 import { Observable } from 'rxjs';
 import { Request } from 'express';
 import { validateToken } from 'src/utils/token.utils';
+import { UserEntity } from 'src/model/entity/user.entity';
+import { Reflector } from '@nestjs/core';
+import { IS_PUBLIC_KEY } from 'src/utils/public.decorator';
+
 @Injectable()
 export class AuthGuard implements CanActivate {
+
+  constructor(private reflector: Reflector) {}
+
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
+
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass()
+    ])
+
+    if (isPublic){
+      return true;
+    }
+
     const request = context.switchToHttp().getRequest<Request>();
     const authHeader  = request.headers['authorization'];
     
@@ -20,7 +37,7 @@ export class AuthGuard implements CanActivate {
       throw new HttpException({mesagge: "Invalid or expired token"}, HttpStatus.UNAUTHORIZED)
     }
 
-    // request.user = user;
+    request.user = userInfo as UserEntity;
     return true;
 
   }

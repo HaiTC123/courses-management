@@ -5,7 +5,6 @@ import {
     IsEnum,
     IsString,
     IsDateString,
-    IsBoolean,
     IsUrl,
     Matches,
     MinLength,
