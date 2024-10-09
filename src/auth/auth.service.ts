@@ -6,7 +6,6 @@ import { BaseService } from 'src/base/base.service';
 import { UnitOfWork } from 'src/repo/unitOfWork.repo';
 import { UserEntity } from 'src/model/entity/user.entity';
 import generateToken from 'src/utils/token.utils';
-import { RegisterResponse } from 'src/model/response/register.response';
 import { LoginRequest } from 'src/model/request/login.request';
 import { ServiceResponse } from 'src/model/response/service.response';
 @Injectable()
@@ -55,7 +54,7 @@ export class AuthService extends BaseService {
             {
                 email: true,
                 fullName: true,
-                password: true,
+                passwordHash: true,
                 role: true
             }
         );
@@ -71,6 +70,7 @@ export class AuthService extends BaseService {
         return ServiceResponse.onSuccess({
             email: user.email,
             fullName: user.fullName,
+            role: user.role,
             token: generateToken(user)
         })
         
