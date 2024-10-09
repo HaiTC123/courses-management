@@ -1,5 +1,4 @@
 // user.profile.ts
-import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { createMap, forMember, ignore, mapFrom, createMapper } from '@automapper/core';
 import { Mapper } from '@automapper/core';
 import { Injectable } from '@nestjs/common';
@@ -7,6 +6,7 @@ import { UserEntity } from 'src/model/entity/user.entity';
 import { RegisterDto } from './../auth/dtos/auth.dto';
 import { Role } from '@prisma/client';
 import { classes } from '@automapper/classes';
+import { RegisterResponse } from 'src/model/response/register.response';
 
 @Injectable()
 export class MapperService {
@@ -33,6 +33,11 @@ export class MapperService {
       forMember((dest) => dest.isBlock, mapFrom(() => false)), // Gán giá trị mặc định cho isBlock
       forMember((dest) => dest.createdAt, mapFrom(() => new Date())), // Set thời gian hiện tại cho createdAt
       forMember((dest) => dest.updatedAt, mapFrom(() => new Date())) // Set thời gian hiện tại cho updatedAt
+    );
+    createMap(
+      this.mapper,
+      UserEntity,
+      RegisterResponse
     );
   }
   

@@ -1,7 +1,7 @@
 // core/repositories/base.repository.ts
 import { PrismaClient, Prisma } from '@prisma/client';
 
-export class BaseRepository<T extends { id: number }> {
+export class BaseRepository<T extends { id: number }, U> {
     protected prisma: PrismaClient;
     protected model: any;
 
@@ -23,6 +23,15 @@ export class BaseRepository<T extends { id: number }> {
         return this.model.findUnique({
             where: { id },
         });
+    }
+
+    async findUnique(where: any, options?: any): Promise<T | null>{
+        return this.model.findUnique({
+            where,
+            select: {
+                ...options
+            }
+        })
     }
 
     // Tìm kiếm nhiều bản ghi theo một trường nhất định
@@ -81,10 +90,11 @@ export class BaseRepository<T extends { id: number }> {
     //#endregion
 
     // Tạo mới bản ghi
-    async create(data: Prisma.UserCreateInput): Promise<T> {
+    async create(data: U, option?: any): Promise<T> {
         return this.model.create({
             data,
-        });
+            select: {...option}
+        }, );
     }
 
     // Cập nhật bản ghi theo ID

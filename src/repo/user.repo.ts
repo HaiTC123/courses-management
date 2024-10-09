@@ -1,8 +1,8 @@
 // user/user.repository.ts
-import { PrismaClient, User } from '@prisma/client';
+import { Prisma, PrismaClient, User } from '@prisma/client';
 import { BaseRepository } from './base.repo';
 
-export class UserRepository extends BaseRepository<User> {
+export class UserRepository extends BaseRepository<User, Prisma.UserCreateInput> {
   constructor(prisma: PrismaClient) {
     super(prisma, prisma.user); 
   }
