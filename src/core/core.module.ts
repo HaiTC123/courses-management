@@ -1,10 +1,11 @@
 // core/core.module.ts
 import { Module, Global } from '@nestjs/common';
-import { MapperService } from 'src/base/mapper.service';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { CoreService } from './core.service';
-@Global() // Sử dụng Global để module có thể được dùng ở mọi nơi mà không cần import lại
+import { MapperService } from 'src/base/mapper.service';
+
+@Global()
 @Module({
   imports: [
     AutomapperModule.forRoot({
@@ -17,7 +18,6 @@ import { CoreService } from './core.service';
     CoreService
 ],
   exports: [ 
-    MapperService,
     CoreService
 ],
 })

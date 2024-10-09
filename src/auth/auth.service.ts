@@ -5,6 +5,7 @@ import { hash } from 'bcrypt'
 import { Prisma, Role, Gender, AccountStatus, User } from '@prisma/client';
 import { BaseService } from 'src/base/base.service';
 import { UnitOfWork } from 'src/repo/unitOfWork.repo';
+import { UserEntity } from 'src/model/entity/user.entity';
 @Injectable()
 export class AuthService extends BaseService{
 
@@ -17,11 +18,12 @@ export class AuthService extends BaseService{
             throw new HttpException({message: 'This email has been used'}, HttpStatus.BAD_REQUEST)
         }
         const hashPassword = await hash(userData.password, 10);
-        const userCreate = this.mapper.mapRegisterDtoToUser(userData);
+        const userCreate = this._mapperService.mapData(userData, RegisterDto, UserEntity);
         userCreate.passwordHash = hashPassword;
         userCreate.isBlock = false;
         userCreate.inActive = false;
+        userCreate.dateOfBirth = null;
         const res = await this.unitOfWork.userRepo.create(userCreate)
-        return res
+        return null
     }
 }
