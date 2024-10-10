@@ -2,6 +2,7 @@ import { LayoutDashboard } from "lucide-react";
 
 import { IconBadge } from "@/components/icon-badge";
 import { TitleForm } from "./_components/title-form";
+import { DescriptionForm } from "./_components/description-form";
 
 const CourseIdPage = ({
   params,
@@ -13,7 +14,7 @@ const CourseIdPage = ({
   const course: any = {
     id: 1,
     title: "Course 1",
-    description: "Description 1",
+    description: "",
     imageUrl: "https://via.placeholder.com/150",
     price: 100,
     categoryId: 1,
@@ -49,6 +50,7 @@ const CourseIdPage = ({
             <h2 className="text-xl">Customize your course</h2>
           </div>
           <TitleForm initialData={course} courseId={course.id} />
+          <DescriptionForm initialData={course} courseId={course.id} />
         </div>
       </div>
     </div>
