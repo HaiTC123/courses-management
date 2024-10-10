@@ -1,6 +1,7 @@
 import { LayoutDashboard } from "lucide-react";
 
 import { IconBadge } from "@/components/icon-badge";
+import { TitleForm } from "./_components/title-form";
 
 const CourseIdPage = ({
   params,
@@ -47,6 +48,7 @@ const CourseIdPage = ({
             <IconBadge icon={LayoutDashboard} />
             <h2 className="text-xl">Customize your course</h2>
           </div>
+          <TitleForm initialData={course} courseId={course.id} />
         </div>
       </div>
     </div>
