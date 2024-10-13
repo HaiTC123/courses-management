@@ -91,10 +91,11 @@ export class BaseRepository<T extends { id: number }, U> {
 
     // Tạo mới bản ghi
     async create(data: U, option?: any): Promise<T> {
-        return this.model.create({
-            data,
-            select: {...option}
-        }, );
+        const createOption: any = { data };
+        if (option && Object.keys(option).length > 0) {
+            createOption.select = option;
+        }
+        return this.model.create(createOption);
     }
 
     // Cập nhật bản ghi theo ID

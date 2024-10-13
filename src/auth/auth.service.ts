@@ -1,3 +1,5 @@
+import { OtpRequest } from '@prisma/client';
+import { Request } from 'express';
 import { CoreService } from './../core/core.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { RegisterDto } from './dtos/auth.dto';
@@ -6,8 +8,11 @@ import { BaseService } from 'src/base/base.service';
 import { UnitOfWork } from 'src/repo/unitOfWork.repo';
 import { UserEntity } from 'src/model/entity/user.entity';
 import generateToken from 'src/utils/token.utils';
-import { LoginRequest } from 'src/model/request/login.request';
 import { ServiceResponse } from 'src/model/response/service.response';
+import { ForgotPassswordRequest, LoginRequest } from 'src/model/request/index';
+import { generateOtp } from 'src/utils/common.utils';
+import { OTPEntity } from 'src/model/entity/otp.enity';
+
 @Injectable()
 export class AuthService extends BaseService {
 
@@ -60,12 +65,12 @@ export class AuthService extends BaseService {
         );
 
         if (!user){
-            throw new HttpException({message: "Email or password is invalie"}, HttpStatus.UNAUTHORIZED);
+            throw new HttpException({message: "Email or password is invalid"}, HttpStatus.UNAUTHORIZED);
         }
 
         const match = await compare(userPayload.password, user.passwordHash);
         if (!match){
-            throw new HttpException({message: "Email or password is invalie"}, HttpStatus.UNAUTHORIZED);
+            throw new HttpException({message: "Email or password is invalid"}, HttpStatus.UNAUTHORIZED);
         }
         return ServiceResponse.onSuccess({
             email: user.email,
@@ -73,6 +78,28 @@ export class AuthService extends BaseService {
             role: user.role,
             token: generateToken(user)
         })
+        
+    };
+
+    forgotPassword = async (param: ForgotPassswordRequest): Promise<ServiceResponse> => {
+        
+        if (!param.email) {
+            throw new HttpException({ message: 'This email is not null'}, HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        const user = await this.unitOfWork.userRepo.findByEmail(param.email);
+
+        if (!user){
+            throw new HttpException({message: "Email is invalid"}, HttpStatus.BAD_REQUEST);
+        }
+        var otpCode = generateOtp();
+        var data = new OTPEntity();
+        data.email = param.email;
+        data.otp = otpCode;
+        data.expiryTime = new Date(new Date().getTime() + 300000);
+        await this.unitOfWork.otpRepo.create(data);
+        // send email
+        return ServiceResponse.onSuccess();
         
     };
 }

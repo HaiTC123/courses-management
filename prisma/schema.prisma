@@ -60,3 +60,13 @@ model User {
   updatedBy         String?       @db.VarChar(100)
 }
 
+
+
+model OtpRequest {
+  id         Int      @id @default(autoincrement()) // Khóa chính tự động tăng
+  email      String   @unique                      // Địa chỉ email, duy nhất
+  otp        String                                // Mã OTP
+  expiryTime DateTime                             // Thời gian hết hạn của OTP
+  createdAt  DateTime @default(now())              // Thời gian tạo
+  updatedAt  DateTime @updatedAt                   // Thời gian cập nhật cuối cùng
+}

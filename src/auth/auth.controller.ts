@@ -4,6 +4,7 @@ import { AuthService } from './auth.service';
 import { ServiceResponse } from 'src/model/response/service.response';
 import { LoginRequest } from 'src/model/request/login.request';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { ForgotPassswordRequest } from 'src/model/request/forgotPassword.request';
 
 @ApiTags('Auth')
 @ApiBearerAuth()
@@ -22,5 +23,11 @@ export class AuthController {
     @ApiBody({type: LoginRequest})
     login(@Body() body: LoginRequest): Promise<ServiceResponse>{
         return this.authService.login(body);
+    }
+
+    @Post('forgot-password')
+    @ApiBody({type: ForgotPassswordRequest})
+    forgotPassword(@Body() body: ForgotPassswordRequest): Promise<ServiceResponse>{
+        return this.authService.forgotPassword(body);
     }
 }
