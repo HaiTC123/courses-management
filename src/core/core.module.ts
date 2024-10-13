@@ -4,6 +4,7 @@ import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { CoreService } from './core.service';
 import { MapperService } from 'src/base/mapper.service';
+import { EmailService } from './email.service';
 
 @Global()
 @Module({
@@ -14,6 +15,7 @@ import { MapperService } from 'src/base/mapper.service';
     
   ],
   providers: [ 
+    EmailService,
     MapperService,
     CoreService
 ],

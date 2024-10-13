@@ -99,6 +99,9 @@ export class AuthService extends BaseService {
         data.expiryTime = new Date(new Date().getTime() + 300000);
         await this.unitOfWork.otpRepo.create(data);
         // send email
+        await this._emailService.sendEmail("phamngocthuan13@gmail.com", "Quên mật khẩu", "TemplateForgotPassword.html", {
+            OTP: data.otp
+        })
         return ServiceResponse.onSuccess();
         
     };
