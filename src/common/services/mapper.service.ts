@@ -3,7 +3,7 @@ import { createMap, forMember, ignore, mapFrom, createMapper } from '@automapper
 import { Mapper } from '@automapper/core';
 import { Injectable } from '@nestjs/common';
 import { UserEntity } from 'src/model/entity/user.entity';
-import { RegisterDto } from '../../auth/dtos/auth.dto';
+import { RegisterDto } from '../../model/dto/auth.dto';
 import { Role } from '@prisma/client';
 import { classes } from '@automapper/classes';
 import { RegisterResponse } from 'src/model/response/register.response';

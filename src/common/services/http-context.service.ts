@@ -15,4 +15,19 @@ export class HttpContextService {
   static clear() {
     this.request = null;
   }
+
+  getUserID(): any {
+    return HttpContextService.request?.user?.id;
+  }
+  getFullname(): any {
+    return HttpContextService.request?.user?.fullName;
+  }
+
+  getEmail(): any {
+    return HttpContextService.request?.user?.email;
+  }
+
+  getRole(): any {
+    return HttpContextService.request?.user?.role;
+  }
 }

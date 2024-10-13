@@ -5,6 +5,7 @@ import { classes } from '@automapper/classes';
 import { CoreService } from './core.service';
 import { MapperService } from 'src/common/services/mapper.service';
 import { EmailService } from '../common/services/email.service';
+import { HttpContextService } from 'src/common/services/http-context.service';
 
 @Global()
 @Module({
@@ -17,7 +18,8 @@ import { EmailService } from '../common/services/email.service';
   providers: [ 
     EmailService,
     MapperService,
-    CoreService
+    CoreService,
+    HttpContextService
 ],
   exports: [ 
     CoreService

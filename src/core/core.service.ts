@@ -19,7 +19,7 @@ export class CoreService {
     return this.emailService;
   }
 
-  getAuthService(){
+  getAuthService(): HttpContextService{
     return this.authService;
   }
 }

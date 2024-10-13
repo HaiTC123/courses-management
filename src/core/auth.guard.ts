@@ -6,7 +6,7 @@ import { validateToken } from 'src/utils/token.utils';
 import { UserEntity } from 'src/model/entity/user.entity';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from 'src/utils/public.decorator';
-import { AuthService } from 'src/auth/auth.service';
+import { AuthService } from 'src/controllers/auth/auth.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -32,7 +32,7 @@ export class AuthGuard implements CanActivate {
     }
 
     const token = authHeader.split(' ')[1];
-    
+
     if (!token || this.authService.isTokenBlacklisted(token)) {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
