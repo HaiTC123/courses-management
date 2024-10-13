@@ -3,8 +3,8 @@ import { Module, Global } from '@nestjs/common';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { CoreService } from './core.service';
-import { MapperService } from 'src/base/mapper.service';
-import { EmailService } from './email.service';
+import { MapperService } from 'src/common/services/mapper.service';
+import { EmailService } from '../common/services/email.service';
 
 @Global()
 @Module({

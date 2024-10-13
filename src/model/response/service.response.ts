@@ -26,12 +26,13 @@ export class ServiceResponse {
       } as ServiceResponse;
     }
   
-    static onBadRequest(data: any = null): ServiceResponse {
+    static onBadRequest(data: any = null, message: any = ""): ServiceResponse {
       return {
         success: false,
         statusCode: HttpStatus.BAD_REQUEST,
         data,
         devMessage: 'Bad Request',
+        message: message
       } as ServiceResponse;
     }
   

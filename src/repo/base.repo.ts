@@ -87,6 +87,13 @@ export class BaseRepository<T extends { id: number }, U> {
             where: fieldList,
         });
     }
+
+    // Tìm kiếm một bản ghi theo điều kiện phức tạp
+    async findOneWithCondition(conditions: { [key: string]: any }): Promise<T | null> {
+        return this.model.findFirst({
+            where: conditions
+        });
+    }
     //#endregion
 
     // Tạo mới bản ghi
