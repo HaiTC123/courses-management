@@ -12,6 +12,7 @@ import { ImageForm } from "./_components/image-form";
 import { CategoryForm } from "./_components/category-form";
 import { PriceForm } from "./_components/price-form";
 import { AttachmentForm } from "./_components/attachment-form";
+import { ChapterForm } from "./_components/chapter-form";
 
 const CourseIdPage = ({
   params,
@@ -42,6 +43,15 @@ const CourseIdPage = ({
     imageUrl: "",
     price: 100,
     categoryId: "web-development",
+    chapters: [
+      {
+        id: 1,
+        title: "Chapter 1",
+        description: "Chapter 1 description",
+        videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        isPublished: true,
+      },
+    ],
   };
 
   const requiredFields = [
@@ -50,6 +60,7 @@ const CourseIdPage = ({
     course.imageUrl,
     course.price,
     course.categoryId,
+    course.chapters.some((chapter: any) => chapter.isPublished),
   ];
 
   const totalFields = requiredFields.length;
@@ -91,6 +102,7 @@ const CourseIdPage = ({
               <IconBadge icon={ListChecks} />
               <h2 className="text-xl">Course Chapters</h2>
             </div>
+            <ChapterForm initialData={course} courseId={course.id} />
             <div className="flex items-center gap-x-2">
               <IconBadge icon={CircleDollarSign} />
               <h2 className="text-xl">Sell your course</h2>
