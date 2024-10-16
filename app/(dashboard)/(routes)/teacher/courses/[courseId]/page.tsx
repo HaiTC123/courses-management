@@ -45,11 +45,28 @@ const CourseIdPage = ({
     categoryId: "web-development",
     chapters: [
       {
-        id: 1,
+        id: "1",
         title: "Chapter 1",
         description: "Chapter 1 description",
         videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
         isPublished: true,
+        isFree: false,
+      },
+      {
+        id: "2",
+        title: "Chapter 2",
+        description: "Chapter 2 description",
+        videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        isPublished: true,
+        isFree: false,
+      },
+      {
+        id: "3",
+        title: "Chapter 3",
+        description: "Chapter 3 description",
+        videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        isPublished: true,
+        isFree: false,
       },
     ],
   };

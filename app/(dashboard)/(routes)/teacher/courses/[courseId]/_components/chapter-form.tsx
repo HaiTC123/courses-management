@@ -16,19 +16,20 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Pencil } from "lucide-react";
+import { Loader2, Pencil } from "lucide-react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 import { ChaptersList } from "./chapters-list";
 
-interface Chapter {
+export interface Chapter {
   id: string;
   title: string;
   description: string;
   videoUrl: string;
   isPublished: boolean;
+  isFree: boolean;
 }
 
 interface ChapterFormProps {
@@ -70,8 +71,29 @@ export const ChapterForm = ({ initialData, courseId }: ChapterFormProps) => {
       toast.error("Something went wrong");
     }
   };
+
+  const onReorder = async (updateData: { id: string; position: number }[]) => {
+    try {
+      setIsUpdating(true);
+      await axios.put(`/api/courses/${courseId}/chapters/reorder`, {
+        list: updateData,
+      });
+      toast.success("Chapters reordered");
+      router.refresh();
+    } catch (error) {
+      toast.error("Something went wrong");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   return (
-    <div className="p-4 mt-6 border rounded-md bg-slate-100">
+    <div className="relative p-4 mt-6 border rounded-md bg-slate-100">
+      {isUpdating && (
+        <div className="absolute top-0 right-0 flex items-center justify-center w-full h-full rounded-md">
+          <Loader2 className="w-6 h-6 text-sky-700 animate-spin" />
+        </div>
+      )}
       <div className="flex items-center justify-between font-medium">
         Course Chapters
         <Button
@@ -138,12 +160,15 @@ export const ChapterForm = ({ initialData, courseId }: ChapterFormProps) => {
             !initialData.chapters.length && "text-slate-500 italic"
           )}
         >
-          {initialData.chapters.length || "No chapters"}
-          <ChaptersList
-            onEdit={() => {}}
-            onReorder={() => {}}
-            items={initialData.chapters || []}
-          />
+          {initialData.chapters.length ? (
+            <ChaptersList
+              onEdit={() => {}}
+              onReorder={onReorder}
+              items={initialData.chapters || []}
+            />
+          ) : (
+            <p>No chapters</p>
+          )}
         </div>
       )}
       {!isCreating && (
