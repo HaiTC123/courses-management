@@ -46,12 +46,13 @@ export class ServiceResponse {
       } as ServiceResponse;
     }
   
-    static onSuccess(data: any = null): ServiceResponse {
+    static onSuccess(data: any = null, message: string = ""): ServiceResponse {
       return {
         success: true,
         statusCode: HttpStatus.OK,
         data,
         devMessage: 'OK',
+        message: message
       } as ServiceResponse;
     }
   }

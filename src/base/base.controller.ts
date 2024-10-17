@@ -4,9 +4,10 @@ import { ApiBody } from '@nestjs/swagger';
 import { BaseService } from './base.service';
 import { CoreService } from 'src/core/core.service';
 import { ServiceResponse } from 'src/model/response/service.response';
+import { PageRequest } from 'src/model/request/page.request';
 
 
-export class BaseController<TEntity extends {id: number}, TModel, TDto> {
+export class BaseController<TEntity extends {id: number}, TModel> {
     protected readonly entityFactory: new () => TEntity
     protected readonly _mapperService;
     protected TEntityClass: any;
@@ -22,38 +23,49 @@ export class BaseController<TEntity extends {id: number}, TModel, TDto> {
         this.TModelClass = Reflect.getMetadata('design:type', this, 'model')
     }
 
+    @Get('all')
+    async getAll() {
+        var data = await this.baseService.getMany({});
+        return ServiceResponse.onSuccess(this._mapperService.mapListData(data, this.TEntityClass, this.TModelClass));
+    }
+
     @Get(':id')
     async getById(@Param('id') id: number): Promise<ServiceResponse> {
         var data = await this.baseService.getOne({
             id: id
         });
         const result = this._mapperService.mapData(data, this.TEntityClass, this.TModelClass);
+        if (result == null){
+            return ServiceResponse.onBadRequest(null, "Not found");
+        }
         return ServiceResponse.onSuccess(result);
     }
 
-    @Get('all')
-    async getAll() {
-        var data = await this.baseService.getMany({});
-        return ServiceResponse.onSuccess(data);
-    }
-
     @Post()
-    async create(@Body() model: TModel) {
-        // const entity = new this.entityFactory();
-        // Object.assign(entity, model);
-        // const result = await this.baseService.create(entity);
-        return { data: 1 };
+    async create(@Body() param: TEntity) {
+        return ServiceResponse.onSuccess(this.baseService.add(param));
     }
 
     @Put(':id')
-    async update(@Param('id') id: number, @Body() model: TModel) {
-        // const result = await this.baseService.update(id, model);
-        return { data: 1 };
+    async update(@Param('id') id: number, @Body() model: Partial<TEntity>) {
+        const result = await this.baseService.update(id, model);
+        return ServiceResponse.onSuccess(id,"Update Success")
     }
 
     @Delete(':id')
     async delete(@Param('id') id: number) {
-        // const result = await this.baseService.delete(id);
-        return { message: 'Deleted successfully', data: 1 };
+        var data = await this.baseService.getOne({
+            id: id
+        });
+        if (data == null){
+            return ServiceResponse.onBadRequest(null, "Entity not exist");
+        }
+        await this.baseService.remove(id);
+        return ServiceResponse.onSuccess(id,"Deleted successfully");
+    }
+
+    @Post('paging')
+    async paging(@Body() param: PageRequest): Promise<ServiceResponse> {
+        return ServiceResponse.onSuccess(await this.baseService.getPaging(param));
     }
 }

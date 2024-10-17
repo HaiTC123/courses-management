@@ -11,7 +11,7 @@ import { EntityType, ModelType } from 'src/common/reflect.metadata';
 
 @ApiTags('User')
 @Controller('api/user')
-export class UsersController extends BaseController<UserEntity, Prisma.UserCreateInput, UserDto> {
+export class UsersController extends BaseController<UserEntity, Prisma.UserCreateInput> {
     @EntityType(UserEntity)
     entity: UserEntity;
 

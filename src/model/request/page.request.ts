@@ -1,19 +1,27 @@
 // page-request.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
+import { IsInt, IsOptional, IsString } from 'class-validator';
 
 export class PageRequest {
-  @ApiProperty({ example: 10, description: 'Kích thước mỗi trang' })
+  @ApiProperty()
+  @IsInt()
   pageSize: number;
 
-  @ApiProperty({ example: 1, description: 'Số thứ tự trang' })
+  @ApiProperty()
+  @IsInt()
   pageNumber: number;
 
-  @ApiProperty({ example: '', description: 'Filter dạng JSON hoặc chuỗi điều kiện' })
+  @ApiProperty()
+  @IsString()
   filter?: string;
 
-  @ApiProperty({ example: 'createdAt', description: 'Trường sắp xếp' })
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
   sortOrder?: string;
 
-  @ApiProperty({ example: '', description: 'Từ khóa tìm kiếm' })
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
   searchKey?: string;
 }

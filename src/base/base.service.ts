@@ -27,7 +27,7 @@ export class BaseService<T extends { id: number }, K> {
   }
 
   // // Tạo mới entity
-  async add(entity: K): Promise<number> {
+  async add(entity: T): Promise<number> {
     var result = await this.repository.create(entity, {
       select: {
         id: true

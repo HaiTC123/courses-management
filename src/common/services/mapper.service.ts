@@ -44,5 +44,13 @@ export class MapperService {
   mapData<S, D>(source: S, sourceClass: new (...args: unknown[]) => S, destinationClass: new (...args: unknown[]) => D): D {
     return this.mapper.map(source, sourceClass, destinationClass);
   }
+
+  mapListData<S, D>(source: S | S[], sourceClass: new (...args: unknown[]) => S, destinationClass: new (...args: unknown[]) => D): D | D[] {
+    if (Array.isArray(source)) {
+      return this.mapper.mapArray(source,sourceClass, destinationClass );
+    }
+    return null;
+  }
+  
 }
 
