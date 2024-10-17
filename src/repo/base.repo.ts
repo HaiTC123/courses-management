@@ -1,5 +1,8 @@
 // core/repositories/base.repository.ts
 import { PrismaClient, Prisma } from '@prisma/client';
+import { validateInputs } from 'src/utils/common.utils';
+import { PageRequest } from 'src/model/request/page.request';
+import { PageResult } from 'src/model/response/page.response';
 
 export class BaseRepository<T extends { id: number }, U> {
     protected prisma: PrismaClient;
@@ -94,10 +97,17 @@ export class BaseRepository<T extends { id: number }, U> {
             where: conditions
         });
     }
+
+    // Tìm kiếm nhiều bản ghi theo điều kiện phức tạp
+    async findManyWithCondition(conditions: { [key: string]: any }): Promise<T[] | null> {
+        return this.model.findMany({
+            where: conditions
+        });
+    }
     //#endregion
 
     // Tạo mới bản ghi
-    async create(data: U, option?: any): Promise<T> {
+    async create(data: any, option?: any): Promise<T> {
         const createOption: any = { data };
         if (option && Object.keys(option).length > 0) {
             createOption.select = option;
@@ -118,5 +128,44 @@ export class BaseRepository<T extends { id: number }, U> {
         return this.model.delete({
             where: { id },
         });
+    }
+
+    async getPaging(pageRequest: PageRequest, isIgnoreFilter: boolean = false): Promise<PageResult<T>> {
+        validateInputs(pageRequest.pageNumber, pageRequest.pageSize);
+        
+        let query: any = {}; // Prisma `findMany` không dùng IQueryable mà dùng object filter
+
+        if (pageRequest.filter) {
+            query = {
+                where: {
+                    ...JSON.parse(pageRequest.filter), // Bạn có thể parse filter từ chuỗi JSON nếu cần
+                },
+            };
+        }
+
+        if (pageRequest.sortOrder) {
+            query.orderBy = { [pageRequest.sortOrder]: 'asc' }; // Hoặc 'desc' nếu cần
+        }
+
+        // Lấy tổng số items
+        const totalItems = await this.model.count({ where: query.where });
+
+        // Thêm logic bỏ qua filter nếu cần
+        if (isIgnoreFilter) {
+            // Nếu không muốn dùng filter, có thể set lại query
+            query.where = {};
+        }
+
+        // Thực hiện phân trang
+        const data = await this.model.findMany({
+            ...query,
+            skip: (pageRequest.pageNumber - 1) * pageRequest.pageSize,
+            take: pageRequest.pageSize,
+        });
+
+        return {
+            data,
+            totalCount: totalItems,
+        };
     }
 }

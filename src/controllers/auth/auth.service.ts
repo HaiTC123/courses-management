@@ -1,26 +1,29 @@
-import { OtpRequest } from '@prisma/client';
-import { Request } from 'express';
+import { UserRepository } from './../../repo/user.repo';
 import { CoreService } from '../../core/core.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { RegisterDto } from '../../model/dto/auth.dto';
 import { hash, compare } from 'bcrypt'
 import { BaseService } from 'src/base/base.service';
-import { UnitOfWork } from 'src/repo/unitOfWork.repo';
+import { PrismaService } from 'src/repo/prisma.service';
 import { UserEntity } from 'src/model/entity/user.entity';
 import generateToken from 'src/utils/token.utils';
 import { ServiceResponse } from 'src/model/response/service.response';
 import { ChangePasswordRequest, ForgotPassswordRequest, LoginRequest, ResetPasswordRequest } from 'src/model/request/index';
 import { generateOtp } from 'src/utils/common.utils';
 import { OTPEntity } from 'src/model/entity/otp.enity';
+import { Prisma, User } from '@prisma/client';
 
 @Injectable()
-export class AuthService extends BaseService {
+export class AuthService extends BaseService<User, Prisma.UserCreateInput > {
     private readonly tokenBlacklist: Set<string> = new Set(); // Set để lưu token bị blacklist
-    constructor(coreService: CoreService, private readonly unitOfWork: UnitOfWork) {
-        super(coreService)
+    constructor(
+        coreService: CoreService,
+        protected readonly prismaService: PrismaService,
+    ) {
+        super(prismaService, coreService)
     }
     register = async (userData: RegisterDto): Promise<ServiceResponse> => {
-        const user = await this.unitOfWork.userRepo.findByEmail(userData.email)
+        const user = await this.prismaService.userRepo.findByEmail(userData.email)
         if (user) {
             throw new HttpException({ message: 'This email has been used' }, HttpStatus.BAD_REQUEST)
         }
@@ -30,7 +33,7 @@ export class AuthService extends BaseService {
         userCreate.isBlock = false;
         userCreate.inActive = false;
         userCreate.dateOfBirth = null;
-        const result = await this.unitOfWork.userRepo.create(userCreate, {
+        const result = await this.prismaService.userRepo.create(userCreate, {
             fullName: true,
             email: true,
             role: true,
@@ -52,7 +55,7 @@ export class AuthService extends BaseService {
             throw new HttpException({ message: 'This password is not null' }, HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        const user = await this.unitOfWork.userRepo.findUnique(
+        const user = await this.prismaService.userRepo.findUnique(
             {
                 email: userPayload.email
             },
@@ -91,7 +94,7 @@ export class AuthService extends BaseService {
             throw new HttpException({ message: 'This email is not null' }, HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        const user = await this.unitOfWork.userRepo.findByEmail(param.email);
+        const user = await this.prismaService.userRepo.findByEmail(param.email);
 
         if (!user) {
             throw new HttpException({ message: "Email is invalid" }, HttpStatus.BAD_REQUEST);
@@ -101,7 +104,7 @@ export class AuthService extends BaseService {
         data.email = param.email;
         data.otp = otpCode;
         data.expiryTime = new Date(new Date().getTime() + 300000);
-        await this.unitOfWork.otpRepo.create(data);
+        await this.prismaService.otpRepo.create(data);
         // send email
         await this._emailService.sendEmail("phamngocthuan13@gmail.com", "Quên mật khẩu", "TemplateForgotPassword.html", {
             OTP: data.otp
@@ -111,7 +114,7 @@ export class AuthService extends BaseService {
     };
 
     resetPassword = async (param: ResetPasswordRequest): Promise<ServiceResponse> => {
-        var otpRequest = await this.unitOfWork.otpRepo.findOneWithCondition({
+        var otpRequest = await this.prismaService.otpRepo.findOneWithCondition({
             email: param.email,
             otp: param.Otp,
             expiryTime: {
@@ -123,14 +126,14 @@ export class AuthService extends BaseService {
             return ServiceResponse.onBadRequest("Invalid OTP");
         }
 
-        var user = await this.unitOfWork.userRepo.findByEmail(otpRequest.email);
+        var user = await this.prismaService.userRepo.findByEmail(otpRequest.email);
 
         if (user == null) {
             return ServiceResponse.onBadRequest("User not found");
         }
         user.passwordHash = await hash(param.newPassword, 10);
-        await this.unitOfWork.userRepo.update(user.id, user);
-        await this.unitOfWork.otpRepo.delete(otpRequest.id);
+        await this.prismaService.userRepo.update(user.id, user);
+        await this.prismaService.otpRepo.delete(otpRequest.id);
         return ServiceResponse.onSuccess();
     }
 
@@ -138,7 +141,7 @@ export class AuthService extends BaseService {
 
         const userId = this._authService.getUserID();
         // Lấy thông tin người dùng từ database
-        const user = await this.unitOfWork.userRepo.getById(userId);
+        const user = await this.prismaService.userRepo.getById(userId);
 
         if (!user) {
             throw new HttpException({ message: 'User not found' }, HttpStatus.NOT_FOUND);
@@ -152,7 +155,7 @@ export class AuthService extends BaseService {
 
         // Cập nhật mật khẩu mới
         const newPasswordHash = await hash(body.newPassword, 10);
-        await this.unitOfWork.userRepo.update(userId, { passwordHash: newPasswordHash });
+        await this.prismaService.userRepo.update(userId, { passwordHash: newPasswordHash });
 
         return ServiceResponse.onSuccess("Done Update");
     }

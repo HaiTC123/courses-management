@@ -1,3 +1,4 @@
+import { User } from '@prisma/client';
 // user.profile.ts
 import { createMap, forMember, ignore, mapFrom, createMapper } from '@automapper/core';
 import { Mapper } from '@automapper/core';
@@ -7,6 +8,7 @@ import { RegisterDto } from '../../model/dto/auth.dto';
 import { Role } from '@prisma/client';
 import { classes } from '@automapper/classes';
 import { RegisterResponse } from 'src/model/response/register.response';
+import { UserDto } from 'src/model/dto/user.dto';
 
 @Injectable()
 export class MapperService {
@@ -34,14 +36,13 @@ export class MapperService {
       forMember((dest) => dest.createdAt, mapFrom(() => new Date())), // Set thời gian hiện tại cho createdAt
       forMember((dest) => dest.updatedAt, mapFrom(() => new Date())) // Set thời gian hiện tại cho updatedAt
     );
-    createMap(
-      this.mapper,
-      UserEntity,
-      RegisterResponse
-    );
+    createMap(this.mapper, UserEntity, RegisterResponse);
+    createMap(this.mapper, UserEntity, UserDto);
+    createMap(this.mapper, UserDto, UserEntity);
   }
   
   mapData<S, D>(source: S, sourceClass: new (...args: unknown[]) => S, destinationClass: new (...args: unknown[]) => D): D {
     return this.mapper.map(source, sourceClass, destinationClass);
   }
 }
+
