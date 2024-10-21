@@ -25,7 +25,7 @@ export const NavbarRoutes = () => {
       <div className="flex ml-auto gap-x-2">
         {isTeacherPage || isPlayerPage ? (
           <Link href="/">
-            <Button size="sm" variant="ghost" onClick={() => router.back()}>
+            <Button size="sm" variant="ghost">
               <LogOut className="mr-2 size-4" />
               Exit
             </Button>
