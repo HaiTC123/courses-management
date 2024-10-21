@@ -5,6 +5,7 @@ import { LogOut } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "./ui/button";
+import { SearchInput } from "./search-input";
 
 export const NavbarRoutes = () => {
   const pathname = usePathname();
@@ -12,26 +13,34 @@ export const NavbarRoutes = () => {
 
   const isTeacherPage = pathname.startsWith("/teacher");
   const isPlayerPage = pathname.startsWith("/chapter");
+  const isSearchPage = pathname.startsWith("/search");
 
   return (
-    <div className="flex gap-x-2 ml-auto">
-      {isTeacherPage || isPlayerPage ? (
-        <Link href="/">
-          <Button size="sm" variant="ghost" onClick={() => router.back()}>
-            <LogOut className="size-4 mr-2" />
-            Exit
-          </Button>
-        </Link>
-      ) : (
-        <Link href="/teacher/courses">
-          <Button size="sm" variant="ghost">
-            Teacher Mode
-          </Button>
-        </Link>
+    <>
+      {isSearchPage && (
+        <div className="hidden md:block">
+          <SearchInput />
+        </div>
       )}
-      <button className="flex items-center gap-x-2 text-sm font-medium text-slate-500 hover:text-slate-700 transition">
-        {"test"}
-      </button>
-    </div>
+      <div className="flex ml-auto gap-x-2">
+        {isTeacherPage || isPlayerPage ? (
+          <Link href="/">
+            <Button size="sm" variant="ghost" onClick={() => router.back()}>
+              <LogOut className="mr-2 size-4" />
+              Exit
+            </Button>
+          </Link>
+        ) : (
+          <Link href="/teacher/courses">
+            <Button size="sm" variant="ghost">
+              Teacher Mode
+            </Button>
+          </Link>
+        )}
+        <button className="flex items-center text-sm font-medium transition gap-x-2 text-slate-500 hover:text-slate-700">
+          {"test"}
+        </button>
+      </div>
+    </>
   );
 };
