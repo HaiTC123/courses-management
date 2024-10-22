@@ -1,10 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AutoMap } from '@automapper/classes';
+import { BaseDto } from './base.dto';
 
-export class AdminDto {
+export class AdminDto extends BaseDto{
   @AutoMap()
   @ApiProperty()
-  adminId: number; // Khóa chính, tự động tăng
+  id: number; // Khóa chính, tự động tăng
   
   @AutoMap()
   @ApiProperty()
@@ -22,11 +23,4 @@ export class AdminDto {
   @ApiProperty()
   lastActivity?: Date; // Thời gian hoạt động gần nhất của Admin
   
-  @AutoMap()
-  @ApiProperty()
-  createdAt: Date; // Thời gian tạo bản ghi
-  
-  @AutoMap()
-  @ApiProperty()
-  updatedAt: Date; // Thời gian cập nhật bản ghi
 }

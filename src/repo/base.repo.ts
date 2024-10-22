@@ -28,7 +28,7 @@ export class BaseRepository<T extends { id: number }, U> {
         });
     }
 
-    async findUnique(where: any, options?: any): Promise<T | null>{
+    async findUnique(where: any, options?: any): Promise<T | null> {
         return this.model.findUnique({
             where,
             select: {
@@ -98,6 +98,14 @@ export class BaseRepository<T extends { id: number }, U> {
         });
     }
 
+    // Tìm kiếm một bản ghi theo điều kiện phức tạp
+    async findOneWithConditionAndGetReference(conditions: { [key: string]: any },  includeReferences: { [key: string]: boolean } = {}): Promise<T | null> {
+        return this.model.findFirst({
+            where: conditions,
+            include: includeReferences
+        });
+    }
+
     // Tìm kiếm nhiều bản ghi theo điều kiện phức tạp
     async findManyWithCondition(conditions: { [key: string]: any }): Promise<T[] | null> {
         return this.model.findMany({
@@ -108,10 +116,12 @@ export class BaseRepository<T extends { id: number }, U> {
 
     // Tạo mới bản ghi
     async create(data: any, option?: any, moreData: any = {}): Promise<T> {
-        const createOption: any = { data: {
-            ...data,
-            ...moreData
-        } };
+        const createOption: any = {
+            data: {
+                ...data,
+                ...moreData
+            }
+        };
         if (!option && Object.keys(option).length > 0) {
             createOption.select = option;
         }
@@ -119,7 +129,7 @@ export class BaseRepository<T extends { id: number }, U> {
     }
 
     // Cập nhật bản ghi theo ID
-    async update(id: number, data: Partial<T>, moreData: object= {}): Promise<T> {
+    async update(id: number, data: Partial<T>, moreData: object = {}): Promise<T> {
         return this.model.update({
             where: { id },
             data: {
@@ -138,11 +148,11 @@ export class BaseRepository<T extends { id: number }, U> {
 
     async getPaging(pageRequest: PageRequest, isIgnoreFilter: boolean = false, ignoreFields: string[] = []): Promise<PageResult<T>> {
         validateInputs(pageRequest.pageNumber, pageRequest.pageSize);
-    
+
         let query: any = {
             where: {},
         };
-    
+
         // Xử lý searchKey và searchFields
         if (pageRequest.searchKey && pageRequest.searchFields) {
             query.where.OR = pageRequest.searchFields
@@ -151,7 +161,7 @@ export class BaseRepository<T extends { id: number }, U> {
                     [field]: { contains: pageRequest.searchKey }, // Tìm kiếm không phân biệt hoa thường
                 }));
         }
-    
+
         // Xử lý conditions
         if (pageRequest.conditions && pageRequest.conditions.length > 0) {
             pageRequest.conditions.forEach(cond => {
@@ -175,16 +185,16 @@ export class BaseRepository<T extends { id: number }, U> {
                     }
                 }
             });
-        }else {
+        } else {
             query.where = {};
         }
-    
-        
+
+
         // Nếu cần bỏ qua filter
         if (isIgnoreFilter) {
             query.where = {};
         }
-    
+
         // Xử lý sắp xếp
         if (pageRequest.sortOrder) {
             const [field, order] = pageRequest.sortOrder.split(' ');
@@ -192,21 +202,22 @@ export class BaseRepository<T extends { id: number }, U> {
                 query.orderBy = { [field]: order || 'asc' }; // Mặc định là 'asc'
             }
         }
-    
+
         // Đếm tổng số items
         const totalItems = await this.model.count({ where: query.where });
-    
+
         // Thực hiện phân trang và lấy dữ liệu
         const data = await this.model.findMany({
             ...query,
             skip: (pageRequest.pageNumber - 1) * pageRequest.pageSize,
             take: pageRequest.pageSize,
+            include: pageRequest.includeReferences ? pageRequest.includeReferences : {}
         });
-    
+
         return {
             data,
             totalCount: totalItems,
         };
     }
-    
+
 }

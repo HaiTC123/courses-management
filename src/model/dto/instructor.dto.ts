@@ -1,10 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AutoMap } from '@automapper/classes';
+import { BaseDto } from './base.dto';
+import { UserDto } from './user.dto';
 
-export class InstructorDto {
+export class InstructorDto extends BaseDto{
   @AutoMap()
   @ApiProperty()
-  instructorId: number; // Khóa chính, tự động tăng
+  id: number; // Khóa chính, tự động tăng
   
   @AutoMap()
   @ApiProperty()
@@ -16,9 +18,5 @@ export class InstructorDto {
   
   @AutoMap()
   @ApiProperty()
-  createdAt: Date; // Thời gian tạo bản ghi
-  
-  @AutoMap()
-  @ApiProperty()
-  updatedAt: Date; // Thời gian cập nhật bản ghi
+  user: UserDto; // Tham chiếu tới UserDto
 }

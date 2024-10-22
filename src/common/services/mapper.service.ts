@@ -9,6 +9,10 @@ import { Role } from '@prisma/client';
 import { classes } from '@automapper/classes';
 import { RegisterResponse } from 'src/model/response/register.response';
 import { UserDto } from 'src/model/dto/user.dto';
+import { StudentDto } from 'src/model/dto/student.dto';
+import { StudentEntity } from 'src/model/entity/student.entity';
+import { InstructorDto } from 'src/model/dto/instructor.dto';
+import { InstructorEntity } from 'src/model/entity/instructor.enity';
 
 @Injectable()
 export class MapperService {
@@ -39,18 +43,41 @@ export class MapperService {
     createMap(this.mapper, UserEntity, RegisterResponse);
     createMap(this.mapper, UserEntity, UserDto);
     createMap(this.mapper, UserDto, UserEntity);
+    createMap(this.mapper, StudentDto, StudentEntity,
+      forMember((dest) => dest.id, mapFrom((src) => src.id)),
+      forMember((dest) => dest.yearOfStudy, mapFrom((src) => src.yearOfStudy)),
+      forMember((dest) => dest.gpa, mapFrom((src) => src.gpa)),
+      forMember((dest) => dest.userId, mapFrom((src) => src.userId))
+    );
+    createMap(this.mapper, StudentEntity, StudentDto,
+      forMember((dest) => dest.id, mapFrom((src) => src.id)),
+      forMember((dest) => dest.yearOfStudy, mapFrom((src) => src.yearOfStudy)),
+      forMember((dest) => dest.gpa, mapFrom((src) => src.gpa)),
+      forMember((dest) => dest.userId, mapFrom((src) => src.userId))
+      
+    );
+
+    createMap(this.mapper, InstructorDto, InstructorEntity,
+      forMember((dest) => dest.id, mapFrom((src) => src.id)),
+      forMember((dest) => dest.userId, mapFrom((src) => src.userId))
+    );
+    createMap(this.mapper, InstructorEntity, InstructorDto,
+      forMember((dest) => dest.id, mapFrom((src) => src.id)),
+      forMember((dest) => dest.userId, mapFrom((src) => src.userId))
+      
+    );
   }
-  
+
   mapData<S, D>(source: S, sourceClass: new (...args: unknown[]) => S, destinationClass: new (...args: unknown[]) => D): D {
     return this.mapper.map(source, sourceClass, destinationClass);
   }
 
   mapListData<S, D>(source: S | S[], sourceClass: new (...args: unknown[]) => S, destinationClass: new (...args: unknown[]) => D): D | D[] {
     if (Array.isArray(source)) {
-      return this.mapper.mapArray(source,sourceClass, destinationClass );
+      return this.mapper.mapArray(source, sourceClass, destinationClass);
     }
     return null;
   }
-  
+
 }
 

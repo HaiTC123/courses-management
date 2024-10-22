@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Prisma, Role } from '@prisma/client';
 import { hash } from 'bcrypt'
 import { BaseService } from 'src/base/base.service';
@@ -16,6 +16,10 @@ export class UsersService extends BaseService<UserEntity, Prisma.UserCreateInput
     }
     //
     async add(entity: UserEntity): Promise<number> {
+        const user = await this.prismaService.userRepo.findByEmail(entity.email)
+        if (user) {
+            throw new HttpException({ message: 'This email has been used' }, HttpStatus.BAD_REQUEST)
+        }
         let passWord = generateRandomPassword(10);
         if (isEnvDevelopment()) {
             passWord = "12345678";
@@ -31,6 +35,20 @@ export class UsersService extends BaseService<UserEntity, Prisma.UserCreateInput
         }, this.getMoreCreateData());
         // to-do : send password to user email
         return Number(result.id);
+    }
+
+    async update(id: number, model: Partial<UserEntity>): Promise<boolean> {
+        var user = await this.prismaService.userRepo.findOneWithCondition({
+            id: {
+                not: id
+            },
+            email: model.email
+        })
+        if (user) {
+            throw new HttpException({ message: 'This email has been used' }, HttpStatus.BAD_REQUEST)
+        }
+        await this.repository.update(id, model, this.getMoreUpdateData());
+        return true;
     }
 
 }

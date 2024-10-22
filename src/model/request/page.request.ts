@@ -29,6 +29,10 @@ export class PageRequest {
   @ApiProperty()
   @IsOptional()
   searchFields?: string[];
+
+  @ApiProperty()
+  @IsOptional()
+  includeReferences: { [key: string]: boolean } = null;
 }
 
 

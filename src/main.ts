@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as dotenv from 'dotenv';
+import { ExceptionsFilter } from './common/filters/ExceptionsFilter';
 
 async function bootstrap() {
   dotenv.config();
@@ -25,8 +26,9 @@ async function bootstrap() {
       whitelist: true,
       forbidNonWhitelisted: true,
       transform: true,
-    }),
+    })
   );
+  app.useGlobalFilters(new ExceptionsFilter());
   
   await app.listen(3125);
 }

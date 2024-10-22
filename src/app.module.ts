@@ -6,11 +6,15 @@ import { UsersModule } from './controllers/users/users.module';
 import { CoreModule } from './core/core.module';
 import { HttpContextInterceptor } from './common/interceptors/http-context.interceptor';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { StudentsModule } from './controllers/students/students.module';
+import { InstructorsModule } from './controllers/instructors/instructors.module';
 @Module({
   imports: [
     AuthModule,
     CoreModule,
-    UsersModule
+    UsersModule,
+    StudentsModule,
+    InstructorsModule
   ],
   controllers: [AppController],
   providers: [AppService,

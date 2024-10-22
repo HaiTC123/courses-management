@@ -43,6 +43,12 @@ export class BaseService<T extends { id: number }, K> {
     return data;
   }
 
+  async getOneAndReference(conditions: { [key: string]: any }, includeReferences: { [key: string]: boolean } = {}): Promise<T> {
+    const data = await this.repository.findOneWithConditionAndGetReference(conditions, includeReferences);
+    this.afterGetData(data);
+    return data;
+  }
+
   async getMany(conditions: { [key: string]: any }): Promise<T[]> {
     const data = await this.repository.findManyWithCondition(conditions);
     this.afterGetDatas(data);

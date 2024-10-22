@@ -72,7 +72,7 @@ model OtpRequest {
 }
 
 model Instructor {
-  instructorId Int      @id @default(autoincrement()) // Khóa chính, tự động tăng
+  id Int      @id @default(autoincrement()) // Khóa chính, tự động tăng
   userId       Int // Liên kết với bảng Users
   User         User     @relation(fields: [userId], references: [id]) // Quan hệ với bảng Users
   department   String   @db.VarChar(255) // Khoa hoặc bộ môn của giảng viên
@@ -85,7 +85,7 @@ model Instructor {
 }
 
 model Student {
-  studentId        Int      @id @default(autoincrement()) // Khóa chính, tự động tăng
+  id        Int      @id @default(autoincrement()) // Khóa chính, tự động tăng
   userId           Int // Liên kết với bảng Users
   user             User     @relation(fields: [userId], references: [id]) // Quan hệ với bảng Users
   major            String   @db.VarChar(255) // Chuyên ngành của sinh viên
@@ -94,12 +94,14 @@ model Student {
   graduationStatus String   @default("In Progress") // Trạng thái tốt nghiệp
   createdAt        DateTime @default(now()) // Thời gian tạo bản ghi
   updatedAt        DateTime @updatedAt // Thời gian cập nhật bản ghi
+  createdBy        String?  @db.VarChar(100)
+  updatedBy        String?  @db.VarChar(100)
 
   @@index([userId]) // Tạo chỉ mục cho trường userId
 }
 
 model Admin {
-  adminId      Int       @id @default(autoincrement()) // Khóa chính, tự động tăng
+  id      Int       @id @default(autoincrement()) // Khóa chính, tự động tăng
   userId       Int // Liên kết với bảng Users
   user         User      @relation(fields: [userId], references: [id]) // Quan hệ với bảng Users
   role         String    @default("Moderator") // Vai trò của Admin (SuperAdmin, Moderator, Support)
@@ -107,6 +109,8 @@ model Admin {
   createdAt    DateTime  @default(now()) // Thời gian tạo bản ghi
   updatedAt    DateTime  @updatedAt // Thời gian cập nhật bản ghi
   lastActivity DateTime? // Thời gian hoạt động gần nhất của Admin
+  createdBy    String?   @db.VarChar(100)
+  updatedBy    String?   @db.VarChar(100)
 
   @@index([userId]) // Tạo chỉ mục cho trường userId
 }

@@ -1,36 +1,34 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { AutoMap } from '@automapper/classes';
+import { BaseEntity } from 'src/model/entity/base.entity';
+import { UserEntity } from './user.entity';
 
-export class StudentDto {
+export class StudentEntity extends BaseEntity {
   @AutoMap()
-  @ApiProperty()
-  studentId: number; // Khóa chính, tự động tăng
+  id: number; // Khóa chính, tự động tăng
   
   @AutoMap()
-  @ApiProperty()
   userId: number; // Liên kết với bảng User
   
   @AutoMap()
-  @ApiProperty()
   major: string; // Chuyên ngành của sinh viên
   
   @AutoMap()
-  @ApiProperty()
   yearOfStudy: number; // Năm học của sinh viên
   
   @AutoMap()
-  @ApiProperty()
   gpa?: number; // Điểm trung bình tích lũy (GPA)
   
   @AutoMap()
-  @ApiProperty()
   graduationStatus: string; // Trạng thái tốt nghiệp
-  
+
   @AutoMap()
-  @ApiProperty()
-  createdAt: Date; // Thời gian tạo bản ghi
+  user: UserEntity; // Tham chiếu tới UserEntity
   
-  @AutoMap()
-  @ApiProperty()
-  updatedAt: Date; // Thời gian cập nhật bản ghi
+  // Phương thức khởi tạo để tạo một StudentEntity từ dữ liệu
+  constructor(partial?: Partial<StudentEntity>) {
+    super();
+    Object.assign(this, partial);
+    this.createdAt = this.createdAt || new Date();
+    this.updatedAt = new Date();
+  }
 }

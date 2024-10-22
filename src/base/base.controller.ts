@@ -40,9 +40,21 @@ export class BaseController<TEntity extends {id: number}, TModel> {
         return ServiceResponse.onSuccess(result);
     }
 
+    @Post(':id/reference')
+    async GetDetail(@Param('id') id: number, @Body() includeReferences: { [key: string]: boolean } = {} ): Promise<ServiceResponse> {
+        var data = await this.baseService.getOneAndReference({
+            id: id
+        },includeReferences);
+        const result = this._mapperService.mapData(data, this.TEntityClass, this.TModelClass);
+        if (result == null){
+            return ServiceResponse.onBadRequest(null, "Not found");
+        }
+        return ServiceResponse.onSuccess(result);
+    }
+
     @Post()
     async create(@Body() param: TEntity) {
-        return ServiceResponse.onSuccess(this.baseService.add(param));
+        return ServiceResponse.onSuccess(await this.baseService.add(param));
     }
 
     @Put(':id')
