@@ -31,7 +31,6 @@ enum AccountStatus {
   Deactivated
 }
 
-
 model User {
   id                Int           @id @default(autoincrement()) // Khóa chính, tự động tăng
   fullName          String        @db.VarChar(255) // Họ và tên đầy đủ
@@ -58,15 +57,56 @@ model User {
   isBlock           Boolean       @default(false) // Có bị chặn không
   createdBy         String?       @db.VarChar(100)
   updatedBy         String?       @db.VarChar(100)
+  Instructor        Instructor[]
+  Student           Student[]
+  Admin             Admin[]
 }
-
-
 
 model OtpRequest {
   id         Int      @id @default(autoincrement()) // Khóa chính tự động tăng
-  email      String   @unique                      // Địa chỉ email, duy nhất
-  otp        String                                // Mã OTP
-  expiryTime DateTime                             // Thời gian hết hạn của OTP
-  createdAt  DateTime @default(now())              // Thời gian tạo
-  updatedAt  DateTime @updatedAt                   // Thời gian cập nhật cuối cùng
+  email      String   @unique // Địa chỉ email, duy nhất
+  otp        String // Mã OTP
+  expiryTime DateTime // Thời gian hết hạn của OTP
+  createdAt  DateTime @default(now()) // Thời gian tạo
+  updatedAt  DateTime @updatedAt // Thời gian cập nhật cuối cùng
+}
+
+model Instructor {
+  instructorId Int      @id @default(autoincrement()) // Khóa chính, tự động tăng
+  userId       Int // Liên kết với bảng Users
+  User         User     @relation(fields: [userId], references: [id]) // Quan hệ với bảng Users
+  department   String   @db.VarChar(255) // Khoa hoặc bộ môn của giảng viên
+  createdAt    DateTime @default(now()) // Thời gian tạo bản ghi
+  updatedAt    DateTime @updatedAt // Thời gian cập nhật bản ghi
+  createdBy    String?  @db.VarChar(100)
+  updatedBy    String?  @db.VarChar(100)
+
+  @@index([userId]) // Tạo chỉ mục cho trường UserId
+}
+
+model Student {
+  studentId        Int      @id @default(autoincrement()) // Khóa chính, tự động tăng
+  userId           Int // Liên kết với bảng Users
+  user             User     @relation(fields: [userId], references: [id]) // Quan hệ với bảng Users
+  major            String   @db.VarChar(255) // Chuyên ngành của sinh viên
+  yearOfStudy      Int // Năm học của sinh viên
+  gpa              Decimal? @db.Decimal(3, 2) // Điểm trung bình tích lũy (GPA)
+  graduationStatus String   @default("In Progress") // Trạng thái tốt nghiệp
+  createdAt        DateTime @default(now()) // Thời gian tạo bản ghi
+  updatedAt        DateTime @updatedAt // Thời gian cập nhật bản ghi
+
+  @@index([userId]) // Tạo chỉ mục cho trường userId
+}
+
+model Admin {
+  adminId      Int       @id @default(autoincrement()) // Khóa chính, tự động tăng
+  userId       Int // Liên kết với bảng Users
+  user         User      @relation(fields: [userId], references: [id]) // Quan hệ với bảng Users
+  role         String    @default("Moderator") // Vai trò của Admin (SuperAdmin, Moderator, Support)
+  accessLevel  Int       @default(1) // Cấp độ quyền truy cập (1 = cơ bản, 5 = cao nhất)
+  createdAt    DateTime  @default(now()) // Thời gian tạo bản ghi
+  updatedAt    DateTime  @updatedAt // Thời gian cập nhật bản ghi
+  lastActivity DateTime? // Thời gian hoạt động gần nhất của Admin
+
+  @@index([userId]) // Tạo chỉ mục cho trường userId
 }

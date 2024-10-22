@@ -7,6 +7,9 @@ import * as dotenv from 'dotenv';
 async function bootstrap() {
   dotenv.config();
   const app = await NestFactory.create(AppModule);
+  if (process.env.NODE_ENV === 'development') {
+    app.enableCors();
+  }
 
   const config = new DocumentBuilder()
     .setTitle('API Documentation')

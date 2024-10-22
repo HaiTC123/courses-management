@@ -1,6 +1,5 @@
 import * as fs from 'fs';
 import * as path from 'path';
-
 export const generateOtp = (): string => {
   const random = Math.floor(100000 + Math.random() * 900000);
   return random.toString();
@@ -54,4 +53,8 @@ export const generateRandomPassword = (length: number): string => {
     password += charset[randomIndex];
   }
   return password;
+}
+
+export const isEnvDevelopment = (): boolean => {
+  return process.env.NODE_ENV === 'development'
 }
