@@ -6,7 +6,6 @@ import { CoreService } from 'src/core/core.service';
 import { ServiceResponse } from 'src/model/response/service.response';
 import { PageRequest } from 'src/model/request/page.request';
 
-
 export class BaseController<TEntity extends {id: number}, TModel> {
     protected readonly entityFactory: new () => TEntity
     protected readonly _mapperService;
@@ -66,6 +65,8 @@ export class BaseController<TEntity extends {id: number}, TModel> {
 
     @Post('paging')
     async paging(@Body() param: PageRequest): Promise<ServiceResponse> {
-        return ServiceResponse.onSuccess(await this.baseService.getPaging(param));
+        var result = await this.baseService.getPaging(param);
+        result.data = this._mapperService.mapListData(result.data, this.TEntityClass, this.TModelClass);
+        return ServiceResponse.onSuccess(result);
     }
 }

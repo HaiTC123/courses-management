@@ -107,19 +107,25 @@ export class BaseRepository<T extends { id: number }, U> {
     //#endregion
 
     // Tạo mới bản ghi
-    async create(data: any, option?: any): Promise<T> {
-        const createOption: any = { data };
-        if (option && Object.keys(option).length > 0) {
+    async create(data: any, option?: any, moreData: any = {}): Promise<T> {
+        const createOption: any = { data: {
+            ...data,
+            ...moreData
+        } };
+        if (!option && Object.keys(option).length > 0) {
             createOption.select = option;
         }
         return this.model.create(createOption);
     }
 
     // Cập nhật bản ghi theo ID
-    async update(id: number, data: Partial<T>): Promise<T> {
+    async update(id: number, data: Partial<T>, moreData: object= {}): Promise<T> {
         return this.model.update({
             where: { id },
-            data,
+            data: {
+                ...data,
+                ...moreData
+            }
         });
     }
 
@@ -130,44 +136,77 @@ export class BaseRepository<T extends { id: number }, U> {
         });
     }
 
-    async getPaging(pageRequest: PageRequest, isIgnoreFilter: boolean = false): Promise<PageResult<T>> {
+    async getPaging(pageRequest: PageRequest, isIgnoreFilter: boolean = false, ignoreFields: string[] = []): Promise<PageResult<T>> {
         validateInputs(pageRequest.pageNumber, pageRequest.pageSize);
-        
-        let query: any = {}; // Prisma `findMany` không dùng IQueryable mà dùng object filter
-
-        if (pageRequest.filter) {
-            query = {
-                where: {
-                    ...JSON.parse(pageRequest.filter), // Bạn có thể parse filter từ chuỗi JSON nếu cần
-                },
-            };
+    
+        let query: any = {
+            where: {},
+        };
+    
+        // Xử lý searchKey và searchFields
+        if (pageRequest.searchKey && pageRequest.searchFields) {
+            query.where.OR = pageRequest.searchFields
+                .filter(field => !ignoreFields.includes(field)) // Lọc các trường hợp lệ
+                .map(field => ({
+                    [field]: { contains: pageRequest.searchKey }, // Tìm kiếm không phân biệt hoa thường
+                }));
         }
-
-        
-
-        if (pageRequest.sortOrder) {
-            query.orderBy = { [pageRequest.sortOrder]: 'asc' }; // Hoặc 'desc' nếu cần
-        }
-
-        // Lấy tổng số items
-        const totalItems = await this.model.count({ where: query.where });
-
-        // Thêm logic bỏ qua filter nếu cần
-        if (isIgnoreFilter) {
-            // Nếu không muốn dùng filter, có thể set lại query
+    
+        // Xử lý conditions
+        if (pageRequest.conditions && pageRequest.conditions.length > 0) {
+            pageRequest.conditions.forEach(cond => {
+                if (!ignoreFields.includes(cond.key)) {
+                    switch (cond.condition) {
+                        case 'equal':
+                            query.where[cond.key] = cond.value;
+                            break;
+                        case 'contain':
+                            query.where[cond.key] = { contains: cond.value };
+                            break;
+                        case 'gt':
+                            query.where[cond.key] = { gt: cond.value };
+                            break;
+                        case 'lt':
+                            query.where[cond.key] = { lt: cond.value };
+                            break;
+                        // Thêm các điều kiện khác nếu cần
+                        default:
+                            break;
+                    }
+                }
+            });
+        }else {
             query.where = {};
         }
-
-        // Thực hiện phân trang
+    
+        
+        // Nếu cần bỏ qua filter
+        if (isIgnoreFilter) {
+            query.where = {};
+        }
+    
+        // Xử lý sắp xếp
+        if (pageRequest.sortOrder) {
+            const [field, order] = pageRequest.sortOrder.split(' ');
+            if (!ignoreFields.includes(field)) {
+                query.orderBy = { [field]: order || 'asc' }; // Mặc định là 'asc'
+            }
+        }
+    
+        // Đếm tổng số items
+        const totalItems = await this.model.count({ where: query.where });
+    
+        // Thực hiện phân trang và lấy dữ liệu
         const data = await this.model.findMany({
             ...query,
             skip: (pageRequest.pageNumber - 1) * pageRequest.pageSize,
             take: pageRequest.pageSize,
         });
-
+    
         return {
             data,
             totalCount: totalItems,
         };
     }
+    
 }

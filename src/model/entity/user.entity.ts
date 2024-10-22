@@ -3,6 +3,8 @@ import { Role, Gender, AccountStatus } from "@prisma/client";
 import { AutoMap } from '@automapper/classes';
 // user.entity.ts
 export class UserEntity extends BaseEntity {
+
+  static ignoreFieldFilter = ["passwordHash"]
   id: number; // Khóa chính, tự động tăng
   @AutoMap()
   fullName: string; // Họ và tên đầy đủ

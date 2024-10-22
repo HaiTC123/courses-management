@@ -32,7 +32,7 @@ export class BaseService<T extends { id: number }, K> {
       select: {
         id: true
       }
-    });
+    }, this.getMoreCreateData());
     return Number(result.id);
   }
 
@@ -56,13 +56,13 @@ export class BaseService<T extends { id: number }, K> {
 
   // Cập nhật entity
   async update(id: number, model: Partial<T>): Promise<boolean> {
-    await this.repository.update(id, model);
+    await this.repository.update(id, model, this.getMoreUpdateData());
     return true;
   }
 
   // Lấy dữ liệu phân trang
   async getPaging(pageRequest: PageRequest): Promise<PageResult<T>> {
-    const pagingData = await this.repository.getPaging(pageRequest);
+    const pagingData = await this.repository.getPaging(pageRequest, false);
     this.afterGetDatas(pagingData.data);
     return pagingData;
   }
@@ -71,6 +71,22 @@ export class BaseService<T extends { id: number }, K> {
 
   }
   protected afterGetData(entity: T): void {
+  }
+
+  protected getMoreCreateData() {
+    return {
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      createdBy: this._authService?.getFullname() || 'system', // Nếu không truyền vào thì lấy 'system'
+      updatedBy: this._authService?.getFullname() || 'system',
+    };
+  }
+
+  protected getMoreUpdateData() {
+    return {
+      updatedAt: new Date(),
+      updatedBy: this._authService?.getFullname() || 'system',
+    };
   }
 
 }

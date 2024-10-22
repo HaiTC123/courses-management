@@ -12,8 +12,9 @@ export class PageRequest {
   pageNumber: number;
 
   @ApiProperty()
-  @IsString()
-  filter?: string;
+  @IsOptional()
+  conditions?: Condition[];
+
 
   @ApiProperty()
   @IsOptional()
@@ -24,4 +25,21 @@ export class PageRequest {
   @IsOptional()
   @IsString()
   searchKey?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  searchFields?: string[];
+}
+
+
+
+export class Condition {
+  @ApiProperty({ description: 'Trường cần so sánh' })
+  key: string;
+
+  @ApiProperty({ description: 'Điều kiện so sánh: "contain", "equal", "gt", "lt", v.v.' })
+  condition: string;
+
+  @ApiProperty({ description: 'Giá trị để so sánh' })
+  value: any;
 }
