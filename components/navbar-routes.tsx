@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { LogOut } from "lucide-react";
+import { LogIn, LogOut } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "./ui/button";
@@ -37,9 +37,15 @@ export const NavbarRoutes = () => {
             </Button>
           </Link>
         )}
-        <button className="flex items-center text-sm font-medium transition gap-x-2 text-slate-500 hover:text-slate-700">
+        {/* <Button className="flex items-center text-sm font-medium transition gap-x-2 text-slate-500 hover:text-slate-700">
           {"test"}
-        </button>
+        </Button> */}
+        <Link href="/sign-in">
+          <Button>
+            <LogIn className="mr-2 size-4" />
+            Sign In
+          </Button>
+        </Link>
       </div>
     </>
   );
