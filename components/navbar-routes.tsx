@@ -27,23 +27,29 @@ export const NavbarRoutes = () => {
           <Link href="/">
             <Button size="sm" variant="ghost">
               <LogOut className="mr-2 size-4" />
-              Exit
+              Thoát
             </Button>
           </Link>
         ) : (
           <Link href="/teacher/courses">
             <Button size="sm" variant="ghost">
-              Teacher Mode
+              Chế độ giáo viên
             </Button>
           </Link>
         )}
         {/* <Button className="flex items-center text-sm font-medium transition gap-x-2 text-slate-500 hover:text-slate-700">
           {"test"}
         </Button> */}
+        <Link href="/sign-up">
+          <Button>
+            <LogIn className="mr-2 size-4" />
+            Đăng ký
+          </Button>
+        </Link>
         <Link href="/sign-in">
           <Button>
             <LogIn className="mr-2 size-4" />
-            Sign In
+            Đăng nhập
           </Button>
         </Link>
       </div>

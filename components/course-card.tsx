@@ -27,27 +27,36 @@ export const CourseCard: React.FC<CourseCardProps> = ({
 }) => {
   return (
     <Link href={`/courses/${id}`}>
-      <div className="h-full p-3 overflow-hidden transition border rounded-md group hover:shadow-sm">
-        <div className="relative w-full overflow-hidden rounded-md aspect-video">
-          <Image fill className="object-cover" src={imageUrl} alt={title} />
+      <div className="h-full overflow-hidden transition duration-300 ease-in-out border rounded-lg group hover:shadow-lg hover:scale-105">
+        <div className="relative w-full overflow-hidden rounded-t-lg aspect-video">
+          <Image
+            fill
+            className="object-cover transition-transform duration-300 group-hover:scale-110"
+            src={imageUrl}
+            alt={title}
+          />
         </div>
-        <div className="flex flex-col pt-2">
-          <div className="text-lg font-medium md:text-base">{title}</div>
-          <p className="text-xs text-muted-foreground">{category?.name}</p>
-        </div>
-        <div className="flex items-center my-3 text-sm gap-x-2 md:text-xs">
-          <div className="flex items-center gap-x-1">
-            <IconBadge size="sm" icon={BookOpen} />
-            <span>{progress}</span>
+        <div className="flex flex-col p-3">
+          <div className="flex flex-col pt-2">
+            <div className="text-lg font-medium transition-colors duration-300 md:text-base group-hover:text-blue-600">
+              {title}
+            </div>
+            <p className="text-xs text-muted-foreground">{category?.name}</p>
           </div>
+          <div className="flex items-center my-3 text-sm gap-x-2 md:text-xs">
+            <div className="flex items-center gap-x-1">
+              <IconBadge size="sm" icon={BookOpen} />
+              <span>{progress}</span>
+            </div>
+          </div>
+          {progress !== null ? (
+            <div>a</div>
+          ) : (
+            <p className="font-medium transition-colors duration-300 text-md md:text-sm text-slate-600 group-hover:text-blue-600">
+              {formatPrice(price)}
+            </p>
+          )}
         </div>
-        {progress !== null ? (
-          <div>a</div>
-        ) : (
-          <p className="font-medium text-md md:text-sm text-slate-600">
-            {formatPrice(price)}
-          </p>
-        )}
       </div>
     </Link>
   );
