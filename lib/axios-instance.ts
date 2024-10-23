@@ -4,7 +4,7 @@ import axios from "axios";
 import { AUTH_TOKEN_KEY } from "@/constants/local-storage-key";
 
 const axiosInstance = axios.create({
-  baseURL: process.env.BASE_URL,
+  baseURL: process.env.NEXT_PUBLIC_BASE_URL,
   timeout: 1000,
   headers: { "Content-Type": "application/json" },
 });

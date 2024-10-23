@@ -18,6 +18,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
+import { signIn } from "@/services/auth";
+import { useAuthStore } from "@/store/use-auth-store";
+import { AUTH_TOKEN_KEY } from "@/constants/local-storage-key";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -30,6 +33,8 @@ const formSchema = z.object({
 
 const SignIn = () => {
   const router = useRouter();
+
+  const { setAuthentication, setUser } = useAuthStore();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -46,16 +51,25 @@ const SignIn = () => {
       // Here you would typically call your authentication service
       // For example: await signIn(values.email, values.password);
       console.log("Sign in attempt with:", values.email, values.password);
+      const response = await signIn(values);
+      console.log(response);
 
-      toast.success("Signed in successfully");
-      router.push("/");
+      if (response?.data?.token) {
+        setAuthentication(true);
+        setUser(response.data);
+        localStorage.setItem(AUTH_TOKEN_KEY, response.data.token);
+        toast.success("Signed in successfully");
+        router.push("/");
+      } else {
+        toast.error("Failed to sign in. Please check your credentials.");
+      }
     } catch (error) {
       toast.error("Failed to sign in. Please check your credentials.");
     }
   };
 
   return (
-    <div className="flex items-center justify-center px-4 py-12 rounded-md bg-slate-100 sm:px-6 lg:px-8">
+    <div className="flex items-center justify-center w-full h-full px-4 py-12 rounded-md bg-slate-100 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
         <div>
           <h2 className="mt-6 text-3xl font-extrabold text-center text-gray-900">

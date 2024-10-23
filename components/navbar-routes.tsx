@@ -6,14 +6,32 @@ import Link from "next/link";
 
 import { Button } from "./ui/button";
 import { SearchInput } from "./search-input";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { useAuthStore } from "@/store/use-auth-store";
+import { DEFAULT_AVATAR } from "@/constants/default-avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { AUTH_TOKEN_KEY } from "@/constants/local-storage-key";
 
 export const NavbarRoutes = () => {
   const pathname = usePathname();
   const router = useRouter();
+  const { authenticated, user, setAuthentication, setUser } = useAuthStore();
 
   const isTeacherPage = pathname.startsWith("/teacher");
   const isPlayerPage = pathname.startsWith("/chapter");
   const isSearchPage = pathname.startsWith("/search");
+
+  const signOut = () => {
+    setAuthentication(false);
+    setUser(null);
+    localStorage.removeItem(AUTH_TOKEN_KEY);
+    router.push("/");
+  };
 
   return (
     <>
@@ -37,21 +55,38 @@ export const NavbarRoutes = () => {
             </Button>
           </Link>
         )}
-        {/* <Button className="flex items-center text-sm font-medium transition gap-x-2 text-slate-500 hover:text-slate-700">
-          {"test"}
-        </Button> */}
-        <Link href="/sign-up">
-          <Button>
-            <LogIn className="mr-2 size-4" />
-            Đăng ký
-          </Button>
-        </Link>
-        <Link href="/sign-in">
-          <Button>
-            <LogIn className="mr-2 size-4" />
-            Đăng nhập
-          </Button>
-        </Link>
+        {authenticated ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Avatar>
+                <AvatarImage
+                  src={user?.profilePictureURL || DEFAULT_AVATAR}
+                  alt={user?.fullName}
+                />
+                <AvatarFallback>{user?.fullName?.charAt(0)}</AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                onClick={() => {
+                  signOut();
+                }}
+              >
+                <LogOut className="mr-2 size-4" />
+                Đăng xuất
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <>
+            <Link href="/sign-in">
+              <Button>
+                <LogIn className="mr-2 size-4" />
+                Đăng nhập
+              </Button>
+            </Link>
+          </>
+        )}
       </div>
     </>
   );
