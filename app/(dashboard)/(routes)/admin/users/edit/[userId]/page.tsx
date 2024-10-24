@@ -22,14 +22,14 @@ import { UserState } from "@/enum/user-state";
 import { UserRole } from "@/enum/user-role";
 import { Combobox } from "@/components/ui/combobox";
 import { Button } from "@/components/ui/button";
-import { DatePicker } from "../_components/date-picker";
+import { DatePicker } from "../../_components/date-picker";
 import {
   createInstructorService,
   createStudentService,
   createUserService,
 } from "@/services/user";
 
-const CreateUserPage = () => {
+const EditUserPage = () => {
   const router = useRouter();
 
   const formSchema = z.object({
@@ -409,4 +409,4 @@ const CreateUserPage = () => {
   );
 };
 
-export default CreateUserPage;
+export default EditUserPage;

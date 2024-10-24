@@ -47,15 +47,15 @@ const instructorRoutes = [
 
 const adminRoutes = [
   {
-    icon: List,
-    label: "Khóa học",
-    href: "/admin/courses",
-  },
-  {
     icon: User,
     label: "Người dùng",
     href: "/admin/users",
   },
+  // {
+  //   icon: List,
+  //   label: "Khóa học",
+  //   href: "/admin/courses",
+  // },
 ];
 
 export const SidebarRoutes = () => {

@@ -1,13 +1,45 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import { DayPicker } from "react-day-picker"
+import * as React from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { DayPicker } from "react-day-picker";
 
-import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
+import { Select, SelectComponent } from "./select";
 
-export type CalendarProps = React.ComponentProps<typeof DayPicker>
+export type CalendarProps = React.ComponentProps<typeof DayPicker>;
+
+const montsLib: Record<"es" | "en", Record<number, string>> = {
+  es: {
+    1: "Enero",
+    2: "Febrero",
+    3: "Marzo",
+    4: "Abril",
+    5: "Mayo",
+    6: "Junio",
+    7: "Julio",
+    8: "Agosto",
+    9: "Septiembre",
+    10: "Octubre",
+    11: "Noviembre",
+    12: "Diciembre",
+  },
+  en: {
+    1: "January",
+    2: "February",
+    3: "March",
+    4: "April",
+    5: "May",
+    6: "June",
+    7: "July",
+    8: "August",
+    9: "September",
+    10: "October",
+    11: "November",
+    12: "December",
+  },
+};
 
 function Calendar({
   className,
@@ -54,13 +86,48 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
-        IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
+        IconLeft: ({ ...props }) => <ChevronLeft className="w-4 h-4" />,
+        IconRight: ({ ...props }) => <ChevronRight className="w-4 h-4" />,
       }}
       {...props}
     />
-  )
+  );
 }
-Calendar.displayName = "Calendar"
+Calendar.displayName = "Calendar";
 
-export { Calendar }
+function CalendarComponent({ ...props }: CalendarProps) {
+  const [date, setDate] = React.useState<Date>(new Date());
+
+  return (
+    <>
+      <div className="flex space-x-2">
+        <SelectComponent
+          items={[...(new Array(12) as number[])].map((_, index) => ({
+            label: montsLib["en"][index + 1],
+            value: (index + 1).toString(),
+          }))}
+          value={(new Date(date).getMonth() + 1).toString()}
+          onValueChange={(value) => {
+            setDate(new Date(date.setMonth(parseInt(value) - 1)));
+          }}
+        />
+        <SelectComponent
+          items={[...(new Array(new Date().getFullYear()) as number[])]
+            .map((_, index) => ({
+              label: (index + 1).toString(),
+              value: (index + 1).toString(),
+            }))
+            .slice(1900, new Date().getFullYear() + 1)
+            .reverse()}
+          value={new Date(date).getFullYear().toString()}
+          onValueChange={(value) => {
+            setDate(new Date(date.setFullYear(parseInt(value))));
+          }}
+        />
+      </div>
+      <Calendar {...props} month={date} />
+    </>
+  );
+}
+
+export { Calendar, CalendarComponent };
