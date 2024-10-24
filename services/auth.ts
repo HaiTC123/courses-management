@@ -6,7 +6,7 @@ export interface SignUpParams {
   password: string;
 }
 
-export const signUp = async (params: SignUpParams) => {
+export const signUpService = async (params: SignUpParams) => {
   const response = await axiosInstance.post("/api/auth/register", params);
   return response.data;
 };
@@ -16,7 +16,12 @@ export interface SignInParams {
   password: string;
 }
 
-export const signIn = async (params: SignInParams) => {
+export const signInService = async (params: SignInParams) => {
   const response = await axiosInstance.post("/api/auth/login", params);
+  return response.data;
+};
+
+export const signOutService = async () => {
+  const response = await axiosInstance.post("/api/auth/logout");
   return response.data;
 };

@@ -17,74 +17,74 @@ import { cn } from "@/lib/utils";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type Course = {
-  id: string;
-  title: string;
-  price: number;
-  isPublished: boolean;
-};
+// export type Course = {
+//   id: string;
+//   title: string;
+//   price: number;
+//   isPublished: boolean;
+// };
 
-export const columns: ColumnDef<Course>[] = [
+export const columns: ColumnDef<any>[] = [
   {
-    accessorKey: "title",
+    accessorKey: "fullName",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Title
+          Full Name
           <ArrowUpDown className="w-4 h-4 ml-2" />
         </Button>
       );
     },
   },
   {
-    accessorKey: "price",
+    accessorKey: "email",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Price
+          Email
           <ArrowUpDown className="w-4 h-4 ml-2" />
         </Button>
       );
     },
-    cell: ({ row }) => {
-      const price = parseFloat(row.getValue("price"));
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(price);
+    // cell: ({ row }) => {
+    //   const price = parseFloat(row.getValue("price"));
+    //   const formatted = new Intl.NumberFormat("en-US", {
+    //     style: "currency",
+    //     currency: "USD",
+    //   }).format(price);
 
-      return formatted;
-    },
+    //   return formatted;
+    // },
   },
-  {
-    accessorKey: "isPublished",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Published
-          <ArrowUpDown className="w-4 h-4 ml-2" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => {
-      const isPublished = row.getValue("isPublished") || false;
+  // {
+  //   accessorKey: "isPublished",
+  //   header: ({ column }) => {
+  //     return (
+  //       <Button
+  //         variant="ghost"
+  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+  //       >
+  //         Published
+  //         <ArrowUpDown className="w-4 h-4 ml-2" />
+  //       </Button>
+  //     );
+  //   },
+  //   cell: ({ row }) => {
+  //     const isPublished = row.getValue("isPublished") || false;
 
-      return (
-        <Badge className={cn("bg-slate-500", isPublished && "bg-sky-700")}>
-          {isPublished ? "Published" : "Draft"}
-        </Badge>
-      );
-    },
-  },
+  //     return (
+  //       <Badge className={cn("bg-slate-500", isPublished && "bg-sky-700")}>
+  //         {isPublished ? "Published" : "Draft"}
+  //       </Badge>
+  //     );
+  //   },
+  // },
   {
     id: "actions",
     cell: ({ row }) => {
@@ -99,16 +99,16 @@ export const columns: ColumnDef<Course>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <Link href={`/teacher/courses/${id}`}>
+            <Link href={`/instructor/courses/${id}`}>
               <DropdownMenuItem>
                 <Pencil className="w-4 h-4 mr-2" />
-                Edit
+                Sửa
               </DropdownMenuItem>
             </Link>
-            <Link href={`/teacher/courses/${id}`}>
+            <Link href={`/instructor/courses/${id}`}>
               <DropdownMenuItem>
                 <Trash className="w-4 h-4 mr-2" />
-                Delete
+                Xóa
               </DropdownMenuItem>
             </Link>
           </DropdownMenuContent>

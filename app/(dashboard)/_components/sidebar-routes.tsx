@@ -1,11 +1,20 @@
 "use client";
 
-import { BarChart, Book, Compass, Home, Layout, List } from "lucide-react";
+import {
+  BarChart,
+  Book,
+  Compass,
+  Home,
+  Layout,
+  LeafyGreenIcon,
+  List,
+  User,
+} from "lucide-react";
 
 import { SidebarItem } from "./sidebar-item";
 import { usePathname } from "next/navigation";
 
-const guestRoutes = [
+const studentRoutes = [
   {
     icon: Home,
     label: "Trang chủ",
@@ -16,27 +25,50 @@ const guestRoutes = [
     label: "Khóa học",
     href: "/search",
   },
+  {
+    icon: LeafyGreenIcon,
+    label: "Lộ trình",
+    href: "/learning-path",
+  },
 ];
 
-const teacherRoutes = [
+const instructorRoutes = [
   {
     icon: List,
     label: "Khóa học",
-    href: "/teacher/courses",
+    href: "/instructor/courses",
   },
   {
     icon: BarChart,
     label: "Phân tích",
-    href: "/teacher/analytics",
+    href: "/instructor/analytics",
+  },
+];
+
+const adminRoutes = [
+  {
+    icon: List,
+    label: "Khóa học",
+    href: "/admin/courses",
+  },
+  {
+    icon: User,
+    label: "Người dùng",
+    href: "/admin/users",
   },
 ];
 
 export const SidebarRoutes = () => {
   const pathname = usePathname();
 
-  const isTeacherPage = pathname?.startsWith("/teacher");
+  const isInstructorPage = pathname?.startsWith("/instructor");
+  const isAdminPage = pathname?.startsWith("/admin");
 
-  const routes = isTeacherPage ? teacherRoutes : guestRoutes;
+  const routes = isInstructorPage
+    ? instructorRoutes
+    : isAdminPage
+    ? adminRoutes
+    : studentRoutes;
 
   return (
     <div className="flex flex-col w-full">

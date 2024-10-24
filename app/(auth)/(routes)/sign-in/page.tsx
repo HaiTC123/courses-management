@@ -1,12 +1,12 @@
 "use client";
 
-import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -16,11 +16,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import toast from "react-hot-toast";
-import { signIn } from "@/services/auth";
 import { useAuthStore } from "@/store/use-auth-store";
-import { AUTH_TOKEN_KEY } from "@/constants/local-storage-key";
+import toast from "react-hot-toast";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -34,7 +31,7 @@ const formSchema = z.object({
 const SignIn = () => {
   const router = useRouter();
 
-  const { setAuthentication, setUser } = useAuthStore();
+  const { setAuthentication, setUser, setToken, signIn } = useAuthStore();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -53,17 +50,13 @@ const SignIn = () => {
       console.log("Sign in attempt with:", values.email, values.password);
       const response = await signIn(values);
       console.log(response);
-
-      if (response?.data?.token) {
-        setAuthentication(true);
-        setUser(response.data);
-        localStorage.setItem(AUTH_TOKEN_KEY, response.data.token);
-        toast.success("Signed in successfully");
-        router.push("/");
-      } else {
-        toast.error("Failed to sign in. Please check your credentials.");
-      }
+      // setAuthentication(true);
+      // setUser(response.data);
+      // setToken(response.data.token);
+      router.push("/");
+      toast.success("Signed in successfully");
     } catch (error) {
+      console.log(error);
       toast.error("Failed to sign in. Please check your credentials.");
     }
   };

@@ -88,7 +88,7 @@ export const ChapterForm = ({ initialData, courseId }: ChapterFormProps) => {
   };
 
   const onEdit = (id: string) => {
-    router.push(`/teacher/courses/${courseId}/chapters/${id}`);
+    router.push(`/instructor/courses/${courseId}/chapters/${id}`);
     setIsCreating(false);
     setIsUpdating(false);
   };

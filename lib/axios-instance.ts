@@ -1,7 +1,7 @@
 // lib/axiosInstance.js
 import axios from "axios";
 
-import { AUTH_TOKEN_KEY } from "@/constants/local-storage-key";
+import { useAuthStore } from "@/store/use-auth-store";
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL,
@@ -11,15 +11,17 @@ const axiosInstance = axios.create({
 
 // Add a request interceptor
 axiosInstance.interceptors.request.use(
-  function (config) {
+  (config) => {
     // Do something before the request is sent
-    const token = localStorage.getItem(AUTH_TOKEN_KEY); // Retrieve auth token from localStorage
+    // const token = localStorage.getItem(AUTH_TOKEN_KEY); // Retrieve auth token from localStorage
+    const token = useAuthStore.getState().token;
+    // const token = "";
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  function (error) {
+  (error) => {
     // Handle the error
     return Promise.reject(error);
   }
@@ -27,12 +29,12 @@ axiosInstance.interceptors.request.use(
 
 // Add a response interceptor
 axiosInstance.interceptors.response.use(
-  function (response) {
+  (response) => {
     // Do something with the response data
     console.log("Response:", response);
     return response;
   },
-  function (error) {
+  (error) => {
     // Handle the response error
     if (error.response && error.response.status === 401) {
       // Handle unauthorized error

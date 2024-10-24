@@ -22,18 +22,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   // Getting the token value from a cookie
-  const token = isClient() ? localStorage.getItem(AUTH_TOKEN_KEY) : null;
+  // const token = isClient() ? localStorage.getItem(AUTH_TOKEN_KEY) : null;
 
-  // Getting the setAuthentication function from the authentication store
-  const setAuthentication = useAuthStore((state) => state.setAuthentication);
+  // // Getting the setAuthentication function from the authentication store
+  // const setAuthentication = useAuthStore((state) => state.setAuthentication);
 
-  // Running a side effect whenever the token value changes
-  useEffect(() => {
-    console.log(token); // Logging the token value for debugging purposes
-    if (token) {
-      setAuthentication(true); // Setting the authentication status to true if a token exists
-    }
-  }, [setAuthentication, token]);
+  // // Running a side effect whenever the token value changes
+  // useEffect(() => {
+  //   console.log(token); // Logging the token value for debugging purposes
+  //   if (token) {
+  //     setAuthentication(true); // Setting the authentication status to true if a token exists
+  //   }
+  // }, [setAuthentication, token]);
 
   return (
     <html lang="en">

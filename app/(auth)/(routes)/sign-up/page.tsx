@@ -17,8 +17,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
-import { signUp } from "@/services/auth";
-import { AxiosError } from "axios";
+import { useAuthStore } from "@/store/use-auth-store";
+import { UserRole } from "@/enum/user-role";
+import { Combobox } from "@/components/ui/combobox";
+// import { signUpService } from "@/services/auth";
 
 const formSchema = z.object({
   fullName: z.string().min(2, {
@@ -30,6 +32,7 @@ const formSchema = z.object({
   password: z.string().min(6, {
     message: "Password must be at least 6 characters long",
   }),
+  // role: z.string(),
   // confirmPassword: z.string(),
 });
 // .refine((data) => data.password === data.confirmPassword, {
@@ -40,12 +43,15 @@ const formSchema = z.object({
 const SignUp = () => {
   const router = useRouter();
 
+  const { signUp } = useAuthStore();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       fullName: "",
       email: "",
       password: "",
+      // role: "3",
       // confirmPassword: "",
     },
   });
@@ -139,6 +145,25 @@ const SignUp = () => {
                   </FormItem>
                 )}
               />
+              {/* <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>User Role</FormLabel>
+                    <Combobox
+                      options={[
+                        { value: "3", label: UserRole.STUDENT },
+                        { value: "2", label: UserRole.INSTRUCTOR },
+                        { value: "1", label: UserRole.ADMIN },
+                      ]}
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              /> */}
               {/* <FormField
                 control={form.control}
                 name="confirmPassword"
