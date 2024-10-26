@@ -15,11 +15,11 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
     }
 
     async add(entity: CourseEntity): Promise<number> {
-        if (!entity?.instructorId){
-            throw new HttpException({message: 'InstructorID is null'}, HttpStatus.BAD_REQUEST);
+        if (!entity?.instructorId) {
+            throw new HttpException({ message: 'InstructorID is null' }, HttpStatus.BAD_REQUEST);
         }
         entity.instructor = {
-            connect: {id: entity.instructorId}
+            connect: { id: entity.instructorId }
         }
         delete entity.instructorId;
         return await super.add(entity);
@@ -27,21 +27,21 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
 
     async getCourseWithDetails(courseId: number) {
         const course = await this.prismaService.course.findUnique({
-          where: { id: courseId },
-          include: {
-            chapters: {
-              include: {
-                lessons: {
-                  include: {
-                    materials: true, // Lấy tất cả các materials liên quan
-                  },
+            where: { id: courseId },
+            include: {
+                chapters: {
+                    include: {
+                        lessons: {
+                            include: {
+                                materials: true, // Lấy tất cả các materials liên quan
+                            },
+                        },
+                    },
                 },
-              },
             },
-          },
         });
-      
+
         return course;
-      }
-      
+    }
+
 }

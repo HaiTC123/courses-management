@@ -12,6 +12,7 @@ import { CoursesModule } from './controllers/courses/courses.module';
 import { CourseChaptersModule } from './controllers/courseChapters/courseChapters.module';
 import { CourseLessonsModule } from './controllers/courseLessons/courseLessons.module';
 import { CourseMaterialsModule } from './controllers/courseMaterials/courseMaterials.module';
+import { FilesModule } from './controllers/file/files.module';
 @Module({
   imports: [
     AuthModule,
@@ -22,7 +23,8 @@ import { CourseMaterialsModule } from './controllers/courseMaterials/courseMater
     CoursesModule,
     CourseChaptersModule,
     CourseLessonsModule,
-    CourseMaterialsModule
+    CourseMaterialsModule,
+    FilesModule
   ],
   controllers: [AppController],
   providers: [AppService,

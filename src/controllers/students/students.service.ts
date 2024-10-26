@@ -15,10 +15,10 @@ export class StudentsService extends BaseService<StudentEntity, Prisma.StudentCr
     }
     async add(entity: StudentEntity): Promise<number> {
         var user = await this.prismaService.userRepo.findOneWithCondition({
-            userId: entity.userId
+            id: entity.userId
         })
-        if (user) {
-            throw new HttpException({ message: 'This user has been existed' }, HttpStatus.BAD_REQUEST)
+        if (!user) {
+            throw new HttpException({ message: 'This user has been not existed' }, HttpStatus.BAD_REQUEST)
         }
         return await super.add(entity);
     }

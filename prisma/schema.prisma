@@ -190,3 +190,20 @@ model CourseMaterial {
   updatedBy           String?
   lesson              CourseLesson @relation(fields: [lessonId], references: [id]) // Liên kết với bảng CourseLessons
 }
+
+model File {
+  id                  Int      @id @default(autoincrement()) // ID tự động tăng
+  fileKey             String   @unique // Key của file từ UploadThing
+  fileUrl             String // URL file từ UploadThing
+  appUrl              String // Đường dẫn URL trong ứng dụng
+  fileName            String // Tên file
+  fileType            String // Loại file (ví dụ: image/png)
+  fileSize            Int // Kích thước file
+  isTemp              Boolean  @default(true) // Đánh dấu file là tạm thời
+  associatedTableType String? // Loại bảng liên kết (User, Course, ...)
+  associatedTableId   Int? // ID của bảng liên kết
+  createdAt           DateTime @default(now()) // Thời gian tạo
+  updatedAt           DateTime @updatedAt // Thời gian cập nhật
+  createdBy           String?
+  updatedBy           String?
+}

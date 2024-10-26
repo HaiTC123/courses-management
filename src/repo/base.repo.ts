@@ -99,7 +99,7 @@ export class BaseRepository<T extends { id: number }, U> {
     }
 
     // Tìm kiếm một bản ghi theo điều kiện phức tạp
-    async findOneWithConditionAndGetReference(conditions: { [key: string]: any },  includeReferences: { [key: string]: boolean } = {}): Promise<T | null> {
+    async findOneWithConditionAndGetReference(conditions: { [key: string]: any }, includeReferences: { [key: string]: boolean } = {}): Promise<T | null> {
         return this.model.findFirst({
             where: conditions,
             include: includeReferences
@@ -135,6 +135,15 @@ export class BaseRepository<T extends { id: number }, U> {
             data: {
                 ...data,
                 ...moreData
+            }
+        });
+    }
+
+    async updateMany(conditions: { [key: string]: any }, data: Partial<T>): Promise<T> {
+        return this.model.update({
+            where: { conditions },
+            data: {
+                ...data
             }
         });
     }

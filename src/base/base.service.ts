@@ -71,6 +71,11 @@ export class BaseService<T extends { id: number }, K> {
     return true;
   }
 
+  async updateMany(conditions: { [key: string]: any }, data): Promise<boolean>{
+    await this.repository.updateMany(conditions, data);
+    return true;
+  }
+
   // Lấy dữ liệu phân trang
   async getPaging(pageRequest: PageRequest): Promise<PageResult<T>> {
     const pagingData = await this.repository.getPaging(pageRequest, false);
