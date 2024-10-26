@@ -30,18 +30,4 @@ export class UsersController extends BaseController<UserEntity, Prisma.UserCreat
         return null;
     }
 
-    @Post("student")
-    @Roles(Role.Admin)
-    @ApiBody({type: UserDto})
-    async createStudent(@Body() param: UserDto){
-        return null;
-    }
-
-    @Post("instructor")
-    @Roles(Role.Admin)
-    @ApiBody({type: UserDto})
-    async createInstuctor(@Body() param: UserDto){
-        return null;
-    }
-
 }

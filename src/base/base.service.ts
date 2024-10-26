@@ -60,6 +60,11 @@ export class BaseService<T extends { id: number }, K> {
     await this.repository.delete(id);
   }
 
+  // Xóa Danh sách Entity theo IDs
+  async removeIDs(ids: number[]): Promise<void> {
+    await this.repository.deleteByIds(ids);
+  }
+
   // Cập nhật entity
   async update(id: number, model: Partial<T>): Promise<boolean> {
     await this.repository.update(id, model, this.getMoreUpdateData());

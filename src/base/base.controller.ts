@@ -75,6 +75,19 @@ export class BaseController<TEntity extends {id: number}, TModel> {
         return ServiceResponse.onSuccess(id,"Deleted successfully");
     }
 
+    @Delete('delete-many')
+    @ApiBody({ schema: { type: 'object', properties: { ids: { type: 'array', items: { type: 'number' } } } } })
+    async deleteMany(@Body('ids') ids: number[]) {
+      // Kiểm tra nếu danh sách `ids` trống
+      if (!ids || ids.length === 0) {
+        return ServiceResponse.onBadRequest(null, "No IDs provided");
+      }
+  
+      await this.baseService.removeIDs(ids);
+  
+      return ServiceResponse.onSuccess(ids, `${ids.length} records deleted successfully`);
+    }
+
     @Post('paging')
     async paging(@Body() param: PageRequest): Promise<ServiceResponse> {
         var result = await this.baseService.getPaging(param);

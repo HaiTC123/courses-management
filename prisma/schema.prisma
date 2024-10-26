@@ -72,20 +72,21 @@ model OtpRequest {
 }
 
 model Instructor {
-  id Int      @id @default(autoincrement()) // Khóa chính, tự động tăng
-  userId       Int // Liên kết với bảng Users
-  User         User     @relation(fields: [userId], references: [id]) // Quan hệ với bảng Users
-  department   String   @db.VarChar(255) // Khoa hoặc bộ môn của giảng viên
-  createdAt    DateTime @default(now()) // Thời gian tạo bản ghi
-  updatedAt    DateTime @updatedAt // Thời gian cập nhật bản ghi
-  createdBy    String?  @db.VarChar(100)
-  updatedBy    String?  @db.VarChar(100)
+  id         Int      @id @default(autoincrement()) // Khóa chính, tự động tăng
+  userId     Int // Liên kết với bảng Users
+  User       User     @relation(fields: [userId], references: [id]) // Quan hệ với bảng Users
+  department String   @db.VarChar(255) // Khoa hoặc bộ môn của giảng viên
+  createdAt  DateTime @default(now()) // Thời gian tạo bản ghi
+  updatedAt  DateTime @updatedAt // Thời gian cập nhật bản ghi
+  createdBy  String?  @db.VarChar(100)
+  updatedBy  String?  @db.VarChar(100)
+  Course     Course[]
 
   @@index([userId]) // Tạo chỉ mục cho trường UserId
 }
 
 model Student {
-  id        Int      @id @default(autoincrement()) // Khóa chính, tự động tăng
+  id               Int      @id @default(autoincrement()) // Khóa chính, tự động tăng
   userId           Int // Liên kết với bảng Users
   user             User     @relation(fields: [userId], references: [id]) // Quan hệ với bảng Users
   major            String   @db.VarChar(255) // Chuyên ngành của sinh viên
@@ -101,7 +102,7 @@ model Student {
 }
 
 model Admin {
-  id      Int       @id @default(autoincrement()) // Khóa chính, tự động tăng
+  id           Int       @id @default(autoincrement()) // Khóa chính, tự động tăng
   userId       Int // Liên kết với bảng Users
   user         User      @relation(fields: [userId], references: [id]) // Quan hệ với bảng Users
   role         String    @default("Moderator") // Vai trò của Admin (SuperAdmin, Moderator, Support)
@@ -113,4 +114,75 @@ model Admin {
   updatedBy    String?   @db.VarChar(100)
 
   @@index([userId]) // Tạo chỉ mục cho trường userId
+}
+
+model Course {
+  id                    Int      @id @default(autoincrement()) // Khóa chính tự động tăng
+  courseCode            String   @unique // Mã khóa học (duy nhất)
+  courseName            String // Tên khóa học
+  description           String? // Mô tả khóa học
+  credits               Int      @default(3) // Số tín chỉ
+  instructorId          Int? // Liên kết với bảng Instructors
+  maxStudents           Int      @default(100) // Số lượng sinh viên tối đa
+  prerequisiteCourseIds String? // Khóa học tiên quyết
+  durationWeeks         Int      @default(12) // Thời gian khóa học (tuần)
+  category              String? // Phân loại khóa học
+  isMandatory           Boolean  @default(false) // Bắt buộc hay không
+  semesterOffered       String? // Học kỳ được mở
+  price                 Float    @default(0.0) // Giá khóa học
+  isFree                Boolean  @default(false) // Khóa học miễn phí
+  createdAt             DateTime @default(now()) // Thời gian tạo
+  updatedAt             DateTime @updatedAt // Thời gian cập nhật
+  createdBy             String? // Người tạo khóa học
+  modifiedBy            String? // Người cập nhật khóa học
+
+  instructor Instructor?     @relation(fields: [instructorId], references: [id])
+  chapters   CourseChapter[] // Một khóa học có nhiều chương
+}
+
+model CourseChapter {
+  id                 Int            @id @default(autoincrement()) // Khóa chính tự động tăng
+  courseId           Int // Liên kết với bảng Courses
+  chapterTitle       String // Tiêu đề chương
+  chapterDescription String? // Mô tả chương
+  chapterOrder       Int // Thứ tự của chương trong khóa học
+  createdAt          DateTime       @default(now()) // Thời gian tạo
+  updatedAt          DateTime       @updatedAt // Thời gian cập nhật
+  createdBy          String?
+  modifiedBy         String?
+  course             Course         @relation(fields: [courseId], references: [id]) // Liên kết với bảng Courses
+  lessons            CourseLesson[] // Một chương có nhiều bài học
+}
+
+model CourseLesson {
+  id                Int              @id @default(autoincrement()) // Khóa chính tự động tăng
+  chapterId         Int // Liên kết với bảng CourseChapters
+  lessonTitle       String // Tiêu đề bài học
+  lessonDescription String? // Mô tả bài học
+  durationMinutes   Int? // Thời lượng của bài học (phút)
+  lessonOrder       Int // Thứ tự của bài học trong chương
+  createdAt         DateTime         @default(now()) // Thời gian tạo
+  updatedAt         DateTime         @updatedAt // Thời gian cập nhật
+  createdBy         String?
+  modifiedBy        String?
+  chapter           CourseChapter    @relation(fields: [chapterId], references: [id]) // Liên kết với bảng CourseChapters
+  materials         CourseMaterial[] // Một bài học có nhiều tài liệu học tập
+}
+
+model CourseMaterial {
+  id                  Int          @id @default(autoincrement()) // Khóa chính tự động tăng
+  lessonId            Int // Liên kết với bảng CourseLessons
+  materialType        String // Loại tài liệu (Video, PDF, Word, PowerPoint, Link)
+  materialTitle       String // Tiêu đề tài liệu
+  materialURL         String // Đường dẫn tới tài liệu
+  materialDescription String? // Mô tả tài liệu
+  isRequired          Boolean      @default(true) // Tài liệu bắt buộc
+  durationMinutes     Int? // Thời lượng tài liệu (nếu là video, phút)
+  materialGroup       Int? // Nhóm tài liệu (nếu có)
+  materialGroupTitle  String? // Tiêu đề nhóm tài liệu
+  createdAt           DateTime     @default(now()) // Thời gian tạo
+  updatedAt           DateTime     @updatedAt // Thời gian cập nhật
+  createdBy           String?
+  modifiedBy          String?
+  lesson              CourseLesson @relation(fields: [lessonId], references: [id]) // Liên kết với bảng CourseLessons
 }

@@ -23,8 +23,6 @@ nest g service <service-name>
 ### insert admin
 USE CourseLearn;
 
-USE CourseLearn;
-
 INSERT INTO User
 (
   fullName,

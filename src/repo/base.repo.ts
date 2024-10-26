@@ -145,6 +145,16 @@ export class BaseRepository<T extends { id: number }, U> {
             where: { id },
         });
     }
+    // Xóa danh sách IDs
+    async deleteByIds(ids: number[]): Promise<Prisma.BatchPayload> {
+        return this.model.deleteMany({
+            where: {
+                id: {
+                    in: ids, // Điều kiện xóa theo danh sách id
+                },
+            },
+        });
+    }
 
     async getPaging(pageRequest: PageRequest, isIgnoreFilter: boolean = false, ignoreFields: string[] = []): Promise<PageResult<T>> {
         validateInputs(pageRequest.pageNumber, pageRequest.pageSize);
