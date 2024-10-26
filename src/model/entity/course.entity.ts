@@ -1,6 +1,7 @@
+import { CourseStatus } from '@prisma/client';
 // CourseEntity.ts
 import { AutoMap } from '@automapper/classes';
-import { BaseEntity } from './base.entity';
+import { BaseEntity } from 'src/model/entity/base.entity';
 
 export class CourseEntity extends BaseEntity{
   @AutoMap()
@@ -21,8 +22,6 @@ export class CourseEntity extends BaseEntity{
   @AutoMap()
   instructorId?: number; // Liên kết với giảng viên
 
-  @AutoMap()
-  maxStudents: number; // Số lượng sinh viên tối đa
 
   @AutoMap()
   prerequisiteCourseIds?: string; // Khóa học tiên quyết
@@ -40,9 +39,6 @@ export class CourseEntity extends BaseEntity{
   semesterOffered?: string; // Khóa học mở vào học kỳ nào
 
   @AutoMap()
-  languageOfInstruction: string; // Ngôn ngữ giảng dạy
-
-  @AutoMap()
   price: number; // Giá khóa học
 
   @AutoMap()
@@ -53,12 +49,18 @@ export class CourseEntity extends BaseEntity{
 
   @AutoMap()
   updatedAt: Date; // Thời gian cập nhật bản ghi
+
+  @AutoMap()
+  status: CourseStatus; // Vai trò người dùng (enum)
+
+
+  instructor: any;
 }
 
 // CourseChapterEntity.ts
-export class CourseChapterEntity {
+export class CourseChapterEntity extends BaseEntity{
   @AutoMap()
-  chapterId: number; // Khóa chính
+  id: number; // Khóa chính
 
   @AutoMap()
   courseId: number; // Liên kết với bảng Course
@@ -120,11 +122,5 @@ export class CourseMaterialEntity extends BaseEntity{
 
   @AutoMap()
   durationMinutes?: number; // Thời lượng tài liệu (nếu có)
-
-  @AutoMap()
-  materialGroup?: number; // Nhóm tài liệu
-
-  @AutoMap()
-  materialGroupTitle?: string; // Tiêu đề nhóm tài liệu
 
 }

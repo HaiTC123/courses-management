@@ -31,6 +31,13 @@ enum AccountStatus {
   Deactivated
 }
 
+enum CourseStatus {
+  DRAFT // Nháp
+  PENDING_APPROVAL // Chờ duyệt
+  APPROVED // Phê duyệt
+  REJECTED // Từ chối
+}
+
 model User {
   id                Int           @id @default(autoincrement()) // Khóa chính, tự động tăng
   fullName          String        @db.VarChar(255) // Họ và tên đầy đủ
@@ -117,27 +124,26 @@ model Admin {
 }
 
 model Course {
-  id                    Int      @id @default(autoincrement()) // Khóa chính tự động tăng
-  courseCode            String   @unique // Mã khóa học (duy nhất)
+  id                    Int             @id @default(autoincrement()) // Khóa chính tự động tăng
+  courseCode            String          @unique // Mã khóa học (duy nhất)
   courseName            String // Tên khóa học
   description           String? // Mô tả khóa học
-  credits               Int      @default(3) // Số tín chỉ
+  credits               Int             @default(3) // Số tín chỉ
   instructorId          Int? // Liên kết với bảng Instructors
-  maxStudents           Int      @default(100) // Số lượng sinh viên tối đa
   prerequisiteCourseIds String? // Khóa học tiên quyết
-  durationWeeks         Int      @default(12) // Thời gian khóa học (tuần)
+  durationWeeks         Int             @default(12) // Thời gian khóa học (tuần)
   category              String? // Phân loại khóa học
-  isMandatory           Boolean  @default(false) // Bắt buộc hay không
+  isMandatory           Boolean         @default(false) // Bắt buộc hay không
   semesterOffered       String? // Học kỳ được mở
-  price                 Float    @default(0.0) // Giá khóa học
-  isFree                Boolean  @default(false) // Khóa học miễn phí
-  createdAt             DateTime @default(now()) // Thời gian tạo
-  updatedAt             DateTime @updatedAt // Thời gian cập nhật
+  price                 Float           @default(0.0) // Giá khóa học
+  isFree                Boolean         @default(false) // Khóa học miễn phí
+  createdAt             DateTime        @default(now()) // Thời gian tạo
+  updatedAt             DateTime        @updatedAt // Thời gian cập nhật
   createdBy             String? // Người tạo khóa học
-  modifiedBy            String? // Người cập nhật khóa học
-
-  instructor Instructor?     @relation(fields: [instructorId], references: [id])
-  chapters   CourseChapter[] // Một khóa học có nhiều chương
+  updatedBy             String? // Người cập nhật khóa học
+  status                CourseStatus    @default(DRAFT) // Trạng thái khóa học (enum)
+  instructor            Instructor?     @relation(fields: [instructorId], references: [id])
+  chapters              CourseChapter[] // Một khóa học có nhiều chương
 }
 
 model CourseChapter {
@@ -149,7 +155,7 @@ model CourseChapter {
   createdAt          DateTime       @default(now()) // Thời gian tạo
   updatedAt          DateTime       @updatedAt // Thời gian cập nhật
   createdBy          String?
-  modifiedBy         String?
+  updatedBy          String?
   course             Course         @relation(fields: [courseId], references: [id]) // Liên kết với bảng Courses
   lessons            CourseLesson[] // Một chương có nhiều bài học
 }
@@ -164,7 +170,7 @@ model CourseLesson {
   createdAt         DateTime         @default(now()) // Thời gian tạo
   updatedAt         DateTime         @updatedAt // Thời gian cập nhật
   createdBy         String?
-  modifiedBy        String?
+  updatedBy         String?
   chapter           CourseChapter    @relation(fields: [chapterId], references: [id]) // Liên kết với bảng CourseChapters
   materials         CourseMaterial[] // Một bài học có nhiều tài liệu học tập
 }
@@ -178,11 +184,9 @@ model CourseMaterial {
   materialDescription String? // Mô tả tài liệu
   isRequired          Boolean      @default(true) // Tài liệu bắt buộc
   durationMinutes     Int? // Thời lượng tài liệu (nếu là video, phút)
-  materialGroup       Int? // Nhóm tài liệu (nếu có)
-  materialGroupTitle  String? // Tiêu đề nhóm tài liệu
   createdAt           DateTime     @default(now()) // Thời gian tạo
   updatedAt           DateTime     @updatedAt // Thời gian cập nhật
   createdBy           String?
-  modifiedBy          String?
+  updatedBy           String?
   lesson              CourseLesson @relation(fields: [lessonId], references: [id]) // Liên kết với bảng CourseLessons
 }

@@ -18,7 +18,7 @@ export class ExceptionsFilter implements ExceptionFilter {
       ? exception.getResponse() // Sử dụng message từ HttpException
       : 'Internal server error';
 
-   // console.error('Exception thrown:', exception); // Log ra console nếu muốn
+    console.error('Exception thrown:', exception); // Log ra console nếu muốn
 
     var result = new ServiceResponse();
     result.success = false;

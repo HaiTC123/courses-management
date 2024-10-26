@@ -8,13 +8,21 @@ import { HttpContextInterceptor } from './common/interceptors/http-context.inter
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { StudentsModule } from './controllers/students/students.module';
 import { InstructorsModule } from './controllers/instructors/instructors.module';
+import { CoursesModule } from './controllers/courses/courses.module';
+import { CourseChaptersModule } from './controllers/courseChapters/courseChapters.module';
+import { CourseLessonsModule } from './controllers/courseLessons/courseLessons.module';
+import { CourseMaterialsModule } from './controllers/courseMaterials/courseMaterials.module';
 @Module({
   imports: [
     AuthModule,
     CoreModule,
     UsersModule,
     StudentsModule,
-    InstructorsModule
+    InstructorsModule,
+    CoursesModule,
+    CourseChaptersModule,
+    CourseLessonsModule,
+    CourseMaterialsModule
   ],
   controllers: [AppController],
   providers: [AppService,

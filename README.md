@@ -100,3 +100,10 @@ ON DUPLICATE KEY UPDATE
   inActive = VALUES(inActive),
   isBlock = VALUES(isBlock),
   updatedBy = VALUES(updatedBy);
+
+
+
+### Course
+
+instructor => tạo course => gửi phê duyệt => admin
+admin duyệt => hiển thị cho user

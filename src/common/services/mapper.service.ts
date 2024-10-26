@@ -13,6 +13,8 @@ import { StudentDto } from 'src/model/dto/student.dto';
 import { StudentEntity } from 'src/model/entity/student.entity';
 import { InstructorDto } from 'src/model/dto/instructor.dto';
 import { InstructorEntity } from 'src/model/entity/instructor.enity';
+import { CourseChapterEntity, CourseEntity, CourseLessonEntity, CourseMaterialEntity } from 'src/model/entity/course.entity';
+import { CourseChapterDto, CourseDto, CourseLessonDto, CourseMaterialDto } from 'src/model/dto/course.dto';
 
 @Injectable()
 export class MapperService {
@@ -54,7 +56,7 @@ export class MapperService {
       forMember((dest) => dest.yearOfStudy, mapFrom((src) => src.yearOfStudy)),
       forMember((dest) => dest.gpa, mapFrom((src) => src.gpa)),
       forMember((dest) => dest.userId, mapFrom((src) => src.userId))
-      
+
     );
 
     createMap(this.mapper, InstructorDto, InstructorEntity,
@@ -64,8 +66,47 @@ export class MapperService {
     createMap(this.mapper, InstructorEntity, InstructorDto,
       forMember((dest) => dest.id, mapFrom((src) => src.id)),
       forMember((dest) => dest.userId, mapFrom((src) => src.userId))
-      
+
     );
+
+    // Map cho Course
+    createMap(this.mapper, CourseEntity, CourseDto,
+      forMember(dest => dest.id, mapFrom(src => src.id)),
+      forMember(dest => dest.credits, mapFrom(src => src.credits)),
+      forMember(dest => dest.instructorId, mapFrom(src => src.instructorId)));
+
+    createMap(this.mapper, CourseDto, CourseEntity,
+      forMember(dest => dest.id, mapFrom(src => src.id)),
+      forMember(dest => dest.credits, mapFrom(src => src.credits)),
+      forMember(dest => dest.instructorId, mapFrom(src => src.instructorId)));
+
+    // Map cho CourseChapter
+    createMap(this.mapper, CourseChapterEntity, CourseChapterDto,
+      forMember(dest => dest.id, mapFrom(src => src.id)),
+      forMember(dest => dest.courseId, mapFrom(src => src.courseId)));
+
+    createMap(this.mapper, CourseChapterDto, CourseChapterEntity,
+      forMember(dest => dest.id, mapFrom(src => src.id)),
+      forMember(dest => dest.courseId, mapFrom(src => src.courseId)));
+
+    // Map cho CourseLesson
+    createMap(this.mapper, CourseLessonEntity, CourseLessonDto,
+      forMember(dest => dest.id, mapFrom(src => src.id)),
+      forMember(dest => dest.chapterId, mapFrom(src => src.chapterId)));
+
+    createMap(this.mapper, CourseLessonDto, CourseLessonEntity,
+      forMember(dest => dest.id, mapFrom(src => src.id)),
+      forMember(dest => dest.chapterId, mapFrom(src => src.chapterId)));
+
+    // Map cho CourseMaterial
+    createMap(this.mapper, CourseMaterialEntity, CourseMaterialDto,
+      forMember(dest => dest.id, mapFrom(src => src.id)),
+      forMember(dest => dest.lessonId, mapFrom(src => src.lessonId)));
+
+    createMap(this.mapper, CourseMaterialDto, CourseMaterialEntity,
+      forMember(dest => dest.id, mapFrom(src => src.id)),
+      forMember(dest => dest.lessonId, mapFrom(src => src.lessonId)));
+
   }
 
   mapData<S, D>(source: S, sourceClass: new (...args: unknown[]) => S, destinationClass: new (...args: unknown[]) => D): D {

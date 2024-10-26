@@ -2,6 +2,7 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
 import { BaseDto } from './base.dto';
+import { CourseStatus } from '@prisma/client';
 
 export class CourseDto extends BaseDto{
   @AutoMap()
@@ -30,10 +31,6 @@ export class CourseDto extends BaseDto{
 
   @AutoMap()
   @ApiProperty()
-  maxStudents: number; // Số lượng sinh viên tối đa
-
-  @AutoMap()
-  @ApiProperty()
   durationWeeks: number; // Thời lượng khóa học (tuần)
 
   @AutoMap()
@@ -50,16 +47,15 @@ export class CourseDto extends BaseDto{
 
   @AutoMap()
   @ApiProperty()
-  languageOfInstruction: string; // Ngôn ngữ giảng dạy
-
-  @AutoMap()
-  @ApiProperty()
   price: number; // Giá khóa học
 
   @AutoMap()
   @ApiProperty()
   isFree: boolean; // Khóa học miễn phí hay không
 
+  @AutoMap()
+  @ApiProperty()
+  status: CourseStatus; // Vai trò người dùng (enum)
 }
 
 // CourseChapterDto.ts
@@ -147,13 +143,5 @@ export class CourseMaterialDto {
   @AutoMap()
   @ApiProperty()
   durationMinutes?: number; // Thời lượng tài liệu (nếu có)
-
-  @AutoMap()
-  @ApiProperty()
-  materialGroup?: number; // Nhóm tài liệu (nếu có)
-
-  @AutoMap()
-  @ApiProperty()
-  materialGroupTitle?: string; // Tiêu đề nhóm tài liệu
 
 }
