@@ -67,7 +67,7 @@ const courses: any = [
   },
 ];
 
-const SearchPage = () => {
+const CoursePage = () => {
   return (
     <>
       {/* <div className="block px-6 pt-6 md:hidden md:mb-0">
@@ -94,4 +94,4 @@ const SearchPage = () => {
   );
 };
 
-export default SearchPage;
+export default CoursePage;
