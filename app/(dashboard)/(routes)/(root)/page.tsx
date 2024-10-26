@@ -2,6 +2,7 @@ import { CourseList } from "@/components/course-list";
 import { CheckCircle, Clock } from "lucide-react";
 import { InfoCard } from "./_components/info-card";
 import { CarouselCourse } from "./_components/carousel-course";
+import { Categories } from "../courses/_components/categories";
 
 const courses: any = [
   {
@@ -78,25 +79,31 @@ const carouselItems = [
   },
 ];
 
+const categories = [
+  {
+    id: "1",
+    name: "Frontend",
+    value: "frontend",
+  },
+  {
+    id: "2",
+    name: "Web Development",
+    value: "web-development",
+  },
+  {
+    id: "3",
+    name: "Data Science",
+    value: "data-science",
+  },
+];
+
 export default function Dashboard() {
   return (
     <div className="p-6 space-y-4">
       <div className="mb-4">
         <CarouselCourse items={carouselItems} />
       </div>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <InfoCard
-          icon={Clock}
-          label="In Progress"
-          numberOfItems={courses.length}
-        />
-        <InfoCard
-          icon={CheckCircle}
-          label="Completed"
-          numberOfItems={courses.length}
-          variant="success"
-        />
-      </div>
+      <Categories items={categories} />
       <CourseList items={courses} />
     </div>
   );

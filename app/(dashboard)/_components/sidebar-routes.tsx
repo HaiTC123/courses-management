@@ -7,6 +7,7 @@ import {
   Home,
   Layout,
   LeafyGreenIcon,
+  LineChart,
   List,
   User,
 } from "lucide-react";
@@ -23,12 +24,12 @@ const studentRoutes = [
   {
     icon: Book,
     label: "Khóa học",
-    href: "/search",
+    href: "/courses",
   },
   {
-    icon: LeafyGreenIcon,
+    icon: LineChart,
     label: "Lộ trình",
-    href: "/learning-path",
+    href: "/learning-paths",
   },
 ];
 

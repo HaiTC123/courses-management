@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { LogIn, LogOut, Settings } from "lucide-react";
+import { ArrowLeft, LogIn, LogOut, Settings } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "./ui/button";
@@ -27,6 +27,7 @@ export const NavbarRoutes = () => {
   const isInstructorPage = pathname.startsWith("/instructor");
   const isAdminPage = pathname.startsWith("/admin");
   const isSearchPage = pathname.startsWith("/search");
+  const isRootPage = pathname === "/";
 
   const handleSignOut = async () => {
     await signOut();
@@ -35,11 +36,19 @@ export const NavbarRoutes = () => {
 
   return (
     <>
-      {isSearchPage && (
-        <div className="hidden md:block">
-          <SearchInput />
-        </div>
-      )}
+      <div className="hidden md:block mr-2">
+        {!isRootPage && (
+          <Button variant="ghost" size="sm" onClick={() => router.back()}>
+            <ArrowLeft className="mr-2 size-4" />
+            <span>Quay lại</span>
+          </Button>
+        )}
+      </div>
+
+      <div className="block">
+        <SearchInput />
+      </div>
+
       <div className="flex ml-auto gap-x-2">
         {isInstructorPage || isAdminPage ? (
           <Link href="/">

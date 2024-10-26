@@ -1,6 +1,8 @@
 import { SearchInput } from "@/components/search-input";
 import { Categories } from "./_components/categories";
 import { CourseList } from "@/components/course-list";
+import { InfoCard } from "./_components/info-card";
+import { CheckCircle, Clock } from "lucide-react";
 
 const categories = [
   {
@@ -68,10 +70,23 @@ const courses: any = [
 const SearchPage = () => {
   return (
     <>
-      <div className="block px-6 pt-6 md:hidden md:mb-0">
+      {/* <div className="block px-6 pt-6 md:hidden md:mb-0">
         <SearchInput />
-      </div>
+      </div> */}
       <div className="p-6 space-y-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <InfoCard
+            icon={Clock}
+            label="Đang học"
+            numberOfItems={courses.length}
+          />
+          <InfoCard
+            icon={CheckCircle}
+            label="Hoàn thành"
+            numberOfItems={courses.length}
+            variant="success"
+          />
+        </div>
         <Categories items={categories} />
         <CourseList items={courses} />
       </div>
