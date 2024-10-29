@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
-import * as _ from "lodash";
+import { omit } from "lodash";
 
 import {
   Form,
@@ -84,7 +84,7 @@ const CreateUserPage = () => {
     try {
       let body: any = {};
       const response = await createUserService(
-        _.omit(values, [
+        omit(values, [
           "userId",
           "major",
           "yearOfStudy",

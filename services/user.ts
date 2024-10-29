@@ -76,3 +76,13 @@ export const deleteStudentService = async (studentId: string) => {
   const response = await axiosInstance.delete(`/api/student/${studentId}`);
   return response.data;
 };
+
+export const updateStudentService = async (studentId: number, data: any) => {
+  const response = await axiosInstance.put(`/api/student/${studentId}`, data);
+  return response.data;
+};
+
+export const updateUserService = async (userId: number, data: any) => {
+  const response = await axiosInstance.put(`/api/user/${userId}`, data);
+  return response.data;
+};
