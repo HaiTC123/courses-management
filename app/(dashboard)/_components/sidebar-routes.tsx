@@ -10,6 +10,7 @@ import {
   LineChart,
   List,
   User,
+  User2,
 } from "lucide-react";
 
 import { SidebarItem } from "./sidebar-item";
@@ -49,8 +50,13 @@ const instructorRoutes = [
 const adminRoutes = [
   {
     icon: User,
-    label: "Người dùng",
-    href: "/admin/users",
+    label: "Người hướng dẫn",
+    href: "/admin/instructors",
+  },
+  {
+    icon: User2,
+    label: "Học viên",
+    href: "/admin/students",
   },
   // {
   //   icon: List,

@@ -55,7 +55,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-center justify-between py-4">
+      <div className="flex flex-wrap items-center justify-between py-4">
         <Input
           placeholder="Tìm kiếm người dùng..."
           value={
@@ -64,11 +64,11 @@ export function DataTable<TData, TValue>({
           onChange={(event) =>
             table.getColumn("fullName")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="w-full md:max-w-sm md:w-auto"
         />
-        <Link href="/admin/users/create">
-          <Button>
-            <PlusCircle className="w-4 h-4 mr-2" />
+        <Link href="/admin/users/create" className="w-full md:w-auto">
+          <Button className="mt-2 md:mt-0">
+            <PlusCircle className="h-4 mr-2 md:w-04" />
             Thêm người dùng
           </Button>
         </Link>

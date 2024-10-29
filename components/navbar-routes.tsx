@@ -36,7 +36,7 @@ export const NavbarRoutes = () => {
 
   return (
     <>
-      <div className="hidden md:block mr-2">
+      <div className="hidden mr-2 md:block">
         {!isRootPage && (
           <Button variant="ghost" size="sm" onClick={() => router.back()}>
             <ArrowLeft className="mr-2 size-4" />
@@ -50,30 +50,6 @@ export const NavbarRoutes = () => {
       </div>
 
       <div className="flex ml-auto gap-x-2">
-        {isInstructorPage || isAdminPage ? (
-          <Link href="/">
-            <Button size="sm" variant="ghost">
-              <LogOut className="mr-2 size-4" />
-              Thoát
-            </Button>
-          </Link>
-        ) : (
-          user?.role !== UserRole.STUDENT && (
-            <>
-              <Link
-                href={`/${
-                  user?.role === UserRole.INSTRUCTOR ? "instructor" : "admin"
-                }`}
-              >
-                <Button size="sm" variant="ghost">
-                  {user?.role === UserRole.INSTRUCTOR &&
-                    "Chế độ người hướng dẫn"}
-                  {user?.role === UserRole.ADMIN && "Chế độ quản trị viên"}
-                </Button>
-              </Link>
-            </>
-          )
-        )}
         {authenticated ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -99,6 +75,33 @@ export const NavbarRoutes = () => {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
+              {isInstructorPage || isAdminPage ? (
+                <Link href="/">
+                  <DropdownMenuItem>
+                    <LogOut className="mr-2 size-4" />
+                    Chế độ học viên
+                  </DropdownMenuItem>
+                </Link>
+              ) : (
+                user?.role !== UserRole.STUDENT && (
+                  <>
+                    <Link
+                      href={`/${
+                        user?.role === UserRole.INSTRUCTOR
+                          ? "instructor"
+                          : "admin"
+                      }`}
+                    >
+                      <DropdownMenuItem>
+                        {user?.role === UserRole.INSTRUCTOR &&
+                          "Chế độ người hướng dẫn"}
+                        {user?.role === UserRole.ADMIN &&
+                          "Chế độ quản trị viên"}
+                      </DropdownMenuItem>
+                    </Link>
+                  </>
+                )
+              )}
               <Link href="/settings">
                 <DropdownMenuItem>
                   <Settings className="mr-2 size-4" />

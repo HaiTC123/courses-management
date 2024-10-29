@@ -1,9 +1,15 @@
 import axiosInstance from "@/lib/axios-instance";
 
+export interface ICondition {
+  key: string;
+  condition: string;
+  value: string | number;
+}
+
 export interface IGetPaginatedUsersParams {
   pageSize: number;
   pageNumber: number;
-  conditions: string[];
+  conditions: ICondition[];
   sortOrder: string;
   searchKey: string;
   searchFields: string[];
@@ -14,6 +20,20 @@ export const getPaginatedUsersService = async (
   params: IGetPaginatedUsersParams
 ) => {
   const response = await axiosInstance.post("/api/user/paging", params);
+  return response.data;
+};
+
+export const getPaginatedInstructorsService = async (
+  params: IGetPaginatedUsersParams
+) => {
+  const response = await axiosInstance.post("/api/instructor/paging", params);
+  return response.data;
+};
+
+export const getPaginatedStudentsService = async (
+  params: IGetPaginatedUsersParams
+) => {
+  const response = await axiosInstance.post("/api/student/paging", params);
   return response.data;
 };
 
@@ -44,5 +64,15 @@ export const createStudentService = async (data: any) => {
 
 export const createInstructorService = async (data: any) => {
   const response = await axiosInstance.post("/api/instructor", data);
+  return response.data;
+};
+
+export const deleteUserService = async (userId: string) => {
+  const response = await axiosInstance.delete(`/api/user/${userId}`);
+  return response.data;
+};
+
+export const deleteStudentService = async (studentId: string) => {
+  const response = await axiosInstance.delete(`/api/student/${studentId}`);
   return response.data;
 };

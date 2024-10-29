@@ -1,0 +1,81 @@
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { redirect } from "next/navigation";
+
+import { createColumns } from "./_components/column";
+import { DataTable } from "./_components/data-table";
+import { useAuthStore } from "@/store/use-auth-store";
+import { UserRole } from "@/enum/user-role";
+import {
+  deleteStudentService,
+  deleteUserService,
+  getPaginatedStudentsService,
+  getPaginatedUsersService,
+  IGetPaginatedUsersParams,
+} from "@/services/user";
+
+const ListStudentsPage = () => {
+  // const { authenticated, role } = useAuthStore();
+
+  // if (!authenticated || role !== UserRole.ADMIN) {
+  //   return redirect("/");
+  // }
+
+  const [users, setUsers] = useState<any[]>([]);
+
+  const [params, setParams] = useState<IGetPaginatedUsersParams>({
+    pageSize: 10,
+    pageNumber: 1,
+    conditions: [],
+    sortOrder: "",
+    searchKey: "",
+    searchFields: [],
+    includeReferences: {
+      user: true,
+    },
+  });
+
+  const fetchStudents = useCallback(() => {
+    getPaginatedStudentsService(params)
+      .then((response) => {
+        if (response.data.data) {
+          const listStudents = response.data.data.map((student: any) => ({
+            ...student,
+            ...student.user,
+          }));
+          setUsers(listStudents);
+        }
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+  }, [params]);
+
+  useEffect(() => {
+    fetchStudents();
+  }, [fetchStudents]);
+
+  const handleDelete = async (id: string, userId: string) => {
+    try {
+      await deleteStudentService(id);
+      await deleteUserService(userId);
+      toast.success("Student deleted successfully");
+      fetchStudents(); // Refresh the table data
+    } catch (error) {
+      console.error("Error deleting student:", error);
+      toast.error("Failed to delete student");
+    }
+  };
+
+  const columns = createColumns(handleDelete);
+
+  return (
+    <div className="p-6">
+      <DataTable columns={columns} data={users} onDataChange={fetchStudents} />
+    </div>
+  );
+};
+
+export default ListStudentsPage;
