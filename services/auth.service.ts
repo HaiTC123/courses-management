@@ -25,3 +25,18 @@ export const signOutService = async () => {
   const response = await axiosInstance.post("/api/auth/logout");
   return response.data;
 };
+
+export const changePasswordService = async (data: any) => {
+  const response = await axiosInstance.post("/api/auth/change-password", data);
+  return response.data;
+};
+
+export const resetPasswordService = async (data: any) => {
+  const response = await axiosInstance.post("/api/auth/resetPassword", data);
+  return response.data;
+};
+
+export const forgotPasswordService = async (data: any) => {
+  const response = await axiosInstance.post("/api/auth/forgotPassword", data);
+  return response.data;
+};

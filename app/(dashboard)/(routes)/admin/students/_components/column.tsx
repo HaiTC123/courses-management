@@ -14,7 +14,10 @@ import {
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { deleteStudentService, deleteUserService } from "@/services/user";
+import {
+  deleteStudentService,
+  deleteUserService,
+} from "@/services/user.service";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.

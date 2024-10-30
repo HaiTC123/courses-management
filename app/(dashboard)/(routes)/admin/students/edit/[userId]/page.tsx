@@ -35,7 +35,7 @@ import {
   IGetPaginatedUsersParams,
   updateStudentService,
   updateUserService,
-} from "@/services/user";
+} from "@/services/user.service";
 import { useCallback, useEffect, useState } from "react";
 import { DatePicker } from "../../_components/date-picker";
 

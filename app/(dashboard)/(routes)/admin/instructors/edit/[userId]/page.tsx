@@ -27,7 +27,7 @@ import {
   createInstructorService,
   createStudentService,
   createUserService,
-} from "@/services/user";
+} from "@/services/user.service";
 
 const EditUserPage = () => {
   const router = useRouter();

@@ -18,29 +18,43 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { addChapterService } from "@/services/course.service";
 import { Loader2, Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { ChaptersList } from "./chapters-list";
+import { MaterialsList } from "./materials-list";
 
-interface ChapterFormProps {
-  initialData: any;
+// export interface Lesson {
+//   id: string;
+//   title: string;
+//   description: string;
+//   videoUrl: string;
+//   isPublished: boolean;
+//   isFree: boolean;
+// }
+
+interface MaterialFormProps {
+  initialData: {
+    title: string;
+    materials: any[];
+  };
   courseId: string;
-  onFetchCourse: () => Promise<void>;
+  chapterId: string;
+  lessonId: string;
 }
 
 const formSchema = z.object({
-  chapterTitle: z.string().min(1),
-  chapterDescription: z.string().min(1),
-  chapterOrder: z.number().min(1),
+  materialTitle: z.string().min(1),
+  materialDescription: z.string().min(1),
+  materialOrder: z.number().min(1),
+  durationMinutes: z.number().min(1),
 });
 
-export const ChapterForm = ({
+export const MaterialForm = ({
   initialData,
   courseId,
-  onFetchCourse,
-}: ChapterFormProps) => {
+  chapterId,
+  lessonId,
+}: MaterialFormProps) => {
   const [isCreating, setIsCreating] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -51,9 +65,10 @@ export const ChapterForm = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      chapterTitle: "",
-      chapterDescription: "",
-      chapterOrder: 1,
+      materialTitle: "",
+      materialDescription: "",
+      materialOrder: 1,
+      durationMinutes: 1,
     },
   });
 
@@ -61,39 +76,40 @@ export const ChapterForm = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const body = {
-        ...values,
-        courseId: Number(courseId),
-        chapterOrder: initialData.chapters.length + 1,
-      };
-      const response = await addChapterService(body);
-      if (response) {
-        toast.success("Tạo chương học thành công");
-        toggleCreating();
-        onFetchCourse();
-      }
+      await axios.post(
+        `/api/courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}/materials`,
+        values
+      );
+      toast.success("Tài liệu được tạo");
+      toggleCreating();
+      router.refresh();
     } catch (error) {
-      toast.error("Tạo chương học thất bại");
+      toast.error("Đã xảy ra lỗi");
     }
   };
 
   const onReorder = async (updateData: { id: string; position: number }[]) => {
     try {
       setIsUpdating(true);
-      await axios.put(`/api/courses/${courseId}/chapters/reorder`, {
-        list: updateData,
-      });
-      toast.success("Chapters reordered");
+      await axios.put(
+        `/api/courses/${courseId}/chapters/${chapterId}/lessons/reorder`,
+        {
+          list: updateData,
+        }
+      );
+      toast.success("Tài liệu được sắp xếp");
       router.refresh();
     } catch (error) {
-      toast.error("Something went wrong");
+      toast.error("Đã xảy ra lỗi");
     } finally {
       setIsUpdating(false);
     }
   };
 
   const onEdit = (id: string) => {
-    router.push(`/instructor/courses/${courseId}/chapters/${id}`);
+    router.push(
+      `/instructor/courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}/materials/${id}`
+    );
     setIsCreating(false);
     setIsUpdating(false);
   };
@@ -106,7 +122,7 @@ export const ChapterForm = ({
         </div>
       )}
       <div className="flex items-center justify-between font-medium">
-        Các chương học
+        Các tài liệu
         <Button
           type="button"
           variant="ghost"
@@ -114,11 +130,11 @@ export const ChapterForm = ({
           onClick={toggleCreating}
         >
           {isCreating ? (
-            <>Hủy</>
+            <>Cancel</>
           ) : (
             <>
               <Pencil className="w-4 h-4 mr-2" />
-              Tạo chương học
+              Tạo tài liệu
             </>
           )}
         </Button>
@@ -141,14 +157,14 @@ export const ChapterForm = ({
           >
             <FormField
               control={form.control}
-              name="chapterTitle"
+              name="materialTitle"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Chapter Title</FormLabel>
+                  <FormLabel>Tên bài học</FormLabel>
                   <FormControl>
                     <Input
                       disabled={isSubmitting}
-                      placeholder="e.g. 'Introduction to the course'"
+                      placeholder="e.g. 'Bài 1'"
                       {...field}
                       className="w-full mt-2"
                     />
@@ -159,10 +175,10 @@ export const ChapterForm = ({
             />
             <FormField
               control={form.control}
-              name="chapterDescription"
+              name="materialDescription"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Chapter Description</FormLabel>
+                  <FormLabel>Mô tả bài học</FormLabel>
                   <FormControl>
                     <Editor {...field} />
                   </FormControl>
@@ -172,7 +188,7 @@ export const ChapterForm = ({
             />
 
             <Button type="submit" disabled={!isValid || isSubmitting}>
-              Create
+              Lưu
             </Button>
           </form>
         </Form>
@@ -181,22 +197,22 @@ export const ChapterForm = ({
         <div
           className={cn(
             "text-sm mt-2",
-            !initialData?.chapters?.length && "text-slate-500 italic"
+            !initialData.materials.length && "text-slate-500 italic"
           )}
         >
-          {initialData?.chapters?.length ? (
-            <ChaptersList
+          {initialData.materials.length ? (
+            <MaterialsList
               onEdit={onEdit}
               onReorder={onReorder}
-              items={initialData?.chapters || []}
+              items={initialData.materials || []}
             />
           ) : (
-            <p>No chapters</p>
+            <p>Không có tài liệu</p>
           )}
         </div>
       )}
       {!isCreating && (
-        <p className="mt-4 text-xs text-muted-foreground">Reorder chapters</p>
+        <p className="mt-4 text-xs text-muted-foreground">Sắp xếp bài học</p>
       )}
     </div>
   );

@@ -1,18 +1,12 @@
-import {
-  CircleDollarSign,
-  File,
-  LayoutDashboard,
-  ListChecks,
-} from "lucide-react";
+"use client";
+
+import { LayoutDashboard, ListChecks } from "lucide-react";
 
 import { IconBadge } from "@/components/icon-badge";
-import { TitleForm } from "./_components/title-form";
-import { DescriptionForm } from "./_components/description-form";
-import { ImageForm } from "./_components/image-form";
-import { CategoryForm } from "./_components/category-form";
-import { PriceForm } from "./_components/price-form";
-import { AttachmentForm } from "./_components/attachment-form";
+import { getCourseByIdService } from "@/services/course.service";
+import { useEffect, useState, useCallback } from "react";
 import { ChapterForm } from "./_components/chapter-form";
+import { CourseForm } from "./_components/course-form";
 
 const CourseIdPage = ({
   params,
@@ -21,117 +15,52 @@ const CourseIdPage = ({
     courseId: string;
   };
 }) => {
-  const categories = [
-    {
-      label: "Web Development",
-      value: "web-development",
-    },
-    {
-      label: "Mobile Development",
-      value: "mobile-development",
-    },
-    {
-      label: "Data Science",
-      value: "data-science",
-    },
-  ];
+  const { courseId } = params;
 
-  const course: any = {
-    id: 1,
-    title: "Course 1",
-    description: "",
-    imageUrl: "",
-    price: 100,
-    categoryId: "web-development",
-    chapters: [
-      {
-        id: "1",
-        title: "Chapter 1",
-        description: "Chapter 1 description",
-        videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-        isPublished: true,
-        isFree: false,
-      },
-      {
-        id: "2",
-        title: "Chapter 2",
-        description: "Chapter 2 description",
-        videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-        isPublished: true,
-        isFree: false,
-      },
-      {
-        id: "3",
-        title: "Chapter 3",
-        description: "Chapter 3 description",
-        videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-        isPublished: true,
-        isFree: false,
-      },
-    ],
-  };
+  const [course, setCourse] = useState<any>({});
 
-  const requiredFields = [
-    course.title,
-    course.description,
-    course.imageUrl,
-    course.price,
-    course.categoryId,
-    course.chapters.some((chapter: any) => chapter.isPublished),
-  ];
+  const fetchCourse = useCallback(async () => {
+    try {
+      const response = await getCourseByIdService(Number(courseId));
+      if (response.data) {
+        setCourse(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching course:", error);
+    }
+  }, [courseId]);
 
-  const totalFields = requiredFields.length;
-  const completedFields = requiredFields.filter(Boolean).length;
-  const completionText = `(${completedFields} / ${totalFields})`;
+  useEffect(() => {
+    fetchCourse();
+  }, [fetchCourse]);
 
   return (
     <div className="p-6">
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-y-2">
-          <h1 className="text-2xl font-medium">Course Setup</h1>
-          <span className="text-sm text-slate-500">
-            Complete all fields {completionText}
-          </span>
+          <h1 className="text-2xl font-medium">Cấu hình khóa học</h1>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 mt-16 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 mt-4 md:grid-cols-2">
         <div>
           <div className="flex items-center gap-x-2">
             <IconBadge icon={LayoutDashboard} />
-            <h2 className="text-xl">Customize your course</h2>
+            <h2 className="text-xl">Tùy chỉnh khóa học</h2>
           </div>
-          <TitleForm initialData={course} courseId={course.id} />
-          <DescriptionForm initialData={course} courseId={course.id} />
-          <ImageForm initialData={course} courseId={course.id} />
-          <CategoryForm
-            initialData={course}
-            courseId={course.id}
-            options={categories.map((category) => ({
-              label: category.label,
-              value: category.value,
-            }))}
-          />
+          <CourseForm initialData={course} courseId={courseId} />
         </div>
         <div className="space-y-6">
           <div>
             <div className="flex items-center gap-x-2">
               <IconBadge icon={ListChecks} />
-              <h2 className="text-xl">Course Chapters</h2>
+              <h2 className="text-xl">Tùy chỉnh chương học</h2>
             </div>
-            <ChapterForm initialData={course} courseId={course.id} />
-            <div className="flex items-center gap-x-2">
-              <IconBadge icon={CircleDollarSign} />
-              <h2 className="text-xl">Sell your course</h2>
-            </div>
-            <PriceForm initialData={course} courseId={course.id} />
-          </div>
-          <div>
-            <div className="flex items-center gap-x-2">
-              <IconBadge icon={File} />
-              <h2 className="text-xl">Resources & Attachments</h2>
-            </div>
-            <AttachmentForm initialData={course} courseId={course.id} />
+            <ChapterForm
+              initialData={course}
+              courseId={courseId}
+              onFetchCourse={fetchCourse}
+            />
           </div>
         </div>
       </div>

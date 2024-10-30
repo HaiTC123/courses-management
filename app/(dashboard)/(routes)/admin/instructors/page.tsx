@@ -11,7 +11,7 @@ import { UserRole } from "@/enum/user-role";
 import {
   getPaginatedInstructorsService,
   IGetPaginatedUsersParams,
-} from "@/services/user";
+} from "@/services/user.service";
 
 const ListInstructorsPage = () => {
   // const { authenticated, role } = useAuthStore();

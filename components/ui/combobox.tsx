@@ -23,9 +23,15 @@ interface ComboboxProps {
   options: { value: string; label: string }[];
   value?: string;
   onChange: (value: string) => void;
+  disabled?: boolean;
 }
 
-export const Combobox = ({ options, value, onChange }: ComboboxProps) => {
+export const Combobox = ({
+  options,
+  value,
+  onChange,
+  disabled,
+}: ComboboxProps) => {
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -36,6 +42,7 @@ export const Combobox = ({ options, value, onChange }: ComboboxProps) => {
           role="combobox"
           aria-expanded={open}
           className="justify-between w-full"
+          disabled={disabled}
         >
           {value
             ? options.find((option) => option.value === value)?.label

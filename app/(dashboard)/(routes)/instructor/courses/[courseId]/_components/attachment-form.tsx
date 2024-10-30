@@ -21,7 +21,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
-import { FileUpload } from "@/components/file-upload";
+// import { FileUpload } from "@/components/file-upload";
 import Image from "next/image";
 
 interface AttachmentFormProps {
@@ -97,14 +97,14 @@ export const AttachmentForm = ({
         ))}
       {isEditing && (
         <div>
-          <FileUpload
+          {/* <FileUpload
             endpoint="courseImage"
             onChange={(url) => {
               if (url) {
                 onSubmit({ imageUrl: url });
               }
             }}
-          />
+          /> */}
           <div className="mt-4 text-xs text-muted-foreground">
             16:9 aspect ratio recommended
           </div>

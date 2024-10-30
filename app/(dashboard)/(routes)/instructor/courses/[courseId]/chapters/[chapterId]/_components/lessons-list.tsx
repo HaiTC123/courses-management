@@ -1,17 +1,17 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 import {
   DragDropContext,
-  Draggable,
   Droppable,
+  Draggable,
   DropResult,
 } from "@hello-pangea/dnd";
-import { Grip, Pencil } from "lucide-react";
-import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
+import { Grid, Grip, Pencil } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
-// interface Chapter {
+// interface Lesson {
 //   id: string;
 //   title: string;
 //   description: string;
@@ -20,26 +20,22 @@ import { useEffect, useState } from "react";
 //   isFree: boolean;
 // }
 
-interface ChaptersListProps {
+interface LessonsListProps {
   items: any[];
   onReorder: (updateData: { id: string; position: number }[]) => void;
   onEdit: (id: string) => void;
 }
 
-export const ChaptersList = ({
-  items,
-  onEdit,
-  onReorder,
-}: ChaptersListProps) => {
+export const LessonsList = ({ items, onEdit, onReorder }: LessonsListProps) => {
   const [isMounted, setIsMounted] = useState(false);
-  const [chapters, setChapters] = useState(items);
+  const [lessons, setLessons] = useState(items);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
   useEffect(() => {
-    setChapters(items);
+    setLessons(items);
   }, [items]);
 
   const handleDragEnd = (result: DropResult) => {
@@ -49,7 +45,7 @@ export const ChaptersList = ({
       return;
     }
 
-    const items = Array.from(chapters);
+    const items = Array.from(lessons);
     const [reorderedItem] = items.splice(source.index, 1);
     items.splice(destination.index, 0, reorderedItem);
 
@@ -58,7 +54,7 @@ export const ChaptersList = ({
 
     const updatedChapters = items.slice(startIndex, endIndex + 1);
 
-    setChapters(items);
+    setLessons(items);
 
     // const bulkUpdateData = updatedChapters.map((chapter, index) => ({
     //   id: chapter.id,
@@ -75,46 +71,42 @@ export const ChaptersList = ({
       <Droppable droppableId="chapters">
         {(provider) => (
           <div {...provider.droppableProps} ref={provider.innerRef}>
-            {chapters.map((chapter, index) => (
-              <Draggable
-                key={chapter.id.toString()}
-                draggableId={chapter.id.toString()}
-                index={index}
-              >
+            {lessons.map((lesson, index) => (
+              <Draggable key={lesson.id} draggableId={lesson.id} index={index}>
                 {(provider) => (
                   <div
                     {...provider.draggableProps}
                     ref={provider.innerRef}
                     className={cn(
                       "flex items-center gap-x-2 bg-slate-200 border text-slate-700 rounded-md mb-4 text-sm",
-                      chapter.isPublished &&
+                      lesson.isPublished &&
                         "border-sky-600 bg-sky-100 text-sky-700"
                     )}
                   >
                     <div
                       className={cn(
                         "px-2 py-3 border-r border-r-slate-200 hover:bg-slate-300 rounded-l-md transition",
-                        chapter.isPublished &&
+                        lesson.isPublished &&
                           "border-r-sky-200 hover:bg-sky-200"
                       )}
                       {...provider.dragHandleProps}
                     >
                       <Grip className="w-5 h-5" />
                     </div>
-                    {chapter.chapterTitle}
+                    {lesson.title}
                     <div className="flex items-center pr-2 ml-auto gap-x-2 ">
-                      {/* {chapter.isFree && <Badge>Free</Badge>} */}
-                      {/* <Badge
+                      {lesson.isFree && <Badge>Free</Badge>}
+                      <Badge
                         className={cn(
                           "bg-slate-500",
-                          chapter.isPublished && "bg-sky-700"
+                          lesson.isPublished && "bg-sky-700"
                         )}
                       >
-                        {chapter.isPublished ? "Published" : "Draft"}
-                      </Badge> */}
+                        {lesson.isPublished ? "Published" : "Draft"}
+                      </Badge>
                       <Pencil
                         className="w-4 h-4 transition cursor-pointer hover:opacity-75"
-                        onClick={() => onEdit(chapter.id)}
+                        onClick={() => onEdit(lesson.id)}
                       />
                     </div>
                   </div>

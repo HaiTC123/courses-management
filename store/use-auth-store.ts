@@ -8,7 +8,7 @@ import {
   signOutService,
   SignUpParams,
   signUpService,
-} from "@/services/auth";
+} from "@/services/auth.service";
 // Importing create function from the Zustand library
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";

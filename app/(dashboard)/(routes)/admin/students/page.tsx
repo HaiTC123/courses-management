@@ -14,7 +14,7 @@ import {
   getPaginatedStudentsService,
   getPaginatedUsersService,
   IGetPaginatedUsersParams,
-} from "@/services/user";
+} from "@/services/user.service";
 
 const ListStudentsPage = () => {
   // const { authenticated, role } = useAuthStore();
