@@ -22,6 +22,10 @@ import { Loader2, Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { MaterialsList } from "./materials-list";
+import {
+  addMaterialService,
+  updateMaterialService,
+} from "@/services/course.service";
 
 // export interface Lesson {
 //   id: string;
@@ -33,20 +37,20 @@ import { MaterialsList } from "./materials-list";
 // }
 
 interface MaterialFormProps {
-  initialData: {
-    title: string;
-    materials: any[];
-  };
+  initialData: any;
   courseId: string;
   chapterId: string;
   lessonId: string;
+  onFetchLesson: () => Promise<void>;
 }
 
 const formSchema = z.object({
   materialTitle: z.string().min(1),
   materialDescription: z.string().min(1),
-  materialOrder: z.number().min(1),
   durationMinutes: z.number().min(1),
+  isRequired: z.boolean(),
+  materialURL: z.string(),
+  materialType: z.string(),
 });
 
 export const MaterialForm = ({
@@ -54,6 +58,7 @@ export const MaterialForm = ({
   courseId,
   chapterId,
   lessonId,
+  onFetchLesson,
 }: MaterialFormProps) => {
   const [isCreating, setIsCreating] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -67,8 +72,10 @@ export const MaterialForm = ({
     defaultValues: {
       materialTitle: "",
       materialDescription: "",
-      materialOrder: 1,
       durationMinutes: 1,
+      isRequired: false,
+      materialURL: "",
+      materialType: "",
     },
   });
 
@@ -76,29 +83,31 @@ export const MaterialForm = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.post(
-        `/api/courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}/materials`,
-        values
-      );
+      const body = {
+        ...values,
+        lessonId: Number(lessonId),
+      };
+      const response = await addMaterialService(body);
       toast.success("Tài liệu được tạo");
       toggleCreating();
       router.refresh();
+      onFetchLesson();
     } catch (error) {
       toast.error("Đã xảy ra lỗi");
     }
   };
 
-  const onReorder = async (updateData: { id: string; position: number }[]) => {
+  const onReorder = async (updateData: any[]) => {
     try {
       setIsUpdating(true);
-      await axios.put(
-        `/api/courses/${courseId}/chapters/${chapterId}/lessons/reorder`,
-        {
-          list: updateData,
-        }
+      await Promise.all(
+        updateData.map((material) =>
+          updateMaterialService(material.id, material)
+        )
       );
       toast.success("Tài liệu được sắp xếp");
       router.refresh();
+      onFetchLesson();
     } catch (error) {
       toast.error("Đã xảy ra lỗi");
     } finally {
@@ -130,7 +139,7 @@ export const MaterialForm = ({
           onClick={toggleCreating}
         >
           {isCreating ? (
-            <>Cancel</>
+            <>Hủy</>
           ) : (
             <>
               <Pencil className="w-4 h-4 mr-2" />
@@ -197,14 +206,18 @@ export const MaterialForm = ({
         <div
           className={cn(
             "text-sm mt-2",
-            !initialData.materials.length && "text-slate-500 italic"
+            !initialData?.materials?.length && "text-slate-500 italic"
           )}
         >
-          {initialData.materials.length ? (
+          {initialData?.materials?.length ? (
             <MaterialsList
               onEdit={onEdit}
               onReorder={onReorder}
-              items={initialData.materials || []}
+              items={
+                initialData?.materials?.sort(
+                  (a: any, b: any) => a.materialOrder - b.materialOrder
+                ) || []
+              }
             />
           ) : (
             <p>Không có tài liệu</p>
@@ -212,7 +225,7 @@ export const MaterialForm = ({
         </div>
       )}
       {!isCreating && (
-        <p className="mt-4 text-xs text-muted-foreground">Sắp xếp bài học</p>
+        <p className="mt-4 text-xs text-muted-foreground">Sắp xếp tài liệu</p>
       )}
     </div>
   );

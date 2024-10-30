@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -18,7 +17,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { addChapterService } from "@/services/course.service";
+import {
+  addChapterService,
+  updateChapterService,
+} from "@/services/course.service";
 import { Loader2, Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -77,16 +79,16 @@ export const ChapterForm = ({
     }
   };
 
-  const onReorder = async (updateData: { id: string; position: number }[]) => {
+  const onReorder = async (updateData: any[]) => {
     try {
       setIsUpdating(true);
-      await axios.put(`/api/courses/${courseId}/chapters/reorder`, {
-        list: updateData,
-      });
-      toast.success("Chapters reordered");
-      router.refresh();
+      await Promise.all(
+        updateData.map((chapter) => updateChapterService(chapter.id, chapter))
+      );
+      toast.success("Sắp xếp chương học thành công");
+      onFetchCourse();
     } catch (error) {
-      toast.error("Something went wrong");
+      toast.error("Sắp xếp chương học thất bại");
     } finally {
       setIsUpdating(false);
     }
@@ -144,11 +146,11 @@ export const ChapterForm = ({
               name="chapterTitle"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Chapter Title</FormLabel>
+                  <FormLabel>Tiêu đề chương học</FormLabel>
                   <FormControl>
                     <Input
                       disabled={isSubmitting}
-                      placeholder="e.g. 'Introduction to the course'"
+                      placeholder="e.g. 'Chương 1'"
                       {...field}
                       className="w-full mt-2"
                     />
@@ -162,7 +164,7 @@ export const ChapterForm = ({
               name="chapterDescription"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Chapter Description</FormLabel>
+                  <FormLabel>Mô tả chương học</FormLabel>
                   <FormControl>
                     <Editor {...field} />
                   </FormControl>
@@ -172,7 +174,7 @@ export const ChapterForm = ({
             />
 
             <Button type="submit" disabled={!isValid || isSubmitting}>
-              Create
+              Tạo chương học
             </Button>
           </form>
         </Form>
@@ -188,15 +190,19 @@ export const ChapterForm = ({
             <ChaptersList
               onEdit={onEdit}
               onReorder={onReorder}
-              items={initialData?.chapters || []}
+              items={
+                initialData?.chapters?.sort(
+                  (a: any, b: any) => a.chapterOrder - b.chapterOrder
+                ) || []
+              }
             />
           ) : (
-            <p>No chapters</p>
+            <p>Không có chương học</p>
           )}
         </div>
       )}
       {!isCreating && (
-        <p className="mt-4 text-xs text-muted-foreground">Reorder chapters</p>
+        <p className="mt-4 text-xs text-muted-foreground">Sắp xếp chương học</p>
       )}
     </div>
   );

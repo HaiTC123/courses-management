@@ -32,14 +32,14 @@ export const MaterialsList = ({
   onReorder,
 }: MaterialsListProps) => {
   const [isMounted, setIsMounted] = useState(false);
-  const [lessons, setLessons] = useState(items);
+  const [materials, setMaterials] = useState(items);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
   useEffect(() => {
-    setLessons(items);
+    setMaterials(items);
   }, [items]);
 
   const handleDragEnd = (result: DropResult) => {
@@ -49,7 +49,7 @@ export const MaterialsList = ({
       return;
     }
 
-    const items = Array.from(lessons);
+    const items = Array.from(materials);
     const [reorderedItem] = items.splice(source.index, 1);
     items.splice(destination.index, 0, reorderedItem);
 
@@ -58,7 +58,7 @@ export const MaterialsList = ({
 
     const updatedChapters = items.slice(startIndex, endIndex + 1);
 
-    setLessons(items);
+    setMaterials(items);
 
     // const bulkUpdateData = updatedChapters.map((chapter, index) => ({
     //   id: chapter.id,
@@ -75,42 +75,46 @@ export const MaterialsList = ({
       <Droppable droppableId="chapters">
         {(provider) => (
           <div {...provider.droppableProps} ref={provider.innerRef}>
-            {lessons.map((lesson, index) => (
-              <Draggable key={lesson.id} draggableId={lesson.id} index={index}>
+            {materials.map((material, index) => (
+              <Draggable
+                key={material.id}
+                draggableId={material.id}
+                index={index}
+              >
                 {(provider) => (
                   <div
                     {...provider.draggableProps}
                     ref={provider.innerRef}
                     className={cn(
                       "flex items-center gap-x-2 bg-slate-200 border text-slate-700 rounded-md mb-4 text-sm",
-                      lesson.isPublished &&
+                      material.isPublished &&
                         "border-sky-600 bg-sky-100 text-sky-700"
                     )}
                   >
                     <div
                       className={cn(
                         "px-2 py-3 border-r border-r-slate-200 hover:bg-slate-300 rounded-l-md transition",
-                        lesson.isPublished &&
+                        material.isPublished &&
                           "border-r-sky-200 hover:bg-sky-200"
                       )}
                       {...provider.dragHandleProps}
                     >
                       <Grip className="w-5 h-5" />
                     </div>
-                    {lesson.title}
+                    {material.materialTitle}
                     <div className="flex items-center pr-2 ml-auto gap-x-2 ">
-                      {lesson.isFree && <Badge>Free</Badge>}
+                      {material.isFree && <Badge>Free</Badge>}
                       <Badge
                         className={cn(
                           "bg-slate-500",
-                          lesson.isPublished && "bg-sky-700"
+                          material.isPublished && "bg-sky-700"
                         )}
                       >
-                        {lesson.isPublished ? "Published" : "Draft"}
+                        {material.isPublished ? "Published" : "Draft"}
                       </Badge>
                       <Pencil
                         className="w-4 h-4 transition cursor-pointer hover:opacity-75"
-                        onClick={() => onEdit(lesson.id)}
+                        onClick={() => onEdit(material.id)}
                       />
                     </div>
                   </div>

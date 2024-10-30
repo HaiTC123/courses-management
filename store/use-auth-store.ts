@@ -65,9 +65,9 @@ export const useAuthStore = create(
         return response;
       },
       signOut: async () => {
-        const response = await signOutService();
+        // const response = await signOutService();
         set({ authenticated: false, user: {}, token: null });
-        return response;
+        return {};
       },
     }),
     {

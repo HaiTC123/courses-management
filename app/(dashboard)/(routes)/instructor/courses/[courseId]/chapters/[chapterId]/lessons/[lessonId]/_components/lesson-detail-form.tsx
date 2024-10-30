@@ -4,7 +4,7 @@ import * as z from "zod";
 import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Form,
@@ -25,13 +25,11 @@ import Editor from "@/components/editor";
 import Preview from "@/components/preview";
 
 interface LessonDetailFormProps {
-  initialData: {
-    lessonTitle: string;
-    lessonDescription: string;
-  };
+  initialData: any;
   courseId: string;
   chapterId: string;
   lessonId: string;
+  onFetchLesson: () => Promise<void>;
 }
 
 const formSchema = z.object({
@@ -48,6 +46,7 @@ export const LessonDetailForm = ({
   courseId,
   chapterId,
   lessonId,
+  onFetchLesson,
 }: LessonDetailFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -57,10 +56,7 @@ export const LessonDetailForm = ({
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      lessonTitle: initialData.lessonTitle,
-      lessonDescription: initialData.lessonDescription,
-    },
+    defaultValues: initialData,
   });
 
   const { isSubmitting, isValid } = form.formState;
@@ -71,10 +67,16 @@ export const LessonDetailForm = ({
       toast.success("Lesson updated");
       toggleEdit();
       router.refresh();
+      onFetchLesson();
     } catch (error) {
       toast.error("Something went wrong");
     }
   };
+
+  useEffect(() => {
+    form.reset(initialData);
+  }, [initialData, form]);
+
   return (
     <div className="p-4 mt-6 border rounded-md bg-slate-100">
       <div className="flex items-center justify-between font-medium">
@@ -90,16 +92,6 @@ export const LessonDetailForm = ({
           )}
         </Button>
       </div>
-      {/* {!isEditing && (
-        <p
-          className={cn(
-            "text-sm mt-2",
-            !initialData.description && "text-slate-500 italic"
-          )}
-        >
-          {initialData.description || "No description"}
-        </p>
-      )} */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 space-y-4">
           <FormField
@@ -109,10 +101,7 @@ export const LessonDetailForm = ({
               <FormItem>
                 <FormLabel>Tên bài học</FormLabel>
                 <FormControl>
-                  <Input
-                    {...field}
-                    placeholder="e.g. 'Bài 1'"
-                  />
+                  <Input {...field} placeholder="e.g. 'Bài 1'" />
                 </FormControl>
               </FormItem>
             )}

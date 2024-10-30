@@ -22,7 +22,7 @@ import { Badge } from "@/components/ui/badge";
 
 interface LessonsListProps {
   items: any[];
-  onReorder: (updateData: { id: string; position: number }[]) => void;
+  onReorder: (updateData: any[]) => void;
   onEdit: (id: string) => void;
 }
 
@@ -52,16 +52,20 @@ export const LessonsList = ({ items, onEdit, onReorder }: LessonsListProps) => {
     const startIndex = Math.min(source.index, destination.index);
     const endIndex = Math.max(source.index, destination.index);
 
-    const updatedChapters = items.slice(startIndex, endIndex + 1);
+    const updatedLessons = items.slice(startIndex, endIndex + 1);
 
     setLessons(items);
 
-    // const bulkUpdateData = updatedChapters.map((chapter, index) => ({
-    //   id: chapter.id,
-    //   position: items.findIndex((item) => item.id === chapter.id),
-    // }));
+    const bulkUpdateData = updatedLessons.map((lesson, index) => ({
+      id: lesson.id,
+      lessonTitle: lesson.lessonTitle,
+      lessonDescription: lesson.lessonDescription,
+      durationMinutes: lesson.durationMinutes,
+      chapterId: lesson.chapterId,
+      lessonOrder: items.findIndex((item) => item.id === lesson.id) + 1,
+    }));
 
-    // onReorder(bulkUpdateData);
+    onReorder(bulkUpdateData);
   };
 
   if (!isMounted) return null;
@@ -72,7 +76,11 @@ export const LessonsList = ({ items, onEdit, onReorder }: LessonsListProps) => {
         {(provider) => (
           <div {...provider.droppableProps} ref={provider.innerRef}>
             {lessons.map((lesson, index) => (
-              <Draggable key={lesson.id} draggableId={lesson.id} index={index}>
+              <Draggable
+                key={lesson.id.toString()}
+                draggableId={lesson.id.toString()}
+                index={index}
+              >
                 {(provider) => (
                   <div
                     {...provider.draggableProps}
@@ -93,9 +101,9 @@ export const LessonsList = ({ items, onEdit, onReorder }: LessonsListProps) => {
                     >
                       <Grip className="w-5 h-5" />
                     </div>
-                    {lesson.title}
+                    {lesson.lessonTitle}
                     <div className="flex items-center pr-2 ml-auto gap-x-2 ">
-                      {lesson.isFree && <Badge>Free</Badge>}
+                      {/* {lesson.isFree && <Badge>Free</Badge>}
                       <Badge
                         className={cn(
                           "bg-slate-500",
@@ -103,7 +111,7 @@ export const LessonsList = ({ items, onEdit, onReorder }: LessonsListProps) => {
                         )}
                       >
                         {lesson.isPublished ? "Published" : "Draft"}
-                      </Badge>
+                      </Badge> */}
                       <Pencil
                         className="w-4 h-4 transition cursor-pointer hover:opacity-75"
                         onClick={() => onEdit(lesson.id)}

@@ -1,9 +1,13 @@
+"use client";
+
 import { IconBadge } from "@/components/icon-badge";
 import { ArrowLeftIcon, LayoutDashboard, ListChecks } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { LessonDetailForm } from "./_components/lesson-detail-form";
 import { MaterialForm } from "./_components/material-form";
+import { getCourseByIdService } from "@/services/course.service";
+import { useCallback, useEffect, useState } from "react";
 // import { ChapterDetailForm } from "./_components/chapter-detail-form";
 // import { LessonForm } from "../../_components/lesson-form";
 
@@ -12,44 +16,36 @@ const LessonIdPage = ({
 }: {
   params: { courseId: string; chapterId: string; lessonId: string };
 }) => {
-  const { userId } = { userId: "123" };
-
   const { courseId, chapterId, lessonId } = params;
 
-  const course: any = {
-    chapterTitle: "Chapter 1",
-    chapterDescription: "This is the first chapter",
-    materials: [
-      {
-        id: "1",
-        title: "Material 1",
-        description: "Material 1 description",
-        videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-        isPublished: true,
-        isFree: false,
-      },
-      {
-        id: "2",
-        title: "Material 2",
-        description: "Material 2 description",
-        videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-        isPublished: true,
-        isFree: false,
-      },
-      {
-        id: "3",
-        title: "Material 3",
-        description: "Material 3 description",
-        videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-        isPublished: true,
-        isFree: false,
-      },
-    ],
-  };
+  const [lesson, setLesson] = useState<any>(null);
 
-  if (!userId) {
-    return redirect("/");
-  }
+  const fetchLesson = useCallback(async () => {
+    try {
+      const response = await getCourseByIdService(Number(courseId));
+      console.log("response", response);
+
+      for (const chapter of response?.data?.chapters || []) {
+        if (chapter.id !== Number(chapterId)) {
+          continue;
+        }
+        const foundLesson = chapter?.lessons.find(
+          (lesson: any) => lesson.id === Number(lessonId)
+        );
+        console.log("foundLesson", foundLesson);
+        if (foundLesson) {
+          setLesson(foundLesson);
+          break;
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching course:", error);
+    }
+  }, [courseId, chapterId, lessonId]);
+
+  useEffect(() => {
+    fetchLesson();
+  }, [fetchLesson]);
 
   return (
     <div className="p-6">
@@ -81,10 +77,11 @@ const LessonIdPage = ({
                 </div>
 
                 <LessonDetailForm
-                  initialData={course}
+                  initialData={lesson}
                   courseId={courseId}
                   chapterId={chapterId}
                   lessonId={lessonId}
+                  onFetchLesson={fetchLesson}
                 />
               </div>
             </div>
@@ -96,10 +93,11 @@ const LessonIdPage = ({
                   <h2 className="text-xl">Tùy chỉnh tài liệu</h2>
                 </div>
                 <MaterialForm
-                  initialData={course}
+                  initialData={lesson}
                   courseId={courseId}
                   chapterId={chapterId}
                   lessonId={lessonId}
+                  onFetchLesson={fetchLesson}
                 />
               </div>
             </div>

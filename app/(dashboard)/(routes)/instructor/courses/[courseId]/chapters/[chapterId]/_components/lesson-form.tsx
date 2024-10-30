@@ -1,11 +1,12 @@
 "use client";
 
-import * as z from "zod";
-import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
+import Editor from "@/components/editor";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -15,32 +16,21 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Loader2, Pencil } from "lucide-react";
-import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Textarea } from "@/components/ui/textarea";
-import { ChaptersList } from "../../../_components/chapters-list";
-import Editor from "@/components/editor";
+import {
+  addLessonService,
+  updateLessonService,
+} from "@/services/course.service";
+import { Loader2, Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 import { LessonsList } from "./lessons-list";
 
-// export interface Lesson {
-//   id: string;
-//   title: string;
-//   description: string;
-//   videoUrl: string;
-//   isPublished: boolean;
-//   isFree: boolean;
-// }
-
 interface LessonFormProps {
-  initialData: {
-    title: string;
-    lessons: any[];
-  };
+  initialData: any;
   courseId: string;
   chapterId: string;
+  onFetchChapter: () => Promise<void>;
 }
 
 const formSchema = z.object({
@@ -54,6 +44,7 @@ export const LessonForm = ({
   initialData,
   courseId,
   chapterId,
+  onFetchChapter,
 }: LessonFormProps) => {
   const [isCreating, setIsCreating] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -76,31 +67,32 @@ export const LessonForm = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.post(
-        `/api/courses/${courseId}/chapters/${chapterId}/lessons`,
-        values
-      );
-      toast.success("Chapter created");
+      const body = {
+        ...values,
+        chapterId: Number(chapterId),
+        lessonOrder: initialData.lessons.length + 1,
+      };
+      await addLessonService(body);
+      toast.success("Tạo bài học thành công");
       toggleCreating();
       router.refresh();
+      onFetchChapter();
     } catch (error) {
-      toast.error("Something went wrong");
+      toast.error("Tạo bài học thất bại");
     }
   };
 
-  const onReorder = async (updateData: { id: string; position: number }[]) => {
+  const onReorder = async (updateData: any[]) => {
     try {
       setIsUpdating(true);
-      await axios.put(
-        `/api/courses/${courseId}/chapters/${chapterId}/lessons/reorder`,
-        {
-          list: updateData,
-        }
+      await Promise.all(
+        updateData.map((lesson) => updateLessonService(lesson.id, lesson))
       );
-      toast.success("Chapters reordered");
+      toast.success("Sắp xếp bài học thành công");
       router.refresh();
+      onFetchChapter();
     } catch (error) {
-      toast.error("Something went wrong");
+      toast.error("Sắp xếp bài học thất bại");
     } finally {
       setIsUpdating(false);
     }
@@ -130,25 +122,15 @@ export const LessonForm = ({
           onClick={toggleCreating}
         >
           {isCreating ? (
-            <>Cancel</>
+            <>Hủy</>
           ) : (
             <>
-              <Pencil className="w-4 h-4 mr-2" />
+              <Plus className="w-4 h-4 mr-2" />
               Tạo bài học
             </>
           )}
         </Button>
       </div>
-      {/* {!isCreating && (
-        <p
-          className={cn(
-            "text-sm mt-2",
-            !initialData.chapters.length && "text-slate-500 italic"
-          )}
-        >
-          {"No title"}
-        </p>
-      )} */}
       {isCreating && (
         <Form {...form}>
           <form
@@ -197,14 +179,18 @@ export const LessonForm = ({
         <div
           className={cn(
             "text-sm mt-2",
-            !initialData.lessons.length && "text-slate-500 italic"
+            !initialData?.lessons?.length && "text-slate-500 italic"
           )}
         >
-          {initialData.lessons.length ? (
+          {initialData?.lessons?.length ? (
             <LessonsList
               onEdit={onEdit}
               onReorder={onReorder}
-              items={initialData.lessons || []}
+              items={
+                initialData?.lessons?.sort(
+                  (a: any, b: any) => a.lessonOrder - b.lessonOrder
+                ) || []
+              }
             />
           ) : (
             <p>Không có bài học</p>

@@ -40,6 +40,7 @@ axiosInstance.interceptors.response.use(
       // Handle unauthorized error
       console.error("Unauthorized, logging out...");
       // Perform any logout actions or redirect to login page
+      useAuthStore.getState().signOut();
     }
     return Promise.reject(error);
   }

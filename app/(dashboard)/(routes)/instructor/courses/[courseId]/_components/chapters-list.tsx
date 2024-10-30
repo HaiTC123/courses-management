@@ -11,18 +11,9 @@ import {
 import { Grip, Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
 
-// interface Chapter {
-//   id: string;
-//   title: string;
-//   description: string;
-//   videoUrl: string;
-//   isPublished: boolean;
-//   isFree: boolean;
-// }
-
 interface ChaptersListProps {
   items: any[];
-  onReorder: (updateData: { id: string; position: number }[]) => void;
+  onReorder: (updateData: any[]) => void;
   onEdit: (id: string) => void;
 }
 
@@ -60,12 +51,17 @@ export const ChaptersList = ({
 
     setChapters(items);
 
-    // const bulkUpdateData = updatedChapters.map((chapter, index) => ({
-    //   id: chapter.id,
-    //   position: items.findIndex((item) => item.id === chapter.id),
-    // }));
+    const bulkUpdateData = updatedChapters.map((chapter, index) => ({
+      id: chapter.id,
+      chapterTitle: chapter.chapterTitle,
+      chapterDescription: chapter.chapterDescription,
+      courseId: chapter.courseId,
+      chapterOrder: items.findIndex((item) => item.id === chapter.id) + 1,
+    }));
 
-    // onReorder(bulkUpdateData);
+    console.log(bulkUpdateData);
+
+    onReorder(bulkUpdateData);
   };
 
   if (!isMounted) return null;

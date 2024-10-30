@@ -4,7 +4,7 @@ import * as z from "zod";
 import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Form,
@@ -23,14 +23,13 @@ import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 import Editor from "@/components/editor";
 import Preview from "@/components/preview";
+import { updateChapterService } from "@/services/course.service";
 
 interface ChapterDetailFormProps {
-  initialData: {
-    chapterTitle: string;
-    chapterDescription: string;
-  };
+  initialData: any;
   courseId: string;
   chapterId: string;
+  onFetchChapter: () => Promise<void>;
 }
 
 const formSchema = z.object({
@@ -46,33 +45,40 @@ export const ChapterDetailForm = ({
   initialData,
   courseId,
   chapterId,
+  onFetchChapter,
 }: ChapterDetailFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
 
-  const toggleEdit = () => setIsEditing((current) => !current);
+  const toggleEdit = () => {
+    setIsEditing((current) => !current);
+    form.reset(initialData);
+  };
 
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      chapterTitle: initialData.chapterTitle,
-      chapterDescription: initialData.chapterDescription,
-    },
+    defaultValues: initialData,
   });
 
   const { isSubmitting, isValid } = form.formState;
 
+  useEffect(() => {
+    form.reset(initialData);
+  }, [form, initialData]);
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(`/api/courses/${courseId}`, values);
-      toast.success("Course updated");
+      await updateChapterService(Number(chapterId), values);
+      toast.success("Cập nhật thông tin chương học thành công");
       toggleEdit();
       router.refresh();
+      onFetchChapter();
     } catch (error) {
-      toast.error("Something went wrong");
+      toast.error("Cập nhật thông tin chương học thất bại");
     }
   };
+
   return (
     <div className="p-4 mt-6 border rounded-md bg-slate-100">
       <div className="flex items-center justify-between font-medium">
@@ -124,7 +130,12 @@ export const ChapterDetailForm = ({
                   {isEditing ? (
                     <Editor {...field} />
                   ) : (
-                    <Preview value={field.value} />
+                    <Preview
+                      value={
+                        field.value ||
+                        "<p style='font-size: 14px; font-style: italic; color: #64748b;'>Chưa có mô tả</p>"
+                      }
+                    />
                   )}
                 </FormControl>
                 <FormMessage />
