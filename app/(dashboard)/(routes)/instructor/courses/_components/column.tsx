@@ -14,6 +14,7 @@ import {
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { CourseStatus } from "@/enum/course-status";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -33,7 +34,7 @@ export const columns: ColumnDef<Course>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Title
+          Tiêu đề
           <ArrowUpDown className="w-4 h-4 ml-2" />
         </Button>
       );
@@ -47,7 +48,7 @@ export const columns: ColumnDef<Course>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Price
+          Giá
           <ArrowUpDown className="w-4 h-4 ml-2" />
         </Button>
       );
@@ -63,26 +64,35 @@ export const columns: ColumnDef<Course>[] = [
     },
   },
   {
-    accessorKey: "isPublished",
+    accessorKey: "status",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Published
+          Trạng thái
           <ArrowUpDown className="w-4 h-4 ml-2" />
         </Button>
       );
     },
     cell: ({ row }) => {
-      const isPublished = row.getValue("isPublished") || false;
+      const status = row.getValue("status") ?? CourseStatus.DRAFT;
 
-      return (
-        <Badge className={cn("bg-slate-500", isPublished && "bg-sky-700")}>
-          {isPublished ? "Published" : "Draft"}
-        </Badge>
-      );
+      let color = "bg-slate-500";
+      let text = "Bản nháp";
+      if (status === CourseStatus.APPROVED) {
+        color = "bg-sky-700";
+        text = "Đã duyệt";
+      } else if (status === CourseStatus.REJECTED) {
+        color = "bg-red-500";
+        text = "Đã từ chối";
+      } else if (status === CourseStatus.PENDING_APPROVAL) {
+        color = "bg-yellow-500";
+        text = "Chờ duyệt";
+      }
+
+      return <Badge className={cn(color)}>{text}</Badge>;
     },
   },
   {

@@ -77,7 +77,7 @@ const CreatePage = () => {
     try {
       const body = {
         ...values,
-        instructorId: 1,
+        instructorId: user?.instructorId,
       };
       const response = await addCourseService(body);
       toast.success("Course created successfully");
@@ -279,6 +279,7 @@ const CreatePage = () => {
                     <FormMessage />
                   </FormItem>
                 )}
+                disabled
               />
             </div>
             <div className="flex items-center gap-x-2">
