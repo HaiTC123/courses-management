@@ -23,6 +23,7 @@ import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 import Editor from "@/components/editor";
 import Preview from "@/components/preview";
+import { updateLessonService } from "@/services/course.service";
 
 interface LessonDetailFormProps {
   initialData: any;
@@ -63,7 +64,7 @@ export const LessonDetailForm = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(`/api/courses/${courseId}`, values);
+      await updateLessonService(Number(lessonId), values);
       toast.success("Lesson updated");
       toggleEdit();
       router.refresh();

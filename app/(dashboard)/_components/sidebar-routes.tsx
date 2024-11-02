@@ -1,20 +1,17 @@
 "use client";
 
 import {
-  BarChart,
   Book,
-  Compass,
+  Computer,
   Home,
-  Layout,
-  LeafyGreenIcon,
   LineChart,
   List,
   User,
   User2,
 } from "lucide-react";
 
-import { SidebarItem } from "./sidebar-item";
 import { usePathname } from "next/navigation";
+import { SidebarItem } from "./sidebar-item";
 
 const studentRoutes = [
   {
@@ -41,10 +38,15 @@ const instructorRoutes = [
     href: "/instructor/courses",
   },
   {
-    icon: BarChart,
-    label: "Phân tích",
-    href: "/instructor/analytics",
+    icon: Computer,
+    label: "Lộ trình",
+    href: "/instructor/learning-paths",
   },
+  // {
+  //   icon: BarChart,
+  //   label: "Phân tích",
+  //   href: "/instructor/analytics",
+  // },
 ];
 
 const adminRoutes = [

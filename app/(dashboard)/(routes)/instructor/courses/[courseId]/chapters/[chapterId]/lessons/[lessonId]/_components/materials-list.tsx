@@ -56,7 +56,7 @@ export const MaterialsList = ({
     const startIndex = Math.min(source.index, destination.index);
     const endIndex = Math.max(source.index, destination.index);
 
-    const updatedChapters = items.slice(startIndex, endIndex + 1);
+    // const updatedChapters = items.slice(startIndex, endIndex + 1);
 
     setMaterials(items);
 
@@ -78,7 +78,7 @@ export const MaterialsList = ({
             {materials.map((material, index) => (
               <Draggable
                 key={material.id}
-                draggableId={material.id}
+                draggableId={material.id.toString()}
                 index={index}
               >
                 {(provider) => (
@@ -103,7 +103,7 @@ export const MaterialsList = ({
                     </div>
                     {material.materialTitle}
                     <div className="flex items-center pr-2 ml-auto gap-x-2 ">
-                      {material.isFree && <Badge>Free</Badge>}
+                      {/* {material.isFree && <Badge>Free</Badge>}
                       <Badge
                         className={cn(
                           "bg-slate-500",
@@ -111,7 +111,7 @@ export const MaterialsList = ({
                         )}
                       >
                         {material.isPublished ? "Published" : "Draft"}
-                      </Badge>
+                      </Badge> */}
                       <Pencil
                         className="w-4 h-4 transition cursor-pointer hover:opacity-75"
                         onClick={() => onEdit(material.id)}

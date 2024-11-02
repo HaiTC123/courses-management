@@ -4,7 +4,7 @@ import * as z from "zod";
 import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Form,
@@ -24,13 +24,14 @@ import { Textarea } from "@/components/ui/textarea";
 import Editor from "@/components/editor";
 import Preview from "@/components/preview";
 import { uploadFileService } from "@/services/file.service";
+import { updateMaterialService } from "@/services/course.service";
 
 interface MaterialDetailFormProps {
   initialData: {
     materialType: string;
     materialTitle: string;
     materialDescription: string;
-    materialUrl: string;
+    materialURL: string;
     isRequired: boolean;
     durationMinutes: number;
   };
@@ -38,6 +39,7 @@ interface MaterialDetailFormProps {
   chapterId: string;
   lessonId: string;
   materialId: string;
+  onFetchMaterial: () => Promise<void>;
 }
 
 const formSchema = z.object({
@@ -47,9 +49,13 @@ const formSchema = z.object({
   materialDescription: z.string().min(1, {
     message: "Description is required",
   }),
-  materialUrl: z.string().min(1, {
+  materialURL: z.string().min(1, {
     message: "URL is required",
   }),
+  isRequired: z.boolean().optional(),
+  durationMinutes: z.number().optional(),
+  materialType: z.string().optional(),
+  linkVideo: z.string().optional(),
 });
 
 export const MaterialDetailForm = ({
@@ -58,32 +64,34 @@ export const MaterialDetailForm = ({
   chapterId,
   lessonId,
   materialId,
+  onFetchMaterial,
 }: MaterialDetailFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
 
-  const toggleEdit = () => setIsEditing((current) => !current);
+  const toggleEdit = () => {
+    setIsEditing((current) => !current);
+  };
 
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      materialTitle: initialData.materialTitle,
-      materialDescription: initialData.materialDescription,
-    },
+    defaultValues: initialData,
   });
 
   const { isSubmitting, isValid } = form.formState;
 
+  useEffect(() => {
+    form.reset(initialData);
+  }, [initialData, form]);
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(
-        `/api/courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}/materials/${materialId}`,
-        values
-      );
+      await updateMaterialService(Number(materialId), values);
       toast.success("Lesson updated");
       toggleEdit();
       router.refresh();
+      onFetchMaterial();
     } catch (error) {
       toast.error("Something went wrong");
     }
@@ -95,7 +103,13 @@ export const MaterialDetailForm = ({
       const response = await uploadFileService(file);
       console.log(response);
       if (response.data.fileUrl) {
-        form.setValue("materialUrl", response.data.fileUrl);
+        console.log("response.data.fileUrl", response.data.fileUrl);
+        form.setValue("materialURL", response.data.fileUrl, {
+          shouldValidate: false,
+          shouldDirty: true,
+          shouldTouch: true,
+        });
+        toast.success("File được tải lên thành công");
       }
     } catch (error: any) {
       toast.error(error?.message);
@@ -168,7 +182,7 @@ export const MaterialDetailForm = ({
 
           <FormField
             control={form.control}
-            name="materialUrl"
+            name="linkVideo"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Tài liệu</FormLabel>
@@ -185,7 +199,7 @@ export const MaterialDetailForm = ({
                     />
                   ) : (
                     <p className={cn("text-sm mt-2 text-slate-500 italic")}>
-                      {field.value || "Chưa có tài liệu"}
+                      {form.getValues("materialURL") || "Chưa có tài liệu"}
                     </p>
                   )}
                 </FormControl>
@@ -196,7 +210,7 @@ export const MaterialDetailForm = ({
 
           {isEditing && (
             <div className="flex items-center gap-x-2">
-              <Button type="submit" disabled={!isValid || isSubmitting}>
+              <Button type="submit" disabled={isSubmitting || !isValid}>
                 Lưu
               </Button>
             </div>

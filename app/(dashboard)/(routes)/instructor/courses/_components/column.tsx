@@ -54,9 +54,9 @@ export const columns: ColumnDef<Course>[] = [
     },
     cell: ({ row }) => {
       const price = parseFloat(row.getValue("price"));
-      const formatted = new Intl.NumberFormat("en-US", {
+      const formatted = new Intl.NumberFormat("vi-VN", {
         style: "currency",
-        currency: "USD",
+        currency: "VND",
       }).format(price);
 
       return formatted;

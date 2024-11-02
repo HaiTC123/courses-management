@@ -1,8 +1,12 @@
+"use client";
+
 import { IconBadge } from "@/components/icon-badge";
 import { ArrowLeftIcon, LayoutDashboard, ListChecks } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { MaterialDetailForm } from "./_components/material-detail-form";
+import { useCallback, useEffect, useState } from "react";
+import { getCourseByIdService } from "@/services/course.service";
 // import { MaterialForm } from "./_components/material-form";
 // import { ChapterDetailForm } from "./_components/chapter-detail-form";
 // import { LessonForm } from "../../_components/lesson-form";
@@ -21,40 +25,38 @@ const LessonIdPage = ({
 
   const { courseId, chapterId, lessonId, materialId } = params;
 
-  const course: any = {
-    chapterTitle: "Chapter 1",
-    chapterDescription: "This is the first chapter",
-    materials: [
-      {
-        id: "1",
-        title: "Material 1",
-        description: "Material 1 description",
-        videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-        isPublished: true,
-        isFree: false,
-      },
-      {
-        id: "2",
-        title: "Material 2",
-        description: "Material 2 description",
-        videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-        isPublished: true,
-        isFree: false,
-      },
-      {
-        id: "3",
-        title: "Material 3",
-        description: "Material 3 description",
-        videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-        isPublished: true,
-        isFree: false,
-      },
-    ],
-  };
+  const [material, setMaterial] = useState<any>(null);
 
-  if (!userId) {
-    return redirect("/");
-  }
+  const fetchMaterial = useCallback(async () => {
+    try {
+      const response = await getCourseByIdService(Number(courseId));
+      console.log("response", response);
+
+      for (const chapter of response?.data?.chapters || []) {
+        if (chapter.id !== Number(chapterId)) {
+          continue;
+        }
+        for (const lesson of chapter?.lessons || []) {
+          if (lesson.id !== Number(lessonId)) {
+            continue;
+          }
+          const foundMaterial = lesson?.materials.find(
+            (material: any) => material.id === Number(materialId)
+          );
+          if (foundMaterial) {
+            setMaterial(foundMaterial);
+            break;
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching course:", error);
+    }
+  }, [courseId, chapterId, lessonId, materialId]);
+
+  useEffect(() => {
+    fetchMaterial();
+  }, [fetchMaterial]);
 
   return (
     <div className="p-6">
@@ -86,11 +88,12 @@ const LessonIdPage = ({
                 </div>
 
                 <MaterialDetailForm
-                  initialData={course}
+                  initialData={material}
                   courseId={courseId}
                   chapterId={chapterId}
                   lessonId={lessonId}
                   materialId={materialId}
+                  onFetchMaterial={fetchMaterial}
                 />
               </div>
             </div>
