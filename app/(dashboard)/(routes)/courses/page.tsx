@@ -30,51 +30,6 @@ const categories = [
   },
 ];
 
-// const courses: any = [
-//   {
-//     id: "1",
-//     title: "HTML CSS cho người mới",
-//     imageUrl:
-//       "https://files.fullstack.edu.vn/f8-prod/courses/15/62f13d2424a47.png",
-//     price: 100,
-//     isPublished: true,
-//     category: { id: "1", name: "Frontend" },
-//     userId: "1",
-//     progress: null,
-//   },
-//   {
-//     id: "2",
-//     title: "JS cho người mới",
-//     imageUrl:
-//       "https://files.fullstack.edu.vn/f8-prod/courses/19/66aa28194b52b.png",
-//     price: 100,
-//     isPublished: true,
-//     category: { id: "1", name: "Frontend" },
-//     userId: "1",
-//     progress: null,
-//   },
-//   {
-//     id: "3",
-//     title: "ReactJS cho người mới",
-//     imageUrl: "https://files.fullstack.edu.vn/f8-prod/courses/13/13.png",
-//     price: 300,
-//     isPublished: true,
-//     category: { id: "1", name: "Frontend" },
-//     userId: "1",
-//     progress: null,
-//   },
-//   {
-//     id: "4",
-//     title: "NodeJS cho người mới",
-//     imageUrl: "https://files.fullstack.edu.vn/f8-prod/courses/6.png",
-//     price: 200,
-//     isPublished: true,
-//     category: { id: "1", name: "Frontend" },
-//     userId: "1",
-//     progress: null,
-//   },
-// ];
-
 const CoursePage = () => {
   const [courses, setCourses] = useState<any[]>([]);
 
