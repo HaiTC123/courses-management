@@ -23,6 +23,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { CourseStatus } from "@/enum/course-status";
 import { updateCourseService } from "@/services/course.service";
+import { uploadFileService } from "@/services/file.service";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 interface CourseFormProps {
   initialData: {
@@ -35,6 +38,8 @@ interface CourseFormProps {
     price: number;
     isFree: boolean;
     status: CourseStatus;
+    backgroundUrl: string;
+    linkBackgroundUrl: string;
   };
   courseId: string;
 }
@@ -61,6 +66,8 @@ const formSchema = z.object({
   }),
   isFree: z.boolean(),
   status: z.nativeEnum(CourseStatus),
+  backgroundUrl: z.string().optional(),
+  linkBackgroundUrl: z.string().optional(),
 });
 
 export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
@@ -91,6 +98,22 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
       }
     } catch (error) {
       toast.error("Cập nhật khóa học thất bại");
+    }
+  };
+
+  const uploadFile = async (file: File) => {
+    try {
+      const response = await uploadFileService(file);
+      if (response.data.fileUrl) {
+        form.setValue("backgroundUrl", response.data.fileUrl, {
+          shouldValidate: false,
+          shouldDirty: true,
+          shouldTouch: true,
+        });
+        toast.success("File được tải lên thành công");
+      }
+    } catch (error: any) {
+      toast.error(error?.message);
     }
   };
 
@@ -149,6 +172,47 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
                 </FormItem>
               )}
               disabled={isSubmitting || !isEditing}
+            />
+
+            <FormField
+              control={form.control}
+              name="linkBackgroundUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Ảnh nền</FormLabel>
+                  <FormControl>
+                    {isEditing ? (
+                      <Input
+                        {...field}
+                        type="file"
+                        onChange={(event) => {
+                          if (event.target.files?.[0]) {
+                            uploadFile(event.target.files?.[0]);
+                          }
+                        }}
+                      />
+                    ) : form.getValues("backgroundUrl") ? (
+                      <Image
+                        src={form.getValues("backgroundUrl") ?? ""}
+                        alt="Background Image"
+                        width={0}
+                        height={0}
+                        sizes="100vw"
+                        style={{ width: "100%", height: "auto" }}
+                      />
+                    ) : (
+                      <p
+                        className={cn(
+                          "text-sm mt-2 text-slate-500 italic truncate"
+                        )}
+                      >
+                        {"Chưa có ảnh nền"}
+                      </p>
+                    )}
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
 
             <FormField

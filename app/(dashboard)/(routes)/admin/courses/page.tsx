@@ -5,6 +5,7 @@ import { createColumns } from "./_components/column";
 import { DataTable } from "./_components/data-table";
 import { useCallback, useEffect, useState } from "react";
 import {
+  checkCourseService,
   getPaginatedCoursesService,
   IGetPaginatedCoursesParams,
   sendToAdminApproveService,
@@ -12,13 +13,19 @@ import {
 import { toast } from "react-hot-toast";
 import { CourseStatus } from "@/enum/course-status";
 
-const CoursesPage = () => {
+const AdminCoursesPage = () => {
   const [courses, setCourses] = useState<any[]>([]);
 
   const [params, setParams] = useState<IGetPaginatedCoursesParams>({
     pageSize: 10,
     pageNumber: 1,
-    conditions: [],
+    conditions: [
+      {
+        key: "status",
+        condition: "equal",
+        value: CourseStatus.PENDING_APPROVAL,
+      },
+    ],
     sortOrder: "",
     searchKey: "",
     searchFields: [],
@@ -56,17 +63,17 @@ const CoursesPage = () => {
     // }
   };
 
-  const handleSendToAdmin = async (id: string) => {
+  const handleCheckCourse = async (id: string, status: string) => {
     try {
-      await sendToAdminApproveService(Number(id));
-      toast.success("Gửi tới ADMIN thành công");
+      await checkCourseService(Number(id), status);
+      toast.success("Cập nhật trạng thái thành công");
       fetchCourses(); // Refresh the table data
     } catch (error) {
-      toast.error("Gửi tới ADMIN thất bại");
+      toast.error("Cập nhật trạng thái thất bại");
     }
   };
 
-  const columns = createColumns(handleDelete, handleSendToAdmin);
+  const columns = createColumns(handleDelete, handleCheckCourse);
 
   return (
     <div className="p-6">
@@ -75,4 +82,4 @@ const CoursesPage = () => {
   );
 };
 
-export default CoursesPage;
+export default AdminCoursesPage;

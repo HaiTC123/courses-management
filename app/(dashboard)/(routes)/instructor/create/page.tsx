@@ -1,31 +1,29 @@
 "use client";
 
-import * as z from "zod";
-import axios from "axios";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
+import * as z from "zod";
 
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Combobox } from "@/components/ui/combobox";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import toast from "react-hot-toast";
-import { CourseStatus } from "@/enum/course-status";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Combobox } from "@/components/ui/combobox";
+import { CourseStatus } from "@/enum/course-status";
 import { addCourseService } from "@/services/course.service";
 import { useAuthStore } from "@/store/use-auth-store";
+import Link from "next/link";
+import toast from "react-hot-toast";
 
 const CreatePage = () => {
   const router = useRouter();

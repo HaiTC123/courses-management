@@ -17,12 +17,15 @@ export const LearningCard: React.FC<LearningCardProps> = ({
   slug,
 }) => {
   return (
-    <Link href={`/learning-paths/${id}`}>
+    <Link href={`/instructor/learning-paths/${id}`}>
       <div className="h-full overflow-hidden transition duration-300 ease-in-out border rounded-lg group hover:shadow-lg hover:scale-105">
         <div className="flex items-center p-6">
           <div className="flex-1">
             <h2 className="pb-2 text-xl font-semibold">{title}</h2>
-            <p className="text-sm" dangerouslySetInnerHTML={{ __html: description }}></p>
+            <p
+              className="text-sm"
+              dangerouslySetInnerHTML={{ __html: description }}
+            ></p>
           </div>
           <div className="hidden md:flex flex-[0_115px] items-center justify-center ml-2">
             <Image

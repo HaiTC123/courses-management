@@ -4,7 +4,7 @@ import * as z from "zod";
 import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import {
   Form,
@@ -24,49 +24,72 @@ import { Textarea } from "@/components/ui/textarea";
 import Editor from "@/components/editor";
 import Preview from "@/components/preview";
 import { uploadFileService } from "@/services/file.service";
-import { updateMaterialService } from "@/services/course.service";
+import {
+  IGetPaginatedCoursesParams,
+  getPaginatedCoursesService,
+  updateMaterialService,
+} from "@/services/course.service";
+import { updateLearnCourseService } from "@/services/learn-path.service";
+import { Combobox } from "@/components/ui/combobox";
 
-interface MaterialDetailFormProps {
+interface CourseDetailFormProps {
   initialData: {
-    materialType: string;
-    materialTitle: string;
-    materialDescription: string;
-    materialURL: string;
-    isRequired: boolean;
-    durationMinutes: number;
+    title: string;
+    description: string;
+    courseId: string;
   };
+  learningPathId: string;
   courseId: string;
-  chapterId: string;
-  lessonId: string;
-  materialId: string;
-  onFetchMaterial: () => Promise<void>;
+  onFetchCourse: () => Promise<void>;
 }
 
 const formSchema = z.object({
-  materialTitle: z.string().min(1, {
+  title: z.string().min(1, {
     message: "Title is required",
   }),
-  materialDescription: z.string().min(1, {
+  description: z.string().min(1, {
     message: "Description is required",
   }),
-  materialURL: z.string().min(1, {
-    message: "URL is required",
-  }),
-  isRequired: z.boolean().optional(),
-  durationMinutes: z.number().optional(),
-  materialType: z.string().optional(),
-  linkVideo: z.string().optional(),
+  courseId: z.string(),
 });
 
-export const MaterialDetailForm = ({
+export const CourseDetailForm = ({
   initialData,
+  learningPathId,
   courseId,
-  chapterId,
-  lessonId,
-  materialId,
-  onFetchMaterial,
-}: MaterialDetailFormProps) => {
+  onFetchCourse,
+}: CourseDetailFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [listCourses, setListCourses] = useState([]);
+  const [params, setParams] = useState<IGetPaginatedCoursesParams>({
+    pageSize: 10,
+    pageNumber: 1,
+    conditions: [],
+    sortOrder: "",
+    searchKey: "",
+    searchFields: [],
+    includeReferences: [],
+  });
+
+  const fetchCourses = useCallback(() => {
+    getPaginatedCoursesService(params)
+      .then((response) => {
+        if (response.data.data) {
+          const listCourses = response.data.data.map((course: any) => ({
+            label: course.courseName,
+            value: course.id.toString(),
+          }));
+          setListCourses(listCourses);
+        }
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+  }, [params]);
+
+  useEffect(() => {
+    fetchCourses();
+  }, [fetchCourses]);
 
   const toggleEdit = () => {
     setIsEditing((current) => !current);
@@ -87,69 +110,59 @@ export const MaterialDetailForm = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await updateMaterialService(Number(materialId), values);
-      toast.success("Lesson updated");
+      await updateLearnCourseService(Number(courseId), values);
+      toast.success("Khóa học được cập nhật");
       toggleEdit();
       router.refresh();
-      onFetchMaterial();
+      onFetchCourse();
     } catch (error) {
-      toast.error("Something went wrong");
+      toast.error("Khóa học không thể cập nhật");
     }
   };
 
-  const uploadFile = async (file: File) => {
-    try {
-      const response = await uploadFileService(file);
-      console.log(response);
-      if (response.data.fileUrl) {
-        console.log("response.data.fileUrl", response.data.fileUrl);
-        form.setValue("materialURL", response.data.fileUrl, {
-          shouldValidate: false,
-          shouldDirty: true,
-          shouldTouch: true,
-        });
-        toast.success("File được tải lên thành công");
-      }
-    } catch (error: any) {
-      toast.error(error?.message);
-    }
-  };
+  // const uploadFile = async (file: File) => {
+  //   try {
+  //     const response = await uploadFileService(file);
+  //     console.log(response);
+  //     if (response.data.fileUrl) {
+  //       console.log("response.data.fileUrl", response.data.fileUrl);
+  //       form.setValue("materialURL", response.data.fileUrl, {
+  //         shouldValidate: false,
+  //         shouldDirty: true,
+  //         shouldTouch: true,
+  //       });
+  //       toast.success("File được tải lên thành công");
+  //     }
+  //   } catch (error: any) {
+  //     toast.error(error?.message);
+  //   }
+  // };
 
   return (
     <div className="p-4 mt-6 border rounded-md bg-slate-100">
       <div className="flex items-center justify-between font-medium">
-        Thông tin tài liệu
+        Thông tin khóa học
         <Button type="button" variant="ghost" size="sm" onClick={toggleEdit}>
           {isEditing ? (
             <>Hủy</>
           ) : (
             <>
               <Pencil className="w-4 h-4 mr-2" />
-              Sửa thông tin tài liệu
+              Sửa thông tin khóa học
             </>
           )}
         </Button>
       </div>
-      {/* {!isEditing && (
-        <p
-          className={cn(
-            "text-sm mt-2",
-            !initialData.description && "text-slate-500 italic"
-          )}
-        >
-          {initialData.description || "No description"}
-        </p>
-      )} */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 space-y-4">
           <FormField
             control={form.control}
-            name="materialTitle"
+            name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Tên tài liệu</FormLabel>
+                <FormLabel>Tên khóa học</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="e.g. 'Tài liệu 1'" />
+                  <Input {...field} placeholder="e.g. 'Khóa học 1'" />
                 </FormControl>
               </FormItem>
             )}
@@ -158,10 +171,10 @@ export const MaterialDetailForm = ({
 
           <FormField
             control={form.control}
-            name="materialDescription"
+            name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Mô tả tài liệu</FormLabel>
+                <FormLabel>Mô tả khóa học</FormLabel>
                 <FormControl>
                   {isEditing ? (
                     <Editor {...field} />
@@ -181,30 +194,20 @@ export const MaterialDetailForm = ({
 
           <FormField
             control={form.control}
-            name="linkVideo"
+            name="courseId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Tài liệu</FormLabel>
-                <FormControl>
-                  {isEditing ? (
-                    <Input
-                      {...field}
-                      type="file"
-                      onChange={(event) => {
-                        if (event.target.files?.[0]) {
-                          uploadFile(event.target.files?.[0]);
-                        }
-                      }}
-                    />
-                  ) : (
-                    <p className={cn("text-sm mt-2 text-slate-500 italic")}>
-                      {form.getValues("materialURL") || "Chưa có tài liệu"}
-                    </p>
-                  )}
-                </FormControl>
+                <FormLabel>Khóa học</FormLabel>
+                <Combobox
+                  options={listCourses}
+                  value={field.value}
+                  onChange={field.onChange}
+                  disabled={isSubmitting || !isEditing}
+                />
                 <FormMessage />
               </FormItem>
             )}
+            disabled={isSubmitting || !isEditing}
           />
 
           {isEditing && (

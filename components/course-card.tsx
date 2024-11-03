@@ -1,5 +1,3 @@
-import { CourseWithProgressWithCategory } from "@/components/course-list";
-import { Category } from "@/components/course-list";
 import Image from "next/image";
 import Link from "next/link";
 import { IconBadge } from "./icon-badge";
@@ -11,7 +9,7 @@ interface CourseCardProps {
   title: string;
   imageUrl: string;
   price: number;
-  category: Category;
+  category: any;
   progress: number;
   userId: string;
 }
@@ -41,7 +39,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({
             <div className="text-lg font-medium transition-colors duration-300 md:text-base group-hover:text-blue-600">
               {title}
             </div>
-            <p className="text-xs text-muted-foreground">{category?.name}</p>
+            <p className="text-xs text-muted-foreground">{category}</p>
           </div>
           <div className="flex items-center my-3 text-sm gap-x-2 md:text-xs">
             <div className="flex items-center gap-x-1">
@@ -50,7 +48,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({
             </div>
           </div>
           {progress !== null ? (
-            <div>a</div>
+            <div>Progress</div>
           ) : (
             <p className="font-medium transition-colors duration-300 text-md md:text-sm text-slate-600 group-hover:text-blue-600">
               {formatPrice(price)}

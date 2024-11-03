@@ -2,7 +2,15 @@
 
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal, Pencil, Send, Trash } from "lucide-react";
+import {
+  ArrowUpDown,
+  Check,
+  MoreHorizontal,
+  Pencil,
+  Send,
+  Trash,
+  X,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,8 +35,8 @@ export type Course = {
 
 export const createColumns = (
   onDelete: (id: string) => Promise<void>,
-  onSendToAdmin: (id: string) => Promise<void>
-): ColumnDef<any>[] => [
+  onCheckCourse: (id: string, status: string) => Promise<void>
+): ColumnDef<Course>[] => [
   {
     accessorKey: "courseName",
     header: ({ column }) => {
@@ -101,7 +109,7 @@ export const createColumns = (
   {
     id: "actions",
     cell: ({ row }) => {
-      const { id, status } = row.original;
+      const { id } = row.original;
 
       return (
         <DropdownMenu>
@@ -118,19 +126,28 @@ export const createColumns = (
                 Sửa
               </DropdownMenuItem>
             </Link>
-            {(status === CourseStatus.DRAFT ||
-              status === CourseStatus.REJECTED) && (
-              <DropdownMenuItem onClick={() => onSendToAdmin(id)}>
-                <Send className="w-4 h-4 mr-2" />
-                Gửi tới ADMIN
-              </DropdownMenuItem>
-            )}
-            <Link href={`/instructor/courses/${id}`}>
+            {/* <DropdownMenuItem
+              onClick={() => {
+                onCheckCourse(id, CourseStatus.APPROVED);
+              }}
+            >
+              <Check className="w-4 h-4 mr-2" />
+              Phê duyệt
+            </DropdownMenuItem> */}
+            {/* <DropdownMenuItem
+              onClick={() => {
+                onCheckCourse(id, CourseStatus.REJECTED);
+              }}
+            >
+              <X className="w-4 h-4 mr-2" />
+              Từ chối
+            </DropdownMenuItem> */}
+            {/* <Link href={`/instructor/courses/${id}`}>
               <DropdownMenuItem>
                 <Trash className="w-4 h-4 mr-2" />
                 Xóa
               </DropdownMenuItem>
-            </Link>
+            </Link> */}
           </DropdownMenuContent>
         </DropdownMenu>
       );

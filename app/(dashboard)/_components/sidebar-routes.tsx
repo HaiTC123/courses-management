@@ -60,6 +60,16 @@ const adminRoutes = [
     label: "Học viên",
     href: "/admin/students",
   },
+  {
+    icon: Book,
+    label: "Khóa học",
+    href: "/admin/courses",
+  },
+  {
+    icon: Book,
+    label: "Khóa học đã duyệt",
+    href: "/admin/courses-approved",
+  },
   // {
   //   icon: List,
   //   label: "Khóa học",

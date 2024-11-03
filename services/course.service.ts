@@ -88,3 +88,20 @@ export const updateMaterialService = async (materialId: number, data: any) => {
   return response.data;
 };
 //#endregion
+
+export const sendToAdminApproveService = async (courseId: number) => {
+  const response = await axiosInstance.put(
+    `/api/course/sendToAdmin/${courseId}`
+  );
+  return response.data;
+};
+
+export const checkCourseService = async (courseId: number, status: string) => {
+  const response = await axiosInstance.put(
+    `/api/course/updateStatus/${courseId}`,
+    {
+      status,
+    }
+  );
+  return response.data;
+};

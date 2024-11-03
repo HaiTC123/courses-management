@@ -1,26 +1,7 @@
 import { CourseCard } from "./course-card";
 
-export interface Course {
-  id: string;
-  title: string;
-  imageUrl: string;
-  price: number;
-  category: string;
-  userId: string;
-}
-
-export interface Category {
-  id: string;
-  name: string;
-}
-
-export type CourseWithProgressWithCategory = Course & {
-  progress: number;
-  category: Category | null;
-};
-
 interface CourseListProps {
-  items: CourseWithProgressWithCategory[];
+  items: any[];
 }
 
 export const CourseList: React.FC<CourseListProps> = ({ items }) => {
@@ -30,12 +11,12 @@ export const CourseList: React.FC<CourseListProps> = ({ items }) => {
         {items.map((item) => (
           <CourseCard
             key={item.id}
-            title={item.title}
-            imageUrl={item.imageUrl}
+            title={item.courseName}
+            imageUrl={item.backgroundUrl}
             price={item.price}
             category={item.category}
             progress={item.progress}
-            userId={item.userId}
+            userId={item.instructorId}
             id={item.id}
           />
         ))}
