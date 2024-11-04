@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useEffect, useState } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -30,16 +30,16 @@ import Paginator from "./paginator";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  onDataChange: () => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  onDataChange,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const table = useReactTable({
     data,
@@ -52,6 +52,10 @@ export function DataTable<TData, TValue>({
       sorting,
     },
   });
+
+  useEffect(() => {
+    onDataChange();
+  }, [onDataChange]);
 
   return (
     <div>
@@ -66,10 +70,10 @@ export function DataTable<TData, TValue>({
           }
           className="w-full md:max-w-sm md:w-auto"
         />
-        <Link href="/admin/users/create" className="w-full md:w-auto">
+        <Link href="/admin/instructors/create" className="w-full md:w-auto">
           <Button className="mt-2 md:mt-0">
             <PlusCircle className="h-4 mr-2 md:w-04" />
-            Thêm người dùng
+            Thêm người hướng dẫn
           </Button>
         </Link>
       </div>

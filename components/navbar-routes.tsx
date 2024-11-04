@@ -32,7 +32,7 @@ export const NavbarRoutes = () => {
 
   const handleSignOut = async () => {
     await signOut();
-    router.push("/");
+    router.push("/sign-in");
   };
 
   return (
@@ -68,6 +68,7 @@ export const NavbarRoutes = () => {
                   {/* TODO: Add notifications */}
                   {[
                     {
+                      id: 1,
                       title: "[SYSTEM] Check hệ thống",
                       description:
                         "Đây là thông báo tự động từ server trả về để test",

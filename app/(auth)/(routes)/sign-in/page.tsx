@@ -128,14 +128,14 @@ const SignIn = () => {
             </form>
           </Form>
         </div>
-        <div className="text-sm text-center">
+        {/* <div className="text-sm text-center">
           <Link
             href="/sign-up"
             className="font-medium text-indigo-600 hover:text-indigo-500"
           >
             Don&apos;t have an account? Sign up
           </Link>
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -15,6 +15,7 @@ import {
   getPaginatedUsersService,
   IGetPaginatedUsersParams,
 } from "@/services/user.service";
+import _ from "lodash";
 
 const ListStudentsPage = () => {
   // const { authenticated, role } = useAuthStore();
@@ -43,7 +44,7 @@ const ListStudentsPage = () => {
         if (response.data.data) {
           const listStudents = response.data.data.map((student: any) => ({
             ...student,
-            ...student.user,
+            ..._.omit(student.user, "id"),
           }));
           setUsers(listStudents);
         }
@@ -61,11 +62,10 @@ const ListStudentsPage = () => {
     try {
       await deleteStudentService(id);
       await deleteUserService(userId);
-      toast.success("Student deleted successfully");
+      toast.success("Xóa sinh viên thành công");
       fetchStudents(); // Refresh the table data
     } catch (error) {
-      console.error("Error deleting student:", error);
-      toast.error("Failed to delete student");
+      toast.error("Xóa sinh viên thất bại");
     }
   };
 

@@ -82,6 +82,7 @@ const SettingsPage = () => {
         className="w-full mt-4"
       >
         <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="information">Thông tin cá nhân</TabsTrigger>
           <TabsTrigger value="changePassword">Đổi mật khẩu</TabsTrigger>
         </TabsList>
         <TabsContent value="changePassword">
@@ -142,115 +143,7 @@ const SettingsPage = () => {
             </form>
           </Form>
         </TabsContent>
-        <TabsContent value="student">
-          b
-          {/* <Form {...studentForm}>
-        <form
-          onSubmit={studentForm.handleSubmit(onSubmitStudent)}
-          className="mt-8 space-y-8"
-        >
-          <Card>
-            <CardHeader>
-              <CardTitle>Thông tin học viên</CardTitle>
-              <CardDescription>
-                Chỉnh sửa thông tin của học viên
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                <>
-                  <FormField
-                    control={studentForm.control}
-                    name="major"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Major</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="e.g. 'Computer Science'"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={studentForm.control}
-                    name="yearOfStudy"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Year of Study</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="e.g. '3'"
-                            {...field}
-                            type="number"
-                            onChange={(event) =>
-                              field.onChange(+event.target.value)
-                            }
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={studentForm.control}
-                    name="gpa"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>GPA</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="e.g. '3.5'"
-                            {...field}
-                            type="number"
-                            step="0.01"
-                            onChange={(event) =>
-                              field.onChange(+event.target.value)
-                            }
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={studentForm.control}
-                    name="graduationStatus"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Graduation Status</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="e.g. 'Graduated'"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <div className="flex justify-end gap-x-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => router.back()}
-                >
-                  Hủy
-                </Button>
-                <Button type="submit">Lưu</Button>
-              </div>
-            </CardFooter>
-          </Card>
-        </form>
-      </Form> */}
-        </TabsContent>
+        <TabsContent value="information"></TabsContent>
       </Tabs>
     </div>
   );

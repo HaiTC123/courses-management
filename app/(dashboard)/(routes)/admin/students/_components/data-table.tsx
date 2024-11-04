@@ -66,17 +66,17 @@ export function DataTable<TData, TValue>({
         <Input
           placeholder="Tìm kiếm người dùng..."
           value={
-            (table.getColumn("fullName")?.getFilterValue() as string) ?? ""
+            (table?.getColumn("fullName")?.getFilterValue() as string) ?? ""
           }
-          onChange={(event) =>
-            table.getColumn("fullName")?.setFilterValue(event.target.value)
-          }
+          onChange={(event) => {
+            table?.getColumn("fullName")?.setFilterValue(event.target.value);
+          }}
           className="w-full md:max-w-sm md:w-auto"
         />
         <Link href="/admin/students/create" className="w-full md:w-auto">
           <Button className="mt-2 md:mt-0">
             <PlusCircle className="h-4 mr-2 md:w-04" />
-            Thêm người dùng
+            Thêm học viên
           </Button>
         </Link>
       </div>

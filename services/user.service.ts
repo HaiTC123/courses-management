@@ -52,6 +52,13 @@ export const getInstructorByIdService = async (instructorId: string) => {
   return response.data;
 };
 
+export const deleteInstructorService = async (instructorId: string) => {
+  const response = await axiosInstance.delete(
+    `/api/instructor/${instructorId}`
+  );
+  return response.data;
+};
+
 export const createUserService = async (data: any) => {
   const response = await axiosInstance.post("/api/user", data);
   return response.data;

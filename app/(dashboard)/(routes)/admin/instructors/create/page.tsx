@@ -63,7 +63,7 @@ const CreateUserPage = () => {
     defaultValues: {
       fullName: "",
       email: "",
-      role: UserRole.STUDENT,
+      role: UserRole.INSTRUCTOR,
       gender: UserGender.OTHER,
       dateOfBirth: new Date(),
       phoneNumber: "",
@@ -103,8 +103,8 @@ const CreateUserPage = () => {
 
         const studentResponse = await createStudentService(body);
         if (studentResponse) {
-          router.push(`/admin/users`);
-          toast.success("User created successfully");
+          router.push(`/admin/students`);
+          toast.success("Tạo học viên thành công");
         }
       }
       if (values.role === UserRole.INSTRUCTOR) {
@@ -113,8 +113,8 @@ const CreateUserPage = () => {
 
         const instructorResponse = await createInstructorService(body);
         if (instructorResponse) {
-          router.push(`/admin/users`);
-          toast.success("User created successfully");
+          router.push(`/admin/instructors`);
+          toast.success("Tạo giảng viên thành công");
         }
       }
     } catch (error: any) {
@@ -124,7 +124,7 @@ const CreateUserPage = () => {
 
   return (
     <div className="max-w-xl p-6 mx-auto">
-      <h1 className="text-2xl">Thêm người dùng</h1>
+      <h1 className="text-2xl">Thêm người hướng dẫn</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8">
           <FormField
@@ -132,7 +132,7 @@ const CreateUserPage = () => {
             name="fullName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Full Name</FormLabel>
+                <FormLabel>Họ và tên</FormLabel>
                 <FormControl>
                   <Input placeholder="e.g. 'John Doe'" {...field} />
                 </FormControl>
@@ -158,7 +158,7 @@ const CreateUserPage = () => {
             name="gender"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Gender</FormLabel>
+                <FormLabel>Giới tính</FormLabel>
                 <FormControl>
                   <Combobox
                     options={[
@@ -179,7 +179,7 @@ const CreateUserPage = () => {
             name="dateOfBirth"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Date of Birth</FormLabel>
+                <FormLabel>Ngày sinh</FormLabel>
                 <FormControl>
                   <DatePicker date={field.value} setDate={field.onChange} />
                 </FormControl>
@@ -192,7 +192,7 @@ const CreateUserPage = () => {
             name="phoneNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Phone Number</FormLabel>
+                <FormLabel>Số điện thoại</FormLabel>
                 <FormControl>
                   <Input placeholder="e.g. '09123456789'" {...field} />
                 </FormControl>
@@ -205,7 +205,7 @@ const CreateUserPage = () => {
             name="addressLine1"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Address Line 1</FormLabel>
+                <FormLabel>Địa chỉ 1</FormLabel>
                 <FormControl>
                   <Input placeholder="e.g. '123 Main St'" {...field} />
                 </FormControl>
@@ -218,7 +218,7 @@ const CreateUserPage = () => {
             name="addressLine2"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Address Line 2</FormLabel>
+                <FormLabel>Địa chỉ 2</FormLabel>
                 <FormControl>
                   <Input placeholder="e.g. 'Apt 4B'" {...field} />
                 </FormControl>
@@ -231,7 +231,7 @@ const CreateUserPage = () => {
             name="city"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>City</FormLabel>
+                <FormLabel>Thành phố</FormLabel>
                 <FormControl>
                   <Input placeholder="e.g. 'New York'" {...field} />
                 </FormControl>
@@ -244,7 +244,7 @@ const CreateUserPage = () => {
             name="state"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>State</FormLabel>
+                <FormLabel>Tỉnh/Thành phố</FormLabel>
                 <FormControl>
                   <Combobox
                     options={[
@@ -271,7 +271,7 @@ const CreateUserPage = () => {
             name="postalCode"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Postal Code</FormLabel>
+                <FormLabel>Mã bưu điện</FormLabel>
                 <FormControl>
                   <Input placeholder="e.g. '10001'" {...field} />
                 </FormControl>
@@ -284,11 +284,10 @@ const CreateUserPage = () => {
             name="role"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>User Role</FormLabel>
+                <FormLabel>Loại người dùng</FormLabel>
                 <FormControl>
                   <Combobox
                     options={[
-                      { value: UserRole.STUDENT, label: UserRole.STUDENT },
                       {
                         value: UserRole.INSTRUCTOR,
                         label: UserRole.INSTRUCTOR,
@@ -323,7 +322,7 @@ const CreateUserPage = () => {
                 name="yearOfStudy"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Year of Study</FormLabel>
+                    <FormLabel>Năm học</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="e.g. '3'"
@@ -364,7 +363,7 @@ const CreateUserPage = () => {
                 name="graduationStatus"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Graduation Status</FormLabel>
+                    <FormLabel>Trạng thái tốt nghiệp</FormLabel>
                     <FormControl>
                       <Input placeholder="e.g. 'Graduated'" {...field} />
                     </FormControl>
@@ -382,7 +381,7 @@ const CreateUserPage = () => {
                 name="department"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Department</FormLabel>
+                    <FormLabel>Khoa</FormLabel>
                     <FormControl>
                       <Input placeholder="e.g. 'Computer Science'" {...field} />
                     </FormControl>

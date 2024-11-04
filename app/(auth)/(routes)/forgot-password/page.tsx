@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
 import { forgotPasswordService } from "@/services/auth.service";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -23,6 +24,7 @@ const formSchema = z.object({
 });
 
 const ForgotPasswordPage = () => {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -39,12 +41,13 @@ const ForgotPasswordPage = () => {
       const response = await forgotPasswordService(values);
       console.log(response);
       // Implement your password reset logic here
-      toast.success("Password reset instructions sent to your email");
+      toast.success("Gửi yêu cầu đặt lại mật khẩu thành công");
+      router.push("/reset-password");
     } catch (error: any) {
       console.error(error);
       toast.error(
         error?.response?.data?.message ||
-          "Failed to send password reset instructions. Please try again."
+          "Gửi yêu cầu đặt lại mật khẩu thất bại. Vui lòng thử lại."
       );
     }
   };
@@ -54,7 +57,7 @@ const ForgotPasswordPage = () => {
       <div className="w-full max-w-md space-y-8">
         <div>
           <h2 className="mt-6 text-3xl font-extrabold text-center text-gray-900">
-            Forgot Password
+            Quên mật khẩu
           </h2>
         </div>
         <div className="p-6 mt-8 bg-white rounded-lg shadow-sm">
@@ -65,12 +68,12 @@ const ForgotPasswordPage = () => {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email address</FormLabel>
+                    <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
                         disabled={isSubmitting}
-                        placeholder="Enter your email"
+                        placeholder="Nhập email"
                         type="email"
                       />
                     </FormControl>
@@ -83,7 +86,7 @@ const ForgotPasswordPage = () => {
                 disabled={!isValid || isSubmitting}
                 className="w-full"
               >
-                Reset Password
+                Nhận mã OTP
               </Button>
             </form>
           </Form>

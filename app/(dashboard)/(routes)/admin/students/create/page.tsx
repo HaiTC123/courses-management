@@ -103,8 +103,8 @@ const CreateUserPage = () => {
 
         const studentResponse = await createStudentService(body);
         if (studentResponse) {
-          router.push(`/admin/users`);
-          toast.success("User created successfully");
+          router.push(`/admin/students`);
+          toast.success("Tạo sinh viên thành công");
         }
       }
       if (values.role === UserRole.INSTRUCTOR) {
@@ -113,8 +113,8 @@ const CreateUserPage = () => {
 
         const instructorResponse = await createInstructorService(body);
         if (instructorResponse) {
-          router.push(`/admin/students`);
-          toast.success("User created successfully");
+          router.push(`/admin/instructors`);
+          toast.success("Tạo giảng viên thành công");
         }
       }
     } catch (error: any) {

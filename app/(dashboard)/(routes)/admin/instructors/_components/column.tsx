@@ -24,7 +24,9 @@ import { cn } from "@/lib/utils";
 //   isPublished: boolean;
 // };
 
-export const columns: ColumnDef<any>[] = [
+export const createColumns = (
+  onDelete: (id: string, userId: string) => Promise<void>
+): ColumnDef<any>[] => [
   {
     accessorKey: "fullName",
     header: ({ column }) => {
@@ -52,43 +54,20 @@ export const columns: ColumnDef<any>[] = [
         </Button>
       );
     },
-    // cell: ({ row }) => {
-    //   const price = parseFloat(row.getValue("price"));
-    //   const formatted = new Intl.NumberFormat("en-US", {
-    //     style: "currency",
-    //     currency: "USD",
-    //   }).format(price);
-
-    //   return formatted;
-    // },
   },
-  // {
-  //   accessorKey: "isPublished",
-  //   header: ({ column }) => {
-  //     return (
-  //       <Button
-  //         variant="ghost"
-  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-  //       >
-  //         Published
-  //         <ArrowUpDown className="w-4 h-4 ml-2" />
-  //       </Button>
-  //     );
-  //   },
-  //   cell: ({ row }) => {
-  //     const isPublished = row.getValue("isPublished") || false;
-
-  //     return (
-  //       <Badge className={cn("bg-slate-500", isPublished && "bg-sky-700")}>
-  //         {isPublished ? "Published" : "Draft"}
-  //       </Badge>
-  //     );
-  //   },
-  // },
   {
     id: "actions",
     cell: ({ row }) => {
-      const { id } = row.original;
+      const { id, userId } = row.original;
+
+      const handleDelete = async () => {
+        try {
+          await onDelete(id, userId);
+        } catch (error) {
+          console.error("Error deleting instructor:", error);
+          // Handle error (e.g., show an error toast)
+        }
+      };
 
       return (
         <DropdownMenu>
@@ -105,12 +84,10 @@ export const columns: ColumnDef<any>[] = [
                 Sửa
               </DropdownMenuItem>
             </Link>
-            <Link href={`/instructor/courses/${id}`}>
-              <DropdownMenuItem>
-                <Trash className="w-4 h-4 mr-2" />
-                Xóa
-              </DropdownMenuItem>
-            </Link>
+            <DropdownMenuItem onClick={handleDelete}>
+              <Trash className="w-4 h-4 mr-2" />
+              Xóa
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
