@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { Prisma, Role } from '@prisma/client';
 import { BaseController } from 'src/base/base.controller';
@@ -34,20 +34,20 @@ export class CoursesController extends BaseController<CourseEntity, Prisma.Cours
     }
 
     @Get("detail/:courseId")
-    async getDetailCourse(@Param('courseId') courseId: number): Promise<ServiceResponse>{
+    async getDetailCourse(@Param('courseId') courseId: number): Promise<ServiceResponse> {
         return ServiceResponse.onSuccess(await this.service.getCourseWithDetails(courseId));
     }
 
     @Roles(Role.Instructor)
     @Put("sentToAdmin/:courseId")
-    async sentToAdminApprove(@Param("courseId") courseId: number): Promise<ServiceResponse>{
+    async sentToAdminApprove(@Param("courseId") courseId: number): Promise<ServiceResponse> {
         // to-do
         return null;
     }
 
     @Roles(Role.Admin)
     @Put("updateStatus/:courseId")
-    async adminUpdateStatus(@Param("courseId") courseId: number): Promise<ServiceResponse>{
+    async adminUpdateStatus(@Param("courseId") courseId: number): Promise<ServiceResponse> {
         // to-do
         return null;
     }
@@ -55,8 +55,18 @@ export class CoursesController extends BaseController<CourseEntity, Prisma.Cours
     @Roles(Role.Student)
     @Post("register")
     @ApiBody({ type: RegisterCourse })
-    async registerCourse(@Body() param: RegisterCourse): Promise<ServiceResponse>{
+    async registerCourse(@Body() param: RegisterCourse): Promise<ServiceResponse> {
         return await this.service.registerCourseFree(param.courseId, param.semeterId);
     }
+
+    @Get('eligible-courses')
+    async getEligibleCourses(
+        @Query('courseIds') courseIds: string
+    ) {
+        const courseIdsArray = courseIds ? courseIds.split(';').map(Number) : [];
+        const eligibleCourses = await this.service.getEligibleCoursesForLearningPath(courseIdsArray);
+        return ServiceResponse.onSuccess(eligibleCourses);
+    }
+
 
 }

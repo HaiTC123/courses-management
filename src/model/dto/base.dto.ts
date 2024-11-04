@@ -7,9 +7,9 @@ export class BaseDto {
     @AutoMap()
     updatedAt: Date; // Thời gian cập nhật tài khoản
     @AutoMap()
-    createdBy?: string; // Người tạo (có thể null)
+    createdBy: string; // Người tạo (có thể null)
     @AutoMap()
-    updatedBy?: string; // Người cập nhật (có thể null)
+    updatedBy: string; // Người cập nhật (có thể null)
 
   }
   

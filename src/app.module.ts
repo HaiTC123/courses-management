@@ -15,6 +15,9 @@ import { CourseMaterialsModule } from './controllers/courseMaterials/courseMater
 import { FilesModule } from './controllers/file/files.module';
 import { PrerequisitesModule } from './controllers/prerequistite/prerequistite.module';
 import { ErrollmentsModule } from './controllers/enrollment/enrollment.module';
+import { LearnPathsModule } from './controllers/learn/learnPaths.module';
+import { LearnPathCoursesModule } from './controllers/learnCourse/learnPathCourses.module';
+
 @Module({
   imports: [
     AuthModule,
@@ -28,7 +31,9 @@ import { ErrollmentsModule } from './controllers/enrollment/enrollment.module';
     CourseMaterialsModule,
     FilesModule,
     PrerequisitesModule,
-    ErrollmentsModule
+    ErrollmentsModule,
+    LearnPathsModule,
+    LearnPathCoursesModule
   ],
   controllers: [AppController],
   providers: [AppService,

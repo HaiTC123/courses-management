@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { Prisma, Role } from '@prisma/client';
 import { BaseController } from 'src/base/base.controller';
@@ -28,6 +28,11 @@ export class UsersController extends BaseController<UserEntity, Prisma.UserCreat
     @ApiBody({type: UserDto})
     async apiTest(@Body() param: UserDto){
         return null;
+    }
+
+    @Get("currentUser")
+    async getCurrentUser(){
+        return this.usersService.getCurrentUser();
     }
 
 }

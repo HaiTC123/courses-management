@@ -3,7 +3,9 @@ import { Prisma, Role } from '@prisma/client';
 import { hash } from 'bcrypt'
 import { BaseService } from 'src/base/base.service';
 import { CoreService } from 'src/core/core.service';
+import { UserDetail, UserDto } from 'src/model/dto/user.dto';
 import { UserEntity } from 'src/model/entity/user.entity';
+import { ServiceResponse } from 'src/model/response/service.response';
 import { PrismaService } from 'src/repo/prisma.service';
 import { generateRandomPassword, isEnvDevelopment } from 'src/utils/common.utils';
 
@@ -49,6 +51,22 @@ export class UsersService extends BaseService<UserEntity, Prisma.UserCreateInput
         }
         await this.repository.update(id, model, this.getMoreUpdateData());
         return true;
+    }
+
+    async getCurrentUser(): Promise<ServiceResponse>{
+        var userCurrent = await this.getOneAndReference({
+            id: this._authService.getUserID()
+        }, {
+            "instructor": true,
+            "student": true,
+            "admin": true
+        });
+        if (!userCurrent){
+            throw new HttpException({message: 'User not exist'}, HttpStatus.BAD_REQUEST);
+        }
+        const result = this._mapperService.mapData(userCurrent, UserEntity, UserDetail);
+        return ServiceResponse.onSuccess(result);
+
     }
 
 }

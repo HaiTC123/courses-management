@@ -1,5 +1,5 @@
 import { BaseEntity } from "./base.entity";
-import { Role, Gender, AccountStatus } from "@prisma/client";
+import { Role, Gender, AccountStatus, Student, Instructor, Admin } from "@prisma/client";
 import { AutoMap } from '@automapper/classes';
 // user.entity.ts
 export class UserEntity extends BaseEntity {
@@ -45,6 +45,10 @@ export class UserEntity extends BaseEntity {
 
   inActive: boolean; // Tình trạng hoạt động
   isBlock: boolean = false; // Có bị chặn không
+
+  student?: Student;
+  instructor?: Instructor;
+  admin?: Admin;
 
   // Phương thức khởi tạo để tạo một UserEntity từ dữ liệu
   constructor(partial?: Partial<UserEntity>) {

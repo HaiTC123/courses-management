@@ -1,6 +1,7 @@
 import { AutoMap } from '@automapper/classes';
 import { BaseEntity } from 'src/model/entity/base.entity';
 import { UserEntity } from './user.entity';
+import { Decimal } from '@prisma/client/runtime/library';
 
 export class StudentEntity extends BaseEntity {
   @AutoMap()
@@ -16,7 +17,7 @@ export class StudentEntity extends BaseEntity {
   yearOfStudy: number; // Năm học của sinh viên
   
   @AutoMap()
-  gpa?: number; // Điểm trung bình tích lũy (GPA)
+  gpa: Decimal; // Điểm trung bình tích lũy (GPA)
   
   @AutoMap()
   graduationStatus: string; // Trạng thái tốt nghiệp

@@ -75,6 +75,10 @@ export class PrismaService extends PrismaClient implements OnModuleDestroy {
         return this.semester;
       case "enrollments":
         return this.enrollment;
+      case "learnPaths":
+        return this.learningPath;
+      case "learnPathCourse":
+        return this.learningPathCourse;
     }
     return null;
   }

@@ -14,7 +14,7 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
         coreService: CoreService,
         protected readonly prismaService: PrismaService) {
         super(prismaService, coreService)
-       
+
     }
 
     async add(entity: CourseEntity): Promise<number> {
@@ -120,7 +120,44 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
         const data = await this.repository.findOneWithCondition(conditions);
         this.afterGetData(data);
         return data;
-      }
-    
+    }
+    async getEligibleCoursesForLearningPath(courseIds: number[]) {
+        // Bước 1: Lấy danh sách tất cả các khóa học và khóa học tiên quyết
+        const allCourses = await this.prismaService.course.findMany();
+        const prerequisiteCourses = await this.prismaService.prerequisite.findMany({
+            select: {
+                courseId: true,
+                prerequisiteCourseId: true,
+            },
+        });
+
+        // Bước 2: Tạo tập hợp các khóa học không thỏa mãn điều kiện tiên quyết
+        const prerequisitesMap = new Map<number, Set<number>>();
+
+        for (const prerequisite of prerequisiteCourses) {
+            if (!prerequisitesMap.has(prerequisite.courseId)) {
+                prerequisitesMap.set(prerequisite.courseId, new Set());
+            }
+            prerequisitesMap.get(prerequisite.courseId).add(prerequisite.prerequisiteCourseId);
+        }
+
+        const ineligibleCourses = new Set<number>();
+
+        for (const courseId of courseIds) {
+            if (prerequisitesMap.has(courseId)) {
+                for (const prerequisiteId of prerequisitesMap.get(courseId)) {
+                    ineligibleCourses.add(prerequisiteId);
+                }
+            }
+        }
+
+        // Bước 3: Lọc các khóa học để trả về các khóa học hợp lệ và loại bỏ các khóa học trong courseIds
+        const eligibleCourses = allCourses.filter((course) =>
+            !ineligibleCourses.has(course.id) && !courseIds.includes(course.id)
+        );
+        return eligibleCourses;
+    }
+
+
 
 }

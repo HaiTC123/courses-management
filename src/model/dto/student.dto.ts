@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { AutoMap } from '@automapper/classes';
 import { BaseDto } from './base.dto';
 import { UserDto } from './user.dto';
+import { Decimal } from '@prisma/client/runtime/library';
 
 export class StudentDto extends BaseDto{
   @AutoMap()
@@ -22,7 +23,7 @@ export class StudentDto extends BaseDto{
   
   @AutoMap()
   @ApiProperty()
-  gpa?: number; // Điểm trung bình tích lũy (GPA)
+  gpa: Decimal; // Điểm trung bình tích lũy (GPA)
   
   @AutoMap()
   @ApiProperty()

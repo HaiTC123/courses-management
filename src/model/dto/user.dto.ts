@@ -2,6 +2,9 @@ import { AutoMap } from "@automapper/classes";
 import { BaseDto } from "./base.dto";
 import { Role, Gender, AccountStatus } from "@prisma/client";
 import { ApiProperty } from "@nestjs/swagger";
+import { StudentDto } from "./student.dto";
+import { InstructorDto } from "./instructor.dto";
+import { AdminDto } from "./admin.dto";
 // user.entity.ts
 export class UserDto extends BaseDto {
     @ApiProperty()
@@ -65,4 +68,11 @@ export class UserDto extends BaseDto {
         super();
         Object.assign(this, partial);
     }
+}
+
+
+export class UserDetail extends UserDto{
+    student?: StudentDto;
+    instructor?: InstructorDto;
+    admin?: AdminDto;
 }

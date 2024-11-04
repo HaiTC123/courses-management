@@ -8,7 +8,7 @@ import { RegisterDto } from '../../model/dto/auth.dto';
 import { Role } from '@prisma/client';
 import { classes } from '@automapper/classes';
 import { RegisterResponse } from 'src/model/response/register.response';
-import { UserDto } from 'src/model/dto/user.dto';
+import { UserDetail, UserDto } from 'src/model/dto/user.dto';
 import { StudentDto } from 'src/model/dto/student.dto';
 import { StudentEntity } from 'src/model/entity/student.entity';
 import { InstructorDto } from 'src/model/dto/instructor.dto';
@@ -23,6 +23,8 @@ import { EnrollmentDto } from 'src/model/dto/errollment.dto';
 import { EnrollmentEntity } from 'src/model/entity/enrollment.entity';
 import { CourseCompletionEntity } from 'src/model/entity/course-complete.entity';
 import { CourseCompletionDto } from 'src/model/dto/course-complete.dto';
+import { LearningPathCourseEntity, LearningPathEntity } from 'src/model/entity/learn.entity';
+import { LearningPathCourseDto, LearningPathDto } from 'src/model/dto/learn.dto';
 
 @Injectable()
 export class MapperService {
@@ -250,6 +252,8 @@ export class MapperService {
         (dest) => dest.finalGrade,
         mapFrom((src) => src.finalGrade)
       )
+
+
     );
 
     createMap(
@@ -281,6 +285,37 @@ export class MapperService {
         mapFrom((src) => src.finalGrade)
       )
     );
+    createMap(this.mapper, UserEntity, UserDetail,
+      forMember(
+        (dest) => dest.student,
+        mapFrom((src) => src.student)
+      ),
+      forMember(
+        (dest) => dest.instructor,
+        mapFrom((src) => src.instructor)
+      ),
+      forMember(
+        (dest) => dest.admin,
+        mapFrom((src) => src.admin)
+      )
+
+    );
+    createMap(this.mapper, LearningPathEntity, LearningPathDto,
+      forMember(
+        (dest) => dest.courses,
+        mapFrom((src) => src.courses)
+      )
+    );
+    createMap(this.mapper, LearningPathDto, LearningPathEntity);
+
+    createMap(this.mapper, LearningPathCourseEntity, LearningPathCourseDto,
+      forMember(
+        (dest) => dest.course,
+        mapFrom((src) => src.course)
+      )
+
+    );
+    createMap(this.mapper, LearningPathCourseDto, LearningPathCourseEntity);
   }
 
   mapData<S, D>(source: S, sourceClass: new (...args: unknown[]) => S, destinationClass: new (...args: unknown[]) => D): D {
