@@ -144,6 +144,7 @@ model Course {
   status                CourseStatus    @default(DRAFT) // Trạng thái khóa học (enum)
   instructor            Instructor?     @relation(fields: [instructorId], references: [id])
   chapters              CourseChapter[] // Một khóa học có nhiều chương
+  Prerequisite          Prerequisite[]
 }
 
 model CourseChapter {
@@ -206,4 +207,16 @@ model File {
   updatedAt           DateTime @updatedAt // Thời gian cập nhật
   createdBy           String?
   updatedBy           String?
+}
+
+model Prerequisite {
+  id                   Int      @id @default(autoincrement()) // Khóa chính tự động tăng
+  courseId             Int // Khóa học yêu cầu điều kiện tiên quyết
+  prerequisiteCourseId Int // Khóa học điều kiện tiên quyết
+  createdAt            DateTime @default(now()) // Thời gian tạo bản ghi
+  updatedAt            DateTime @updatedAt // Thời gian cập nhật bản ghi
+  createdBy            String?
+  updatedBy            String?
+  // Liên kết với khóa học chính và khóa học tiên quyết
+  prerequisiteCourse   Course   @relation(fields: [prerequisiteCourseId], references: [id], onDelete: Cascade)
 }
