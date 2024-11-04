@@ -87,12 +87,14 @@ export const AttachmentForm = ({
           </div>
         ) : (
           <div className="relative mt-2 aspect-video">
-            <Image
-              src={initialData.imageUrl}
-              alt="Upload"
-              fill
-              className="object-cover rounded-md"
-            />
+            {initialData.imageUrl ? (
+              <Image
+                src={initialData.imageUrl}
+                alt="Upload"
+                fill
+                className="object-cover rounded-md"
+              />
+            ) : null}
           </div>
         ))}
       {isEditing && (

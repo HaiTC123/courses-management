@@ -30,13 +30,15 @@ export const CourseCard: React.FC<CourseCardProps> = ({ id }) => {
       <div className="flex items-center p-4 my-4 transition-shadow duration-300 border rounded-lg shadow-sm cursor-pointer hover:shadow-md">
         {course.backgroundUrl && (
           <div className="flex-shrink-0 mr-4">
-            <Image
-              width={300}
-              height={300}
-              src={course.backgroundUrl}
-              alt={course.courseName}
-              className="rounded-lg"
-            />
+            {course.backgroundUrl ? (
+              <Image
+                width={300}
+                height={300}
+                src={course.backgroundUrl}
+                alt={course.courseName}
+                className="rounded-lg"
+              />
+            ) : null}
           </div>
         )}
         <div className="flex-grow">

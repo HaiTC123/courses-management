@@ -28,13 +28,15 @@ export const LearningCard: React.FC<LearningCardProps> = ({
             ></p>
           </div>
           <div className="hidden md:flex flex-[0_115px] items-center justify-center ml-2">
-            <Image
-              width={98}
-              height={98}
-              className="transition-transform duration-300 group-hover:scale-110"
-              src={imageUrl}
-              alt={title}
-            />
+            {imageUrl ? (
+              <Image
+                width={98}
+                height={98}
+                className="transition-transform duration-300 group-hover:scale-110"
+                src={imageUrl}
+                alt={title}
+              />
+            ) : null}
           </div>
         </div>
         {/* <div className="relative w-full overflow-hidden rounded-t-lg aspect-video">

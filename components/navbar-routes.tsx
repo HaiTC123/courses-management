@@ -40,7 +40,7 @@ export const NavbarRoutes = () => {
       <div className="flex items-center w-full">
         <div className="hidden mr-2 md:block">
           {!isRootPage && (
-            <Button variant="ghost" size="sm" onClick={() => router.back()}>
+            <Button variant="ghost" size="sm" onClick={() => router.push("/")}>
               <ArrowLeft className="mr-2 size-4" />
               <span>Quay lại</span>
             </Button>

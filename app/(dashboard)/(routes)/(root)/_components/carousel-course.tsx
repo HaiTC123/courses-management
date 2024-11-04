@@ -46,14 +46,16 @@ export function CarouselCourse({ items }: { items: any[] }) {
                     <p className="text-white text-md">{item.description}</p>
                   </div>
                   <div className="hidden lg:block">
-                    <Image
-                      src={item.image}
-                      alt={item.title}
-                      width={0}
-                      height={0}
-                      sizes="100vw"
-                      style={{ width: "100%", height: "auto" }}
-                    />
+                    {item.image ? (
+                      <Image
+                        src={item.image}
+                        alt={item.title}
+                        width={0}
+                        height={0}
+                        sizes="100vw"
+                        style={{ width: "100%", height: "auto" }}
+                      />
+                    ) : null}
                   </div>
                 </CardContent>
               </Card>

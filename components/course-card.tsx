@@ -27,12 +27,14 @@ export const CourseCard: React.FC<CourseCardProps> = ({
     <Link href={`/courses/${id}`}>
       <div className="h-full overflow-hidden transition duration-300 ease-in-out border rounded-lg group hover:shadow-lg hover:scale-105">
         <div className="relative w-full overflow-hidden rounded-t-lg aspect-video">
-          <Image
-            fill
-            className="object-cover transition-transform duration-300 group-hover:scale-110"
-            src={imageUrl}
-            alt={title}
-          />
+          {imageUrl ? (
+            <Image
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-110"
+              src={imageUrl}
+              alt={title}
+            />
+          ) : null}
         </div>
         <div className="flex flex-col p-3">
           <div className="flex flex-col pt-2">

@@ -49,7 +49,7 @@ const CreatePage = () => {
     isMandatory: z.boolean(),
     price: z.number().min(0),
     isFree: z.boolean(),
-    status: z.nativeEnum(CourseStatus),
+    status: z.nativeEnum(CourseStatus).optional(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({

@@ -48,14 +48,16 @@ const LearningPathPage = () => {
             }}
           ></p>
         </div>
-        <Image
-          src={learningPath?.backgroundUrl ?? ""}
-          alt="Background Image"
-          width={0}
-          height={0}
-          sizes="100vw"
-          style={{ width: "100%", height: "auto", maxWidth: "600px" }}
-        />
+        {learningPath?.backgroundUrl ? (
+          <Image
+            src={learningPath?.backgroundUrl ?? ""}
+            alt="Background Image"
+            width={0}
+            height={0}
+            sizes="100vw"
+            style={{ width: "100%", height: "auto", maxWidth: "600px" }}
+          />
+        ) : null}
         {learningPath?.courses?.map((course: any, index: number) => (
           <div key={course.id} className="mt-10">
             <h2 className="text-xl font-bold">

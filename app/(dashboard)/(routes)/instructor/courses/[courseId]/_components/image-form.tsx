@@ -64,8 +64,8 @@ export const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
     }
   };
   return (
-    <div className="mt-6 border bg-slate-100 rounded-md p-4">
-      <div className="font-medium flex items-center justify-between">
+    <div className="p-4 mt-6 border rounded-md bg-slate-100">
+      <div className="flex items-center justify-between font-medium">
         Course Image
         <Button type="button" variant="ghost" size="sm" onClick={toggleEdit}>
           {isEditing && <>Cancel</>}
@@ -85,17 +85,19 @@ export const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
       </div>
       {!isEditing &&
         (!initialData.imageUrl ? (
-          <div className="flex items-center justify-center h-60 bg-slate-200 rounded-md">
+          <div className="flex items-center justify-center rounded-md h-60 bg-slate-200">
             <ImageIcon className="w-10 h-10 text-slate-500" />
           </div>
         ) : (
-          <div className="relative aspect-video mt-2">
-            <Image
-              src={initialData.imageUrl}
-              alt="Upload"
-              fill
-              className="rounded-md object-cover"
-            />
+          <div className="relative mt-2 aspect-video">
+            {initialData.imageUrl ? (
+              <Image
+                src={initialData.imageUrl}
+                alt="Upload"
+                fill
+                className="object-cover rounded-md"
+              />
+            ) : null}
           </div>
         ))}
       {isEditing && (
@@ -108,7 +110,7 @@ export const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
               }
             }}
           /> */}
-          <div className="text-xs text-muted-foreground mt-4">
+          <div className="mt-4 text-xs text-muted-foreground">
             16:9 aspect ratio recommended
           </div>
         </div>
