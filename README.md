@@ -107,3 +107,8 @@ ON DUPLICATE KEY UPDATE
 
 instructor => tạo course => gửi phê duyệt => admin
 admin duyệt => hiển thị cho user
+
+INSERT INTO Semester (name, startDate, endDate, isCurrent, createdAt, updatedAt, createdBy, updatedBy)
+VALUES 
+  ('Spring 2024', '2024-01-15', '2024-05-15', false, NOW(), NOW(), 'Admin', 'Admin'),
+  ('Fall 2024', '2024-08-15', '2024-12-15', true, NOW(), NOW(), 'Admin', 'Admin');

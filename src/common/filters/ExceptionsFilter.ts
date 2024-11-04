@@ -22,11 +22,12 @@ export class ExceptionsFilter implements ExceptionFilter {
 
     var result = new ServiceResponse();
     result.success = false;
-    result.message = message["message"];
+    result.message = message["message"] || message;
     result.data = {
         path: request.url
     };
     result.statusCode = status;
+    result.devMessage = exception['message'];
     response.status(status).json(result);
   }
 }

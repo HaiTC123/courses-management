@@ -123,7 +123,7 @@ export class BaseRepository<T extends { id: number }, U> {
             }
         };
         if (!option && Object.keys(option).length > 0) {
-            createOption.select = option;
+            createOption.select = option.select || { id: true };
         }
         return this.model.create(createOption);
     }
@@ -226,17 +226,21 @@ export class BaseRepository<T extends { id: number }, U> {
         const totalItems = await this.model.count({ where: query.where });
 
         // Thực hiện phân trang và lấy dữ liệu
-        const data = await this.model.findMany({
-            ...query,
-            skip: (pageRequest.pageNumber - 1) * pageRequest.pageSize,
-            take: pageRequest.pageSize,
-            include: pageRequest.includeReferences ? pageRequest.includeReferences : {}
-        });
+        const data = await this.doGetDataPaging(query, pageRequest);
 
         return {
             data,
             totalCount: totalItems,
         };
+    }
+
+    async doGetDataPaging(query, pageRequest) {
+        return await this.model.findMany({
+            ...query,
+            skip: (pageRequest.pageNumber - 1) * pageRequest.pageSize,
+            take: pageRequest.pageSize,
+            include: pageRequest.includeReferences ? pageRequest.includeReferences : {}
+        });
     }
 
 }

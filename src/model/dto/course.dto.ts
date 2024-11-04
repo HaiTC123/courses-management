@@ -3,6 +3,7 @@ import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
 import { BaseDto } from './base.dto';
 import { CourseStatus } from '@prisma/client';
+import { EnrollmentDto } from './errollment.dto';
 
 export class CourseDto extends BaseDto{
   @AutoMap()
@@ -56,6 +57,12 @@ export class CourseDto extends BaseDto{
   @AutoMap()
   @ApiProperty()
   status: CourseStatus; // Vai trò người dùng (enum)
+
+  @AutoMap()
+  enrollment: EnrollmentDto[];
+
+  @AutoMap()
+  enrollmentsCount: number;
 }
 
 // CourseChapterDto.ts
@@ -143,5 +150,7 @@ export class CourseMaterialDto {
   @AutoMap()
   @ApiProperty()
   durationMinutes?: number; // Thời lượng tài liệu (nếu có)
+
+  
 
 }

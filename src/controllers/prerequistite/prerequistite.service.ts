@@ -15,12 +15,19 @@ export class PrerequisitesService extends BaseService<PrerequisiteEntity, Prisma
     }
 
     async add(entity: PrerequisiteEntity): Promise<number> {
-        var data = await this.prismaService.prereRepo.findUnique({
-            courseId: entity.prerequisiteCourseId
-        })
+        var data = await this.prismaService.prereRepo.findByField("courseId", entity.prerequisiteCourseId)
 
-        if (!data && data.prerequisiteCourseId == entity.courseId) {
+        if (!data || data.find(x => x.prerequisiteCourseId == entity.courseId)) {
             throw new HttpException({ message: 'Invalid recycle prerequisite' }, HttpStatus.BAD_REQUEST)
+        }
+
+        var data1 = await this.prismaService.prereRepo.findOneByFieldList({
+
+            courseId: entity.courseId,
+            prerequisiteCourseId: entity.prerequisiteCourseId
+        })
+        if (data1) {
+            return data1.id;
         }
         return await super.add(entity);
     }

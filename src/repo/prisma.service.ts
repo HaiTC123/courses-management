@@ -5,6 +5,7 @@ import { UserRepository } from './user.repo';
 import { BaseRepository } from './base.repo';
 import { CourseRepository } from './course.repo';
 import { PrerequisiteEntity } from 'src/model/entity/prere.entity';
+import { CourseCompletionEntity } from 'src/model/entity/course-complete.entity';
 
 
 
@@ -14,6 +15,7 @@ export class PrismaService extends PrismaClient implements OnModuleDestroy {
   public otpRepo: BaseRepository<OtpRequest, Prisma.OtpRequestCreateInput>;
   public courseRepo: CourseRepository;
   public prereRepo: BaseRepository<PrerequisiteEntity, Prisma.PrerequisiteCreateInput>;
+  public courseCompleteRepo: BaseRepository<CourseCompletionEntity, Prisma.CourseCompletionCreateInput>;
 
   constructor() {
     super();
@@ -21,6 +23,7 @@ export class PrismaService extends PrismaClient implements OnModuleDestroy {
     this.otpRepo = new BaseRepository<OtpRequest, Prisma.OtpRequestCreateInput>(this, this.otpRequest);
     this.courseRepo = new CourseRepository(this);
     this.prereRepo = new BaseRepository<PrerequisiteEntity, Prisma.PrerequisiteCreateInput>(this, this.prerequisite);
+    this.courseCompleteRepo = new BaseRepository<CourseCompletionEntity, Prisma.CourseCompletionCreateInput>(this, this.courseCompletion);
   }
 
   // Đóng kết nối Prisma khi module bị hủy
@@ -28,7 +31,19 @@ export class PrismaService extends PrismaClient implements OnModuleDestroy {
     await this.$disconnect();
   }
 
-  createRepo<T extends { id: number }, K>(model: any): BaseRepository<T, K> {
+  createRepo<T extends { id: number }, K>(modelName, model: any) {
+    switch (modelName) {
+      case "users":
+        return this.userRepo;
+      case "optRequest":
+        return this.otpRepo;
+      case "courses":
+        return this.courseRepo;
+      case "prerequisite":
+        return this.prereRepo;
+      case "courseCompletetion":
+        return this.courseCompleteRepo;
+    }
     return new BaseRepository<T, K>(this, model);
   }
 
@@ -56,6 +71,10 @@ export class PrismaService extends PrismaClient implements OnModuleDestroy {
         return this.file;
       case "prerequisite":
         return this.prerequisite;
+      case "semester":
+        return this.semester;
+      case "enrollments":
+        return this.enrollment;
     }
     return null;
   }

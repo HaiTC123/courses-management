@@ -14,7 +14,6 @@ import { RolesGuard } from 'src/core/roles.guard';
 @ApiTags('Student')
 @Controller('api/student')
 @UseGuards(AuthGuard, RolesGuard)
-@Roles(Role.Admin, Role.Instructor)
 export class StudentsController extends BaseController<StudentEntity, Prisma.StudentCreateInput> {
     @EntityType(StudentEntity)
     entity: StudentEntity;

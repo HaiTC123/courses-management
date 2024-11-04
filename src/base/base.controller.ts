@@ -34,9 +34,9 @@ export class BaseController<TEntity extends {id: number}, TModel> {
             id: id
         });
         const result = this._mapperService.mapData(data, this.TEntityClass, this.TModelClass);
-        if (result == null){
-            return ServiceResponse.onBadRequest(null, "Not found");
-        }
+        // if (result == null){
+        //     return ServiceResponse.onBadRequest(null, "Not found");
+        // }
         return ServiceResponse.onSuccess(result);
     }
 

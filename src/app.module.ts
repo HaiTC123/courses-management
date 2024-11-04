@@ -13,6 +13,8 @@ import { CourseChaptersModule } from './controllers/courseChapters/courseChapter
 import { CourseLessonsModule } from './controllers/courseLessons/courseLessons.module';
 import { CourseMaterialsModule } from './controllers/courseMaterials/courseMaterials.module';
 import { FilesModule } from './controllers/file/files.module';
+import { PrerequisitesModule } from './controllers/prerequistite/prerequistite.module';
+import { ErrollmentsModule } from './controllers/enrollment/enrollment.module';
 @Module({
   imports: [
     AuthModule,
@@ -24,7 +26,9 @@ import { FilesModule } from './controllers/file/files.module';
     CourseChaptersModule,
     CourseLessonsModule,
     CourseMaterialsModule,
-    FilesModule
+    FilesModule,
+    PrerequisitesModule,
+    ErrollmentsModule
   ],
   controllers: [AppController],
   providers: [AppService,

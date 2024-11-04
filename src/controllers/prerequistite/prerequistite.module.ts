@@ -7,4 +7,4 @@ import { PrerequisitesService } from './prerequistite.service';
   controllers: [PrerequisitesController],
   providers: [ AuthService ,PrismaService, PrerequisitesService]
 })
-export class PrerequisiteEntitysModule {}
+export class PrerequisitesModule {}

@@ -81,7 +81,7 @@ model OtpRequest {
 model Instructor {
   id         Int      @id @default(autoincrement()) // Khóa chính, tự động tăng
   userId     Int // Liên kết với bảng Users
-  User       User     @relation(fields: [userId], references: [id]) // Quan hệ với bảng Users
+  user       User     @relation(fields: [userId], references: [id]) // Quan hệ với bảng Users
   department String   @db.VarChar(255) // Khoa hoặc bộ môn của giảng viên
   createdAt  DateTime @default(now()) // Thời gian tạo bản ghi
   updatedAt  DateTime @updatedAt // Thời gian cập nhật bản ghi
@@ -93,17 +93,19 @@ model Instructor {
 }
 
 model Student {
-  id               Int      @id @default(autoincrement()) // Khóa chính, tự động tăng
+  id               Int                @id @default(autoincrement()) // Khóa chính, tự động tăng
   userId           Int // Liên kết với bảng Users
-  user             User     @relation(fields: [userId], references: [id]) // Quan hệ với bảng Users
-  major            String   @db.VarChar(255) // Chuyên ngành của sinh viên
+  user             User               @relation(fields: [userId], references: [id]) // Quan hệ với bảng Users
+  major            String             @db.VarChar(255) // Chuyên ngành của sinh viên
   yearOfStudy      Int // Năm học của sinh viên
-  gpa              Decimal? @db.Decimal(3, 2) // Điểm trung bình tích lũy (GPA)
-  graduationStatus String   @default("In Progress") // Trạng thái tốt nghiệp
-  createdAt        DateTime @default(now()) // Thời gian tạo bản ghi
-  updatedAt        DateTime @updatedAt // Thời gian cập nhật bản ghi
-  createdBy        String?  @db.VarChar(100)
-  updatedBy        String?  @db.VarChar(100)
+  gpa              Decimal?           @db.Decimal(3, 2) // Điểm trung bình tích lũy (GPA)
+  graduationStatus String             @default("In Progress") // Trạng thái tốt nghiệp
+  createdAt        DateTime           @default(now()) // Thời gian tạo bản ghi
+  updatedAt        DateTime           @updatedAt // Thời gian cập nhật bản ghi
+  createdBy        String?            @db.VarChar(100)
+  updatedBy        String?            @db.VarChar(100)
+  Enrollment       Enrollment[]
+  CourseCompletion CourseCompletion[]
 
   @@index([userId]) // Tạo chỉ mục cho trường userId
 }
@@ -124,27 +126,29 @@ model Admin {
 }
 
 model Course {
-  id                    Int             @id @default(autoincrement()) // Khóa chính tự động tăng
-  courseCode            String          @unique // Mã khóa học (duy nhất)
+  id                    Int                @id @default(autoincrement()) // Khóa chính tự động tăng
+  courseCode            String             @unique // Mã khóa học (duy nhất)
   courseName            String // Tên khóa học
   description           String? // Mô tả khóa học
-  credits               Int             @default(3) // Số tín chỉ
+  credits               Int                @default(3) // Số tín chỉ
   instructorId          Int? // Liên kết với bảng Instructors
   prerequisiteCourseIds String? // Khóa học tiên quyết
-  durationWeeks         Int             @default(12) // Thời gian khóa học (tuần)
+  durationWeeks         Int                @default(12) // Thời gian khóa học (tuần)
   category              String? // Phân loại khóa học
-  isMandatory           Boolean         @default(false) // Bắt buộc hay không
+  isMandatory           Boolean            @default(false) // Bắt buộc hay không
   semesterOffered       String? // Học kỳ được mở
-  price                 Float           @default(0.0) // Giá khóa học
-  isFree                Boolean         @default(false) // Khóa học miễn phí
-  createdAt             DateTime        @default(now()) // Thời gian tạo
-  updatedAt             DateTime        @updatedAt // Thời gian cập nhật
+  price                 Float              @default(0.0) // Giá khóa học
+  isFree                Boolean            @default(false) // Khóa học miễn phí
+  createdAt             DateTime           @default(now()) // Thời gian tạo
+  updatedAt             DateTime           @updatedAt // Thời gian cập nhật
   createdBy             String? // Người tạo khóa học
   updatedBy             String? // Người cập nhật khóa học
-  status                CourseStatus    @default(DRAFT) // Trạng thái khóa học (enum)
-  instructor            Instructor?     @relation(fields: [instructorId], references: [id])
+  status                CourseStatus       @default(DRAFT) // Trạng thái khóa học (enum)
+  instructor            Instructor?        @relation(fields: [instructorId], references: [id])
   chapters              CourseChapter[] // Một khóa học có nhiều chương
-  Prerequisite          Prerequisite[]
+  prerequisite          Prerequisite[]
+  enrollment            Enrollment[]
+  courseCompletion      CourseCompletion[]
 }
 
 model CourseChapter {
@@ -219,4 +223,59 @@ model Prerequisite {
   updatedBy            String?
   // Liên kết với khóa học chính và khóa học tiên quyết
   prerequisiteCourse   Course   @relation(fields: [prerequisiteCourseId], references: [id], onDelete: Cascade)
+}
+
+model Semester {
+  id               Int                @id @default(autoincrement()) // Khóa chính tự động tăng
+  name             String             @db.VarChar(100) // Tên học kỳ
+  startDate        DateTime // Ngày bắt đầu học kỳ
+  endDate          DateTime // Ngày kết thúc học kỳ
+  isCurrent        Boolean            @default(false) // Xác định nếu là học kỳ hiện tại
+  createdAt        DateTime           @default(now()) // Thời gian tạo bản ghi
+  updatedAt        DateTime           @updatedAt // Thời gian cập nhật bản ghi
+  createdBy        String?
+  updatedBy        String?
+  Enrollment       Enrollment[]
+  CourseCompletion CourseCompletion[]
+}
+
+model Enrollment {
+  id               Int                @id @default(autoincrement()) // Khóa chính tự động tăng
+  studentId        Int // Liên kết với sinh viên trong bảng Students
+  courseId         Int // Liên kết với khóa học trong bảng Courses
+  semesterId       Int // Liên kết với học kỳ trong bảng Semesters
+  enrollmentStatus String             @default("In Progress") // Trạng thái đăng ký
+  grade            Decimal?           @db.Decimal(4, 2) // Điểm số của sinh viên cho khóa học (nếu có)
+  enrollmentDate   DateTime           @default(now()) // Ngày đăng ký khóa học
+  completionDate   DateTime? // Ngày hoàn thành khóa học (nếu có)
+  createdAt        DateTime           @default(now()) // Thời gian tạo bản ghi
+  updatedAt        DateTime           @updatedAt // Thời gian cập nhật bản ghi
+  createdBy        String?
+  updatedBy        String?
+  // Quan hệ với các bảng khác
+  student          Student            @relation(fields: [studentId], references: [id])
+  course           Course             @relation(fields: [courseId], references: [id])
+  semester         Semester           @relation(fields: [semesterId], references: [id])
+  CourseCompletion CourseCompletion[]
+}
+
+model CourseCompletion {
+  id               Int      @id @default(autoincrement()) // Khóa chính tự động tăng
+  studentId        Int // Liên kết với bảng Students
+  courseId         Int // Liên kết với bảng Courses
+  enrollmentId     Int // Liên kết với bảng Enrollments
+  semesterId       Int // Liên kết với bảng Semesters
+  completionDate   DateTime @default(now()) // Ngày hoàn thành khóa học
+  finalGrade       Float? // Điểm số cuối cùng
+  createdAt        DateTime @default(now()) // Thời gian tạo bản ghi
+  updatedAt        DateTime @updatedAt // Thời gian cập nhật bản ghi
+  createdBy        String?
+  updatedBy        String?
+
+  student    Student    @relation(fields: [studentId], references: [id])
+  course     Course     @relation(fields: [courseId], references: [id])
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id])
+  semester   Semester   @relation(fields: [semesterId], references: [id])
+
+  @@map("CourseCompletion")
 }

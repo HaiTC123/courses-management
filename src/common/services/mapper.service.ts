@@ -15,6 +15,14 @@ import { InstructorDto } from 'src/model/dto/instructor.dto';
 import { InstructorEntity } from 'src/model/entity/instructor.enity';
 import { CourseChapterEntity, CourseEntity, CourseLessonEntity, CourseMaterialEntity } from 'src/model/entity/course.entity';
 import { CourseChapterDto, CourseDto, CourseLessonDto, CourseMaterialDto } from 'src/model/dto/course.dto';
+import { PrerequisiteEntity } from 'src/model/entity/prere.entity';
+import { PrerequisiteDto } from 'src/model/dto/prere.dto';
+import { SemesterEntity } from 'src/model/entity/semester.entity';
+import { SemesterDto } from 'src/model/dto/semester.dto';
+import { EnrollmentDto } from 'src/model/dto/errollment.dto';
+import { EnrollmentEntity } from 'src/model/entity/enrollment.entity';
+import { CourseCompletionEntity } from 'src/model/entity/course-complete.entity';
+import { CourseCompletionDto } from 'src/model/dto/course-complete.dto';
 
 @Injectable()
 export class MapperService {
@@ -73,7 +81,8 @@ export class MapperService {
     createMap(this.mapper, CourseEntity, CourseDto,
       forMember(dest => dest.id, mapFrom(src => src.id)),
       forMember(dest => dest.credits, mapFrom(src => src.credits)),
-      forMember(dest => dest.instructorId, mapFrom(src => src.instructorId)));
+      forMember(dest => dest.instructorId, mapFrom(src => src.instructorId)),
+      forMember(dest => dest.enrollment, mapFrom(src => src.enrollment)));
 
     createMap(this.mapper, CourseDto, CourseEntity,
       forMember(dest => dest.id, mapFrom(src => src.id)),
@@ -107,6 +116,171 @@ export class MapperService {
       forMember(dest => dest.id, mapFrom(src => src.id)),
       forMember(dest => dest.lessonId, mapFrom(src => src.lessonId)));
 
+    createMap(this.mapper, PrerequisiteEntity, PrerequisiteDto,
+      forMember(
+        (destination) => destination.id,
+        mapFrom((source) => source.id)
+      ),
+      forMember(
+        (destination) => destination.courseId,
+        mapFrom((source) => source.courseId)
+      ),
+      forMember(
+        (destination) => destination.prerequisiteCourseId,
+        mapFrom((source) => source.prerequisiteCourseId)
+      ),
+      forMember(
+        (destination) => destination.prerequisiteCourse,
+        mapFrom((source) => source.prerequisiteCourse)
+      )
+    )
+    createMap(this.mapper, PrerequisiteDto, PrerequisiteEntity,
+      forMember(
+        (destination) => destination.id,
+        mapFrom((source) => source.id)
+      ),
+      forMember(
+        (destination) => destination.courseId,
+        mapFrom((source) => source.courseId)
+      ),
+      forMember(
+        (destination) => destination.prerequisiteCourseId,
+        mapFrom((source) => source.prerequisiteCourseId)
+      ),
+      forMember(
+        (destination) => destination.prerequisiteCourse,
+        mapFrom((source) => source.prerequisiteCourse)
+      )
+    )
+
+    createMap(this.mapper, SemesterEntity, SemesterDto,
+      forMember(
+        (destination) => destination.id,
+        mapFrom((source) => source.id)
+      ),
+      forMember(
+        (destination) => destination.startDate,
+        mapFrom((source) => source.startDate)
+      ),
+      forMember(
+        (destination) => destination.endDate,
+        mapFrom((source) => source.endDate)
+      )
+    )
+
+    // Mapping từ DTO sang Entity
+    createMap(this.mapper, SemesterDto, SemesterEntity,
+      forMember(
+        (destination) => destination.id,
+        mapFrom((source) => source.id)
+      ),
+      forMember(
+        (destination) => destination.startDate,
+        mapFrom((source) => source.startDate)
+      ),
+      forMember(
+        (destination) => destination.endDate,
+        mapFrom((source) => source.endDate)
+      )
+    )
+
+    createMap(this.mapper, EnrollmentEntity, EnrollmentDto,
+      forMember(
+        (destination) => destination.id,
+        mapFrom((source) => source.id)
+      ),
+      forMember(
+        (destination) => destination.studentId,
+        mapFrom((source) => source.studentId)
+      ),
+      forMember(
+        (destination) => destination.courseId,
+        mapFrom((source) => source.courseId)
+      ),
+      forMember(
+        (destination) => destination.semesterId,
+        mapFrom((source) => source.semesterId)
+      )
+    );
+
+    // Mapping từ DTO sang Entity
+    createMap(this.mapper, EnrollmentDto, EnrollmentEntity,
+      forMember(
+        (destination) => destination.id,
+        mapFrom((source) => source.id)
+      ),
+      forMember(
+        (destination) => destination.studentId,
+        mapFrom((source) => source.studentId)
+      ),
+      forMember(
+        (destination) => destination.courseId,
+        mapFrom((source) => source.courseId)
+      ),
+      forMember(
+        (destination) => destination.semesterId,
+        mapFrom((source) => source.semesterId)
+      )
+    );
+    createMap(
+      this.mapper,
+      CourseCompletionEntity,
+      CourseCompletionDto,
+      forMember(
+        (dest) => dest.id,
+        mapFrom((src) => src.id)
+      ),
+      forMember(
+        (dest) => dest.studentId,
+        mapFrom((src) => src.studentId)
+      ),
+      forMember(
+        (dest) => dest.courseId,
+        mapFrom((src) => src.courseId)
+      ),
+      forMember(
+        (dest) => dest.enrollmentId,
+        mapFrom((src) => src.enrollmentId)
+      ),
+      forMember(
+        (dest) => dest.semesterId,
+        mapFrom((src) => src.semesterId)
+      ),
+      forMember(
+        (dest) => dest.finalGrade,
+        mapFrom((src) => src.finalGrade)
+      )
+    );
+
+    createMap(
+      this.mapper,
+      CourseCompletionDto,
+      CourseCompletionEntity,
+      forMember(
+        (dest) => dest.id,
+        mapFrom((src) => src.id)
+      ),
+      forMember(
+        (dest) => dest.studentId,
+        mapFrom((src) => src.studentId)
+      ),
+      forMember(
+        (dest) => dest.courseId,
+        mapFrom((src) => src.courseId)
+      ),
+      forMember(
+        (dest) => dest.enrollmentId,
+        mapFrom((src) => src.enrollmentId)
+      ),
+      forMember(
+        (dest) => dest.semesterId,
+        mapFrom((src) => src.semesterId)
+      ),
+      forMember(
+        (dest) => dest.finalGrade,
+        mapFrom((src) => src.finalGrade)
+      )
+    );
   }
 
   mapData<S, D>(source: S, sourceClass: new (...args: unknown[]) => S, destinationClass: new (...args: unknown[]) => D): D {

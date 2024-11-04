@@ -11,6 +11,7 @@ import { CourseDto } from 'src/model/dto/course.dto';
 import { ServiceResponse } from 'src/model/response/service.response';
 import { RolesGuard } from 'src/core/roles.guard';
 import { Roles } from 'src/utils/roles.decorator';
+import { RegisterCourse } from 'src/model/request/registerCourse.request';
 
 
 @ApiTags('Courses')
@@ -49,6 +50,13 @@ export class CoursesController extends BaseController<CourseEntity, Prisma.Cours
     async adminUpdateStatus(@Param("courseId") courseId: number): Promise<ServiceResponse>{
         // to-do
         return null;
+    }
+
+    @Roles(Role.Student)
+    @Post("register")
+    @ApiBody({ type: RegisterCourse })
+    async registerCourse(@Body() param: RegisterCourse): Promise<ServiceResponse>{
+        return await this.service.registerCourseFree(param.courseId, param.semeterId);
     }
 
 }

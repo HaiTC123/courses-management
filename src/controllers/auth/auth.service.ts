@@ -104,9 +104,15 @@ export class AuthService extends BaseService<User, Prisma.UserCreateInput > {
         data.email = param.email;
         data.otp = otpCode;
         data.expiryTime = new Date(new Date().getTime() + 300000);
+        var otpRequest = await this.prismaService.otpRepo.findOneWithCondition({
+            email: param.email
+        })
+        if (otpRequest){
+            await this.prismaService.otpRepo.delete(otpRequest.id);
+        }
         await this.prismaService.otpRepo.create(data);
         // send email
-        await this._emailService.sendEmail("phamngocthuan13@gmail.com", "Quên mật khẩu", "TemplateForgotPassword.html", {
+        await this._emailService.sendEmail(data.email, "Quên mật khẩu", "TemplateForgotPassword.html", {
             OTP: data.otp
         })
         return ServiceResponse.onSuccess();

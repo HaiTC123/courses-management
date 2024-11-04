@@ -11,7 +11,7 @@ export class BaseService<T extends { id: number }, K> {
   protected readonly _mapperService;
   protected readonly _emailService;
   protected readonly _authService: HttpContextService;
-  protected repository: BaseRepository<T, K>;
+  protected repository: any;
   protected readonly entityFactory: new () => K;
   constructor(
     protected readonly prismaService: PrismaService,
@@ -23,7 +23,7 @@ export class BaseService<T extends { id: number }, K> {
   }
 
   setRepo(modelName: string){
-    this.repository = this.prismaService.createRepo<T, K>(this.prismaService.getModelByType(modelName));
+    this.repository = this.prismaService.createRepo<T, K>(modelName,this.prismaService.getModelByType(modelName));
   }
 
   // // Tạo mới entity
