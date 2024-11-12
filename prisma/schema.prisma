@@ -269,8 +269,7 @@ model Enrollment {
   studentId        Int // Liên kết với sinh viên trong bảng Students
   courseId         Int // Liên kết với khóa học trong bảng Courses
   semesterId       Int // Liên kết với học kỳ trong bảng Semesters
-  enrollmentStatus String             @default("In Progress") // Trạng thái đăng ký
-  grade            Decimal?           @db.Decimal(4, 2) // Điểm số của sinh viên cho khóa học (nếu có)
+  enrollmentStatus String             @default("In Progress") // Trạng thái đăng ký  
   enrollmentDate   DateTime           @default(now()) // Ngày đăng ký khóa học
   completionDate   DateTime? // Ngày hoàn thành khóa học (nếu có)
   createdAt        DateTime           @default(now()) // Thời gian tạo bản ghi
@@ -282,7 +281,7 @@ model Enrollment {
   course           Course             @relation(fields: [courseId], references: [id])
   semester         Semester           @relation(fields: [semesterId], references: [id])
   CourseCompletion CourseCompletion[]
-  Grade            Grade[]
+  gradeDetail      Grade?
   FailedCourse     FailedCourse[]
 }
 
@@ -359,7 +358,7 @@ model Notification {
 
 model Grade {
   id           Int      @id @default(autoincrement()) // Khóa chính tự động tăng
-  enrollmentId Int // Liên kết với bảng Enrollments
+  enrollmentId Int      @unique // Liên kết với bảng Enrollments
   courseId     Int // Liên kết với bảng Courses
   studentId    Int // Liên kết với bảng Students
   grade        Decimal // Điểm số cuối cùng của sinh viên
@@ -369,7 +368,7 @@ model Grade {
   createdBy    String?
   updatedBy    String?
 
-  enrollment Enrollment @relation(fields: [enrollmentId], references: [id]) // Quan hệ với Enrollment
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
   course     Course     @relation(fields: [courseId], references: [id]) // Quan hệ với Course
   student    Student    @relation(fields: [studentId], references: [id]) // Quan hệ với Student
 

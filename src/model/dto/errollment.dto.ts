@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AutoMap } from '@automapper/classes';
 import { BaseDto } from './base.dto';
+import { GradeDto } from './grade.dto';
 
 export class EnrollmentDto extends BaseDto{
   @ApiProperty()
@@ -25,14 +26,11 @@ export class EnrollmentDto extends BaseDto{
 
   @ApiProperty()
   @AutoMap()
-  grade?: number; // Điểm số của sinh viên cho khóa học (nếu có)
-
-  @ApiProperty()
-  @AutoMap()
   enrollmentDate: Date; // Ngày đăng ký khóa học
 
   @ApiProperty()
   @AutoMap()
   completionDate?: Date; // Ngày hoàn thành khóa học (nếu có)
 
+  gradeDetail?: GradeDto;
 }

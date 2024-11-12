@@ -22,9 +22,12 @@ import { GradesModule } from './controllers/grade/grade.module';
 import { CompleteCoursesModule } from './controllers/completeCourse/completeCourse.module';
 import { GoalsModule } from './controllers/goal/goal.module';
 import { AcademicAdvisingsModule } from './controllers/academicAdvising/academicAdvising.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { SemesterFinalizationService } from './common/services/semesterFinal.service';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     AuthModule,
     CoreModule,
     UsersModule,
@@ -50,7 +53,8 @@ import { AcademicAdvisingsModule } from './controllers/academicAdvising/academic
     {
       provide: APP_INTERCEPTOR,
       useClass: HttpContextInterceptor, // Kích hoạt Interceptor cho toàn bộ ứng dụng
-    }
+    },
+    SemesterFinalizationService
   ],
 })
 export class AppModule {}

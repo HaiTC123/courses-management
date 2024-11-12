@@ -1,5 +1,6 @@
 import { AutoMap } from '@automapper/classes';
 import { BaseEntity } from './base.entity';
+import { GradeEntity } from './grade.entity';
 
 export class EnrollmentEntity extends BaseEntity {
     @AutoMap()
@@ -18,13 +19,10 @@ export class EnrollmentEntity extends BaseEntity {
     enrollmentStatus: string; // Trạng thái đăng ký
 
     @AutoMap()
-    grade?: number; // Điểm số của sinh viên cho khóa học (nếu có)
-
-    @AutoMap()
     enrollmentDate: Date; // Ngày đăng ký khóa học
 
     @AutoMap()
     completionDate?: Date; // Ngày hoàn thành khóa học (nếu có)
 
-
+    gradeDetail?: GradeEntity;
 }

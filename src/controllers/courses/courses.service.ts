@@ -102,12 +102,16 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
         if (existingEnrollment) {
             throw new HttpException('Bạn đã đăng ký khóa học này.', HttpStatus.BAD_REQUEST);
         }
-        var enrollment = new EnrollmentEntity();
-        enrollment.studentId = studentInfo.id;
-        enrollment.courseId = courseId;
-        enrollment.semesterId = semesterId;
-        enrollment.enrollmentStatus = 'In Progress';
-        enrollment.completionDate = today;
+        var enrollment = {
+            studentId: studentInfo.id,
+            courseId: courseId,
+            semesterId: semesterId,
+            enrollmentStatus: 'In Progress',
+            completionDate: today,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        };
+
         // Thực hiện đăng ký khóa học
         const enrollment1 = await this.prismaService.enrollment.create({
             data: enrollment
@@ -203,7 +207,7 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
             where: { id: course.instructorId }
         })
         // Send notification to admin
-        await this.pushNotification(instructor.userId ,type,
+        await this.pushNotification(instructor.userId, type,
             JSON.stringify({
                 courseId,
                 courseName: course.courseName

@@ -205,6 +205,10 @@ export class MapperService {
       forMember(
         (destination) => destination.semesterId,
         mapFrom((source) => source.semesterId)
+      ),
+      forMember(
+        (destination) => destination.gradeDetail,
+        mapFrom((source) => source.gradeDetail)
       )
     );
 
