@@ -17,6 +17,10 @@ export class LearningPathDto extends BaseDto{
   description?: string;
 
   courses: CourseDto[];
+  
+  @ApiProperty()
+  @AutoMap()
+  backgroundUrl?: string;
 }
 
 export class LearningPathCourseDto extends BaseDto{

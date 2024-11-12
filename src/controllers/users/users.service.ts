@@ -35,7 +35,10 @@ export class UsersService extends BaseService<UserEntity, Prisma.UserCreateInput
                 id: true
             }
         }, this.getMoreCreateData());
-        // to-do : send password to user email
+        await this._emailService.sendEmail(entity.email, "Quản trị đã tạo tài khoản cho bạn", "AdminCreateAccountForStudent.html", {
+            userName: entity.email,
+            passWord: passWord
+        })
         return Number(result.id);
     }
 
@@ -68,5 +71,7 @@ export class UsersService extends BaseService<UserEntity, Prisma.UserCreateInput
         return ServiceResponse.onSuccess(result);
 
     }
+
+    
 
 }

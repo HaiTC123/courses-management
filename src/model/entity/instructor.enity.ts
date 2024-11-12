@@ -15,10 +15,5 @@ export class InstructorEntity extends BaseEntity {
   @AutoMap()
   user: UserEntity; // Tham chiếu tới UserEntity
   // Phương thức khởi tạo để tạo một InstructorEntity từ dữ liệu
-  constructor(partial?: Partial<InstructorEntity>) {
-    super();
-    Object.assign(this, partial);
-    this.createdAt = this.createdAt || new Date();
-    this.updatedAt = new Date();
-  }
+
 }

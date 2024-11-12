@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
-import { Prisma, Role } from '@prisma/client';
+import { CourseStatus, Prisma, Role } from '@prisma/client';
 import { BaseController } from 'src/base/base.controller';
 import { EntityType, ModelType } from 'src/common/reflect.metadata';
 import { AuthGuard } from 'src/core/auth.guard';
@@ -39,17 +39,21 @@ export class CoursesController extends BaseController<CourseEntity, Prisma.Cours
     }
 
     @Roles(Role.Instructor)
-    @Put("sentToAdmin/:courseId")
+    @Put("sendToAdmin/:courseId")
     async sentToAdminApprove(@Param("courseId") courseId: number): Promise<ServiceResponse> {
-        // to-do
-        return null;
+        return this.service.sendCourseToAdminApprove(courseId);
     }
 
     @Roles(Role.Admin)
     @Put("updateStatus/:courseId")
-    async adminUpdateStatus(@Param("courseId") courseId: number): Promise<ServiceResponse> {
-        // to-do
-        return null;
+    async adminUpdateStatus(@Param("courseId") courseId: number
+        , @Body('status') status: CourseStatus
+    ): Promise<ServiceResponse> {
+        if (!Object.values(CourseStatus).includes(status)) {
+            return ServiceResponse.onBadRequest(null, 'Invalid course status');
+        }
+        return await this.service.adminUpdateStatusCourse(courseId, status)
+        
     }
 
     @Roles(Role.Student)

@@ -1,5 +1,5 @@
 // user/user.repository.ts
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient, Role } from '@prisma/client';
 import { BaseRepository } from './base.repo';
 import { UserEntity } from 'src/model/entity/user.entity';
 
@@ -32,6 +32,12 @@ export class UserRepository extends BaseRepository<UserEntity, Prisma.UserCreate
       where: {
         "userId": userId,
       },
+    });
+  }
+
+  async getUserByRole(role: Role){
+    return this.prisma.user.findMany({
+      where: { role },
     });
   }
 }

@@ -16,7 +16,5 @@ export class InstructorDto extends BaseDto{
   @ApiProperty()
   department: string; // Khoa hoặc bộ môn của giảng viên
   
-  @AutoMap()
-  @ApiProperty()
   user: UserDto; // Tham chiếu tới UserDto
 }

@@ -4,6 +4,7 @@ import { MapperService } from 'src/common/services/mapper.service';
 import { EmailService } from '../common/services/email.service';
 import { HttpContextService } from 'src/common/services/http-context.service';
 import { UploadService } from 'src/common/services/upload.service';
+import { NotificationService } from 'src/common/services/notification.service';
 
 @Injectable()
 export class CoreService {
@@ -11,7 +12,8 @@ export class CoreService {
     private readonly uploadService: UploadService,
     private readonly mapper: MapperService,
     private readonly emailService: EmailService,
-    private readonly authService: HttpContextService
+    private readonly authService: HttpContextService,
+    private readonly notificationService: NotificationService
   ) {
 
   }
@@ -29,5 +31,9 @@ export class CoreService {
 
   getUploadFileService(): UploadService {
     return this.uploadService
+  }
+
+  getNotificationService(): NotificationService {
+    return this.notificationService;
   }
 }

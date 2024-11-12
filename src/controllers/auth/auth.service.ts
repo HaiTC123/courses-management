@@ -11,7 +11,7 @@ import { ServiceResponse } from 'src/model/response/service.response';
 import { ChangePasswordRequest, ForgotPassswordRequest, LoginRequest, ResetPasswordRequest } from 'src/model/request/index';
 import { generateOtp } from 'src/utils/common.utils';
 import { OTPEntity } from 'src/model/entity/otp.enity';
-import { Prisma, User } from '@prisma/client';
+import { Prisma, Role, User } from '@prisma/client';
 
 @Injectable()
 export class AuthService extends BaseService<User, Prisma.UserCreateInput > {
@@ -64,7 +64,22 @@ export class AuthService extends BaseService<User, Prisma.UserCreateInput > {
                 fullName: true,
                 passwordHash: true,
                 role: true,
-                id: true
+                id: true,
+                instructor: {
+                    select: {
+                        id: true
+                    }
+                },
+                student: {
+                    select: {
+                        id: true
+                    }
+                },
+                admin: {
+                    select: {
+                        id: true
+                    }
+                }
             }
         );
 
@@ -83,6 +98,9 @@ export class AuthService extends BaseService<User, Prisma.UserCreateInput > {
             fullName: user.fullName,
             role: user.role,
             id: user.id,
+            studentId: user.student?.id,
+            adminId: user.admin?.id,
+            instructorId: user.instructor?.id,
             token: generateToken(user)
         })
 

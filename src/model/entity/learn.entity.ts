@@ -17,6 +17,10 @@ export class LearningPathEntity extends BaseEntity{
   description?: string;
 
   courses: CourseEntity[];
+  
+  @ApiProperty()
+  @AutoMap()
+  backgroundUrl?: string;
 }
 
 export class LearningPathCourseEntity extends BaseEntity{

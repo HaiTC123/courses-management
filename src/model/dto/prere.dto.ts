@@ -17,6 +17,6 @@ export class PrerequisiteDto {
 
   // Optional references nếu muốn kèm thêm dữ liệu từ khóa học liên quan
 
-  @ApiProperty({ type: () => CourseDto, required: false })
-  prerequisiteCourse?: CourseDto;
+  @ApiProperty()
+  prerequisiteCourse: CourseDto;
 }

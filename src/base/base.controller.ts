@@ -57,11 +57,19 @@ export class BaseController<TEntity extends {id: number}, TModel> {
         return ServiceResponse.onSuccess(await this.baseService.add(param));
     }
 
+    @Put('/bulk-update')
+    async updateMultiple(@Body() updates: { id: number, model: Partial<TEntity> }[]) {
+        const result = await this.baseService.updateMultiple(updates);
+        return ServiceResponse.onSuccess(result, "Bulk Update Success");
+    }
+    
     @Put(':id')
     async update(@Param('id') id: number, @Body() model: Partial<TEntity>) {
         const result = await this.baseService.update(id, model);
         return ServiceResponse.onSuccess(id,"Update Success")
     }
+
+
 
     @Delete(':id')
     async delete(@Param('id') id: number) {

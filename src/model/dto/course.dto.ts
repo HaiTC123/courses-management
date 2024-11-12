@@ -4,6 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { BaseDto } from './base.dto';
 import { CourseStatus } from '@prisma/client';
 import { EnrollmentDto } from './errollment.dto';
+import { InstructorDto } from './instructor.dto';
 
 export class CourseDto extends BaseDto{
   @AutoMap()
@@ -63,6 +64,12 @@ export class CourseDto extends BaseDto{
 
   @AutoMap()
   enrollmentsCount: number;
+
+  @AutoMap()
+  @ApiProperty()
+  backgroundUrl?:string;
+
+  instructor: InstructorDto;
 }
 
 // CourseChapterDto.ts
@@ -151,6 +158,5 @@ export class CourseMaterialDto {
   @ApiProperty()
   durationMinutes?: number; // Thời lượng tài liệu (nếu có)
 
-  
 
 }

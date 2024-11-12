@@ -7,6 +7,7 @@ import { MapperService } from 'src/common/services/mapper.service';
 import { EmailService } from '../common/services/email.service';
 import { HttpContextService } from 'src/common/services/http-context.service';
 import { UploadService } from 'src/common/services/upload.service';
+import { NotificationService } from 'src/common/services/notification.service';
 
 @Global()
 @Module({
@@ -21,7 +22,8 @@ import { UploadService } from 'src/common/services/upload.service';
     MapperService,
     CoreService,
     HttpContextService,
-    UploadService
+    UploadService,
+    NotificationService
 ],
   exports: [ 
     CoreService

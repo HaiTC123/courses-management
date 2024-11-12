@@ -17,6 +17,11 @@ import { PrerequisitesModule } from './controllers/prerequistite/prerequistite.m
 import { ErrollmentsModule } from './controllers/enrollment/enrollment.module';
 import { LearnPathsModule } from './controllers/learn/learnPaths.module';
 import { LearnPathCoursesModule } from './controllers/learnCourse/learnPathCourses.module';
+import { FailedCoursesModule } from './controllers/failedCourse/failedCourse.module';
+import { GradesModule } from './controllers/grade/grade.module';
+import { CompleteCoursesModule } from './controllers/completeCourse/completeCourse.module';
+import { GoalsModule } from './controllers/goal/goal.module';
+import { AcademicAdvisingsModule } from './controllers/academicAdvising/academicAdvising.module';
 
 @Module({
   imports: [
@@ -33,7 +38,12 @@ import { LearnPathCoursesModule } from './controllers/learnCourse/learnPathCours
     PrerequisitesModule,
     ErrollmentsModule,
     LearnPathsModule,
-    LearnPathCoursesModule
+    LearnPathCoursesModule,
+    FailedCoursesModule,
+    GradesModule,
+    CompleteCoursesModule,
+    GoalsModule,
+    AcademicAdvisingsModule
   ],
   controllers: [AppController],
   providers: [AppService,

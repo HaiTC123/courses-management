@@ -30,4 +30,16 @@ export class HttpContextService {
   getRole(): any {
     return HttpContextService.request?.user?.role;
   }
+
+  getStudentID(): any {
+    return HttpContextService.request?.user?.studentId;
+  }
+
+  getInstructorID(): any {
+    return HttpContextService.request?.user?.instructorId;
+  }
+
+  getAdminID(): any {
+    return HttpContextService.request?.user?.adminId;
+  }
 }

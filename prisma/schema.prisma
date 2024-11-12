@@ -38,35 +38,49 @@ enum CourseStatus {
   REJECTED // Từ chối
 }
 
+enum GoalStatus {
+  In_Progress
+  Completed
+  Failed
+}
+
+enum AdvisingStatus {
+  Scheduled
+  Completed
+  Cancelled
+  Rejected
+}
+
 model User {
-  id                Int           @id @default(autoincrement()) // Khóa chính, tự động tăng
-  fullName          String        @db.VarChar(255) // Họ và tên đầy đủ
-  email             String        @unique @db.VarChar(255) // Địa chỉ email duy nhất
-  passwordHash      String        @db.VarChar(255) // Mã hóa mật khẩu
+  id                Int            @id @default(autoincrement()) // Khóa chính, tự động tăng
+  fullName          String         @db.VarChar(255) // Họ và tên đầy đủ
+  email             String         @unique @db.VarChar(255) // Địa chỉ email duy nhất
+  passwordHash      String         @db.VarChar(255) // Mã hóa mật khẩu
   role              Role // Vai trò người dùng (enum)
-  gender            Gender        @default(Other) // Giới tính (enum)
+  gender            Gender         @default(Other) // Giới tính (enum)
   dateOfBirth       DateTime? // Ngày sinh (có thể null)
-  phoneNumber       String?       @db.VarChar(20) // Số điện thoại (có thể null)
-  addressLine1      String?       @db.VarChar(255) // Địa chỉ 1 (có thể null)
-  addressLine2      String?       @db.VarChar(255) // Địa chỉ 2 (có thể null)
-  city              String?       @db.VarChar(100) // Thành phố (có thể null)
-  state             String?       @db.VarChar(100) // Bang hoặc tỉnh (có thể null)
-  postalCode        String?       @db.VarChar(20) // Mã bưu điện (có thể null)
-  country           String?       @db.VarChar(100) // Quốc gia (có thể null)
-  accountStatus     AccountStatus @default(Active) // Trạng thái tài khoản (enum)
+  phoneNumber       String?        @db.VarChar(20) // Số điện thoại (có thể null)
+  addressLine1      String?        @db.VarChar(255) // Địa chỉ 1 (có thể null)
+  addressLine2      String?        @db.VarChar(255) // Địa chỉ 2 (có thể null)
+  city              String?        @db.VarChar(100) // Thành phố (có thể null)
+  state             String?        @db.VarChar(100) // Bang hoặc tỉnh (có thể null)
+  postalCode        String?        @db.VarChar(20) // Mã bưu điện (có thể null)
+  country           String?        @db.VarChar(100) // Quốc gia (có thể null)
+  accountStatus     AccountStatus  @default(Active) // Trạng thái tài khoản (enum)
   lastLogin         DateTime? // Thời gian đăng nhập cuối cùng (có thể null)
-  createdAt         DateTime      @default(now()) // Thời gian tạo tài khoản
-  updatedAt         DateTime      @updatedAt // Thời gian cập nhật tài khoản
-  profilePictureURL String?       @db.VarChar(255) // URL ảnh đại diện (có thể null)
-  bannerPictureURL  String?       @db.VarChar(255) // URL banner
-  description       String?       @db.VarChar(255) // Mô tả người dùng
-  inActive          Boolean       @default(false) // Tình trạng hoạt động
-  isBlock           Boolean       @default(false) // Có bị chặn không
-  createdBy         String?       @db.VarChar(100)
-  updatedBy         String?       @db.VarChar(100)
-  instructor        Instructor?   @relation("UserInstructor") // Liên kết 1:1 tới Instructor
-  student           Student?      @relation("UserStudent")
-  admin             Admin?        @relation("UserAdmin")
+  createdAt         DateTime       @default(now()) // Thời gian tạo tài khoản
+  updatedAt         DateTime       @updatedAt // Thời gian cập nhật tài khoản
+  profilePictureURL String?        @db.VarChar(255) // URL ảnh đại diện (có thể null)
+  bannerPictureURL  String?        @db.VarChar(255) // URL banner
+  description       String?        @db.VarChar(255) // Mô tả người dùng
+  inActive          Boolean        @default(false) // Tình trạng hoạt động
+  isBlock           Boolean        @default(false) // Có bị chặn không
+  createdBy         String?        @db.VarChar(100)
+  updatedBy         String?        @db.VarChar(100)
+  instructor        Instructor?    @relation("UserInstructor") // Liên kết 1:1 tới Instructor
+  student           Student?       @relation("UserStudent")
+  admin             Admin?         @relation("UserAdmin")
+  Notification      Notification[]
 }
 
 model OtpRequest {
@@ -79,15 +93,16 @@ model OtpRequest {
 }
 
 model Instructor {
-  id         Int      @id @default(autoincrement()) // Khóa chính, tự động tăng
-  userId     Int      @unique // Khóa ngoại, duy nhất
-  user       User     @relation("UserInstructor", fields: [userId], references: [id]) // Quan hệ 1:1 với User
-  department String   @db.VarChar(255) // Khoa hoặc bộ môn của giảng viên
-  createdAt  DateTime @default(now()) // Thời gian tạo bản ghi
-  updatedAt  DateTime @updatedAt // Thời gian cập nhật bản ghi
-  createdBy  String?  @db.VarChar(100)
-  updatedBy  String?  @db.VarChar(100)
-  courses    Course[]
+  id               Int                @id @default(autoincrement()) // Khóa chính, tự động tăng
+  userId           Int                @unique // Khóa ngoại, duy nhất
+  user             User               @relation("UserInstructor", fields: [userId], references: [id]) // Quan hệ 1:1 với User
+  department       String             @db.VarChar(255) // Khoa hoặc bộ môn của giảng viên
+  createdAt        DateTime           @default(now()) // Thời gian tạo bản ghi
+  updatedAt        DateTime           @updatedAt // Thời gian cập nhật bản ghi
+  createdBy        String?            @db.VarChar(100)
+  updatedBy        String?            @db.VarChar(100)
+  courses          Course[]
+  AcademicAdvising AcademicAdvising[]
 
   @@index([userId]) // Tạo chỉ mục cho trường UserId
 }
@@ -106,6 +121,10 @@ model Student {
   updatedBy        String?            @db.VarChar(100)
   Enrollment       Enrollment[]
   CourseCompletion CourseCompletion[]
+  Grade            Grade[]
+  FailedCourse     FailedCourse[]
+  Goal             Goal[]
+  AcademicAdvising AcademicAdvising[]
 
   @@index([userId]) // Tạo chỉ mục cho trường userId
 }
@@ -141,6 +160,7 @@ model Course {
   isFree                Boolean              @default(false) // Khóa học miễn phí
   createdAt             DateTime             @default(now()) // Thời gian tạo
   updatedAt             DateTime             @updatedAt // Thời gian cập nhật
+  backgroundUrl         String?
   createdBy             String? // Người tạo khóa học
   updatedBy             String? // Người cập nhật khóa học
   status                CourseStatus         @default(DRAFT) // Trạng thái khóa học (enum)
@@ -150,6 +170,9 @@ model Course {
   enrollment            Enrollment[]
   courseCompletion      CourseCompletion[]
   learningPathCourse    LearningPathCourse[]
+  Grade                 Grade[]
+  FailedCourse          FailedCourse[]
+  Goal                  Goal[]
 }
 
 model CourseChapter {
@@ -238,6 +261,7 @@ model Semester {
   updatedBy        String?
   Enrollment       Enrollment[]
   CourseCompletion CourseCompletion[]
+  FailedCourse     FailedCourse[]
 }
 
 model Enrollment {
@@ -258,6 +282,8 @@ model Enrollment {
   course           Course             @relation(fields: [courseId], references: [id])
   semester         Semester           @relation(fields: [semesterId], references: [id])
   CourseCompletion CourseCompletion[]
+  Grade            Grade[]
+  FailedCourse     FailedCourse[]
 }
 
 model CourseCompletion {
@@ -282,13 +308,14 @@ model CourseCompletion {
 }
 
 model LearningPath {
-  id          Int      @id @default(autoincrement()) // Khóa chính tự động tăng
-  pathName    String   @db.VarChar(255) // Tên của lộ trình học tập
-  description String?  @db.Text // Mô tả về lộ trình học tập
-  createdAt   DateTime @default(now()) // Thời gian tạo lộ trình học tập
-  updatedAt   DateTime @updatedAt // Thời gian cập nhật
-  createdBy   String?
-  updatedBy   String?
+  id            Int      @id @default(autoincrement()) // Khóa chính tự động tăng
+  pathName      String   @db.VarChar(255) // Tên của lộ trình học tập
+  description   String?  @db.Text // Mô tả về lộ trình học tập
+  backgroundUrl String?
+  createdAt     DateTime @default(now()) // Thời gian tạo lộ trình học tập
+  updatedAt     DateTime @updatedAt // Thời gian cập nhật
+  createdBy     String?
+  updatedBy     String?
 
   courses LearningPathCourse[] // Liên kết với LearningPathCourses
 }
@@ -311,4 +338,100 @@ model LearningPathCourse {
 
   @@index([learningPathId]) // Tạo chỉ mục cho trường LearningPathId
   @@index([courseId]) // Tạo chỉ mục cho trường CourseId
+}
+
+model Notification {
+  id         Int      @id @default(autoincrement()) // Khóa chính, tự động tăng
+  senderId   Int // ID của người gửi
+  senderName String // Tên người gửi
+  receiveId  Int // ID của người nhận
+  type       String // Loại thông báo
+  rawData    String // Dữ liệu thô của thông báo
+  isViewed   Boolean  @default(false) // Trạng thái đã xem
+  createdAt  DateTime @default(now()) // Thời gian tạo
+  updatedAt  DateTime @updatedAt // Thời gian cập nhật
+
+  // Liên kết với bảng User
+  user      User    @relation(fields: [receiveId], references: [id], onDelete: Cascade)
+  createdBy String?
+  updatedBy String?
+}
+
+model Grade {
+  id           Int      @id @default(autoincrement()) // Khóa chính tự động tăng
+  enrollmentId Int // Liên kết với bảng Enrollments
+  courseId     Int // Liên kết với bảng Courses
+  studentId    Int // Liên kết với bảng Students
+  grade        Decimal // Điểm số cuối cùng của sinh viên
+  gradeDate    DateTime @default(now()) // Ngày điểm số được nhập
+  createdAt    DateTime @default(now()) // Thời gian tạo bản ghi
+  updatedAt    DateTime @updatedAt // Thời gian cập nhật bản ghi
+  createdBy    String?
+  updatedBy    String?
+
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id]) // Quan hệ với Enrollment
+  course     Course     @relation(fields: [courseId], references: [id]) // Quan hệ với Course
+  student    Student    @relation(fields: [studentId], references: [id]) // Quan hệ với Student
+
+  @@index([enrollmentId])
+  @@index([courseId])
+  @@index([studentId])
+}
+
+model FailedCourse {
+  id            Int      @id @default(autoincrement()) // Khóa chính tự động tăng
+  studentId     Int // Liên kết với bảng Students
+  courseId      Int // Liên kết với bảng Courses
+  semesterId    Int // Liên kết với bảng Semesters
+  enrollmentId  Int // Liên kết với bảng Enrollments
+  failureReason String? // Lý do rớt môn
+  failedDate    DateTime @default(now()) // Ngày sinh viên bị rớt môn
+  createdAt     DateTime @default(now()) // Thời gian tạo bản ghi
+  updatedAt     DateTime @updatedAt // Thời gian cập nhật bản ghi
+  createdBy     String?
+  updatedBy     String?
+
+  student    Student    @relation(fields: [studentId], references: [id]) // Quan hệ với Student
+  course     Course     @relation(fields: [courseId], references: [id]) // Quan hệ với Course
+  semester   Semester   @relation(fields: [semesterId], references: [id]) // Quan hệ với Semester
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id]) // Quan hệ với Enrollment
+
+  @@index([studentId])
+  @@index([courseId])
+  @@index([semesterId])
+}
+
+model Goal {
+  id                   Int        @id @default(autoincrement()) // Khóa chính tự động tăng
+  studentId            Int // Liên kết với bảng Students
+  courseId             Int // Liên kết với bảng Courses
+  targetCompletionDate DateTime // Ngày sinh viên đặt ra để hoàn thành khóa học
+  status               GoalStatus @default(In_Progress) // Trạng thái của mục tiêu
+  createdAt            DateTime   @default(now()) // Thời gian tạo mục tiêu
+  updatedAt            DateTime   @updatedAt // Thời gian cập nhật mục tiêu
+
+  student Student @relation(fields: [studentId], references: [id]) // Quan hệ với Student
+  course  Course  @relation(fields: [courseId], references: [id]) // Quan hệ với Course
+
+  @@index([studentId])
+  @@index([courseId])
+}
+
+model AcademicAdvising {
+  id           Int            @id @default(autoincrement()) // Khóa chính tự động tăng
+  studentId    Int // Liên kết với bảng Students
+  advisorId    Int // Liên kết với bảng Instructors
+  advisingDate DateTime       @default(now()) // Ngày và thời gian của buổi tư vấn
+  topic        String         @db.VarChar(255) // Chủ đề chính của buổi tư vấn
+  notes        String?        @db.Text // Ghi chú hoặc chi tiết về cuộc tư vấn
+  followUpDate DateTime? // Ngày theo dõi tiếp theo (nếu có)
+  status       AdvisingStatus @default(Scheduled) // Trạng thái của buổi tư vấn
+  createdAt    DateTime       @default(now()) // Thời gian tạo bản ghi
+  updatedAt    DateTime       @updatedAt // Thời gian cập nhật bản ghi
+
+  student Student    @relation(fields: [studentId], references: [id]) // Quan hệ với Student
+  advisor Instructor @relation(fields: [advisorId], references: [id]) // Quan hệ với Instructor
+
+  @@index([studentId])
+  @@index([advisorId])
 }

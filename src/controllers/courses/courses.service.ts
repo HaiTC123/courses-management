@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, HttpVersionNotSupportedException, Injectable } from '@nestjs/common';
-import { Prisma, Role } from '@prisma/client';
+import { CourseStatus, Prisma, Role } from '@prisma/client';
 import { BaseService } from 'src/base/base.service';
+import { NotificationType } from 'src/common/const/notification.type';
 import { CoreService } from 'src/core/core.service';
 import { CourseEntity } from 'src/model/entity/course.entity';
 import { EnrollmentEntity } from 'src/model/entity/enrollment.entity';
@@ -21,10 +22,10 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
         if (!entity?.instructorId) {
             throw new HttpException({ message: 'InstructorID is null' }, HttpStatus.BAD_REQUEST);
         }
-        entity.instructor = {
-            connect: { id: entity.instructorId }
-        }
-        delete entity.instructorId;
+        // entity.instructor = {
+        //     connect: { id: entity.instructorId }
+        // }
+        // delete entity.instructorId;
         return await super.add(entity);
     }
 
@@ -70,7 +71,6 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
             throw new HttpException('Thông tin học sinh không tồn tại.', HttpStatus.BAD_REQUEST);
         }
 
-        // to-do
         // Kiểm tra điều kiện tiên quyết (nếu có)
         const prerequisites = await this.prismaService.prerequisite.findMany({
             where: { courseId: courseId },
@@ -158,6 +158,60 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
         return eligibleCourses;
     }
 
+    async sendCourseToAdminApprove(courseId: number) {
+        var course = await this.getById(courseId);
+        if (!course) {
+            return ServiceResponse.onBadRequest(null, "Khóa học không tồn tại");
+        }
 
+        if (course.status != CourseStatus.DRAFT) {
+            return ServiceResponse.onBadRequest(null, "Trạng thái khóa học không hợp lệ");
+        }
+        // Update status pending
+        await this.update(courseId, {
+            status: CourseStatus.PENDING_APPROVAL
+        });
+
+        // Send notification to admin
+        await this.pushNotificationToAdmin(NotificationType.Instructor_Send_Course_To_Admin_Approve,
+            JSON.stringify({
+                courseId,
+                courseName: course.courseName
+            }),
+            this._authService.getFullname(), this._authService.getUserID()
+
+        )
+        return ServiceResponse.onSuccess(null, "send to admin success");
+    }
+
+    async adminUpdateStatusCourse(courseId: number, status: CourseStatus) {
+        // Tìm kiếm và cập nhật trạng thái của course
+        const course = await this.getById(courseId);
+        if (!course) {
+            return ServiceResponse.onBadRequest(null, 'Course not found');
+        }
+
+        // Cập nhật trạng thái khóa học
+        course.status = status;
+        await this.update(courseId, { status });
+        let type = NotificationType.Admin_Reject_Course
+        if (status == CourseStatus.APPROVED) {
+            type = NotificationType.Admin_Reject_Course;
+        }
+
+        var instructor = await this.prismaService.instructor.findUnique({
+            where: { id: course.instructorId }
+        })
+        // Send notification to admin
+        await this.pushNotification(instructor.userId ,type,
+            JSON.stringify({
+                courseId,
+                courseName: course.courseName
+            }),
+            this._authService.getFullname(), this._authService.getUserID()
+
+        )
+        return ServiceResponse.onSuccess(null, 'Course status updated successfully');
+    }
 
 }

@@ -49,6 +49,9 @@ export class UserEntity extends BaseEntity {
   student?: Student;
   instructor?: Instructor;
   admin?: Admin;
+  studentId: number;
+  adminId: number;
+  instructorId: number;
 
   // Phương thức khởi tạo để tạo một UserEntity từ dữ liệu
   constructor(partial?: Partial<UserEntity>) {
@@ -67,3 +70,5 @@ export class UserEntity extends BaseEntity {
     this.updatedAt = new Date(); // Luôn cập nhật thời gian cập nhật
   }
 }
+
+

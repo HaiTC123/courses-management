@@ -1,4 +1,4 @@
-import { CourseStatus } from '@prisma/client';
+import { CourseStatus, Instructor } from '@prisma/client';
 // CourseEntity.ts
 import { AutoMap } from '@automapper/classes';
 import { BaseEntity } from 'src/model/entity/base.entity';
@@ -55,13 +55,16 @@ export class CourseEntity extends BaseEntity{
   status: CourseStatus; // Vai trò người dùng (enum)
 
 
-  instructor: any;
+  instructor: Instructor;
 
   @AutoMap()
   enrollment: EnrollmentEntity[];
 
   @AutoMap()
   enrollmentsCount: number;
+
+  @AutoMap()
+  backgroundUrl?:string;
 }
 
 // CourseChapterEntity.ts
@@ -129,6 +132,7 @@ export class CourseMaterialEntity extends BaseEntity{
 
   @AutoMap()
   durationMinutes?: number; // Thời lượng tài liệu (nếu có)
+
 
 
 }
