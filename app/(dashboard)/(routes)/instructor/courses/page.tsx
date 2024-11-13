@@ -1,16 +1,16 @@
 "use client";
 
-import { redirect } from "next/navigation";
-import { createColumns } from "./_components/column";
-import { DataTable } from "./_components/data-table";
-import { useCallback, useEffect, useState } from "react";
 import {
   getPaginatedCoursesService,
   IGetPaginatedCoursesParams,
   sendToAdminApproveService,
 } from "@/services/course.service";
+import { useAuthStore } from "@/store/use-auth-store";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { CourseStatus } from "@/enum/course-status";
+import { createColumns } from "./_components/column";
+import { DataTable } from "./_components/data-table";
 
 const CoursesPage = () => {
   const [courses, setCourses] = useState<any[]>([]);

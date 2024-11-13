@@ -1,18 +1,20 @@
 "use client";
 
+import { connectSocket } from "@/services/socket.service";
+import _ from "lodash";
 import { Inter } from "next/font/google";
 import { useEffect } from "react";
 import { io } from "socket.io-client";
-import { connectSocket } from "@/services/socket.service";
 import { v4 as uuidv4 } from "uuid";
-import _ from "lodash";
 
 import { ToasterProvider } from "@/components/providers/toaster-provider";
 import { useAuthStore } from "@/store/use-auth-store";
 
-import "./globals.css";
-import { useNotiStore } from "@/store/use-noti-store";
+import { SpinnerProvider } from "@/components/providers/spinner-provider";
 import { mapNotificationType } from "@/constants/notifications";
+import { useNotiStore } from "@/store/use-noti-store";
+
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,7 +25,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, token } = useAuthStore();
+  const { user } = useAuthStore();
   const { addNotification } = useNotiStore();
 
   useEffect(() => {
@@ -52,7 +54,7 @@ export default function RootLayout({
     return () => {
       socket?.disconnect();
     };
-  }, [user, token, addNotification]);
+  }, [user, addNotification]);
 
   return (
     <html lang="en">
@@ -62,13 +64,7 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <ToasterProvider />
-        {/* <button
-          onClick={() => socket.emit("message", "Hello")}
-          style={{ zIndex: 1000 }}
-        >
-          Send message
-        </button> */}
-        {children}
+        <SpinnerProvider>{children}</SpinnerProvider>
       </body>
     </html>
   );

@@ -1,63 +1,18 @@
 "use client";
 
 import { CourseList } from "@/components/course-list";
-import { CheckCircle, Clock } from "lucide-react";
-import { InfoCard } from "./_components/info-card";
-import { CarouselCourse } from "./_components/carousel-course";
-import { Categories } from "../courses/_components/categories";
-import { useCallback, useEffect, useState } from "react";
+import { useSpinner } from "@/components/providers/spinner-provider";
+import { CourseStatus } from "@/enum/course-status";
 import {
   getPaginatedCoursesService,
   IGetPaginatedCoursesParams,
 } from "@/services/course.service";
-import toast from "react-hot-toast";
-import { CourseStatus } from "@/enum/course-status";
 import { useAuthStore } from "@/store/use-auth-store";
-
-// const courses: any = [
-//   {
-//     id: "1",
-//     title: "HTML CSS cho người mới",
-//     imageUrl:
-//       "https://files.fullstack.edu.vn/f8-prod/courses/15/62f13d2424a47.png",
-//     price: 100,
-//     isPublished: true,
-//     category: { id: "1", name: "Frontend" },
-//     userId: "1",
-//     progress: null,
-//   },
-//   {
-//     id: "2",
-//     title: "JS cho người mới",
-//     imageUrl:
-//       "https://files.fullstack.edu.vn/f8-prod/courses/19/66aa28194b52b.png",
-//     price: 100,
-//     isPublished: true,
-//     category: { id: "1", name: "Frontend" },
-//     userId: "1",
-//     progress: null,
-//   },
-//   {
-//     id: "3",
-//     title: "ReactJS cho người mới",
-//     imageUrl: "https://files.fullstack.edu.vn/f8-prod/courses/13/13.png",
-//     price: 300,
-//     isPublished: true,
-//     category: { id: "1", name: "Frontend" },
-//     userId: "1",
-//     progress: null,
-//   },
-//   {
-//     id: "4",
-//     title: "NodeJS cho người mới",
-//     imageUrl: "https://files.fullstack.edu.vn/f8-prod/courses/6.png",
-//     price: 200,
-//     isPublished: true,
-//     category: { id: "1", name: "Frontend" },
-//     userId: "1",
-//     progress: null,
-//   },
-// ];
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { Categories } from "../courses/_components/categories";
+import { CarouselCourse } from "./_components/carousel-course";
 
 const carouselItems = [
   {
@@ -108,6 +63,7 @@ const categories = [
 ];
 
 export default function Dashboard() {
+  const router = useRouter();
   const [courses, setCourses] = useState<any[]>([]);
 
   const [params, setParams] = useState<IGetPaginatedCoursesParams>({
@@ -125,6 +81,14 @@ export default function Dashboard() {
     searchFields: [],
     includeReferences: [],
   });
+
+  const { user, authenticated } = useAuthStore();
+
+  useEffect(() => {
+    if (!authenticated) {
+      router.push("/sign-in");
+    }
+  }, [authenticated, router]);
 
   const fetchCourses = useCallback(() => {
     getPaginatedCoursesService(params)
@@ -146,12 +110,14 @@ export default function Dashboard() {
   }, [fetchCourses]);
 
   return (
-    <div className="p-6 space-y-4">
-      <div className="mb-4">
-        <CarouselCourse items={carouselItems} />
+    <>
+      <div className="p-6 space-y-4">
+        <div className="mb-4">
+          <CarouselCourse items={carouselItems} />
+        </div>
+        <Categories items={categories} />
+        <CourseList items={courses} />
       </div>
-      <Categories items={categories} />
-      <CourseList items={courses} />
-    </div>
+    </>
   );
 }

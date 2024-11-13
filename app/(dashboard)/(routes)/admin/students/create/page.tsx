@@ -22,7 +22,7 @@ import { UserState } from "@/enum/user-state";
 import { UserRole } from "@/enum/user-role";
 import { Combobox } from "@/components/ui/combobox";
 import { Button } from "@/components/ui/button";
-import { DatePicker } from "../_components/date-picker";
+import { DatePicker } from "../../../../../../components/date-picker";
 import {
   createInstructorService,
   createStudentService,

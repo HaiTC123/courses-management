@@ -37,7 +37,7 @@ import {
   updateUserService,
 } from "@/services/user.service";
 import { useCallback, useEffect, useState } from "react";
-import { DatePicker } from "../../_components/date-picker";
+import { DatePicker } from "../../../../../../../components/date-picker";
 
 const EditUserPage = () => {
   const router = useRouter();

@@ -35,8 +35,6 @@ export const NavbarRoutes = () => {
 
   const { notifications } = useNotiStore();
 
-  console.log("Notifications in NavbarRoutes:", notifications);
-
   const handleSignOut = async () => {
     await signOut();
     router.push("/sign-in");
