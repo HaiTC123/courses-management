@@ -16,7 +16,7 @@ const CoursesPage = () => {
   const [courses, setCourses] = useState<any[]>([]);
 
   const [params, setParams] = useState<IGetPaginatedCoursesParams>({
-    pageSize: 10,
+    pageSize: 20,
     pageNumber: 1,
     conditions: [],
     sortOrder: "",
@@ -29,9 +29,15 @@ const CoursesPage = () => {
     getPaginatedCoursesService(params)
       .then((response) => {
         if (response.data.data) {
-          const listCourses = response.data.data.map((course: any) => ({
-            ...course,
-          }));
+          const listCourses = response.data.data
+            .map((course: any) => ({
+              ...course,
+            }))
+            .sort(
+              (a: any, b: any) =>
+                new Date(b.createdAt).getTime() -
+                new Date(a.createdAt).getTime()
+            );
           setCourses(listCourses);
         }
       })

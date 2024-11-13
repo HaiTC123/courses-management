@@ -39,7 +39,6 @@ const ForgotPasswordPage = () => {
       // Here you would typically call your password reset service
       console.log("Password reset requested for:", values.email);
       const response = await forgotPasswordService(values);
-      console.log(response);
       // Implement your password reset logic here
       toast.success("Gửi yêu cầu đặt lại mật khẩu thành công");
       router.push("/reset-password");

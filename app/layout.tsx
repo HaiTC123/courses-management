@@ -1,39 +1,58 @@
 "use client";
 
-import { ToasterProvider } from "@/components/providers/toaster-provider";
-import "./globals.css";
-// import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { useAuthStore } from "@/store/use-auth-store";
-import { AUTH_TOKEN_KEY } from "@/constants/local-storage-key";
 import { useEffect } from "react";
-import { isClient } from "@/lib/is-client";
+import { io } from "socket.io-client";
+import { connectSocket } from "@/services/socket.service";
+import { v4 as uuidv4 } from "uuid";
+import _ from "lodash";
+
+import { ToasterProvider } from "@/components/providers/toaster-provider";
+import { useAuthStore } from "@/store/use-auth-store";
+
+import "./globals.css";
+import { useNotiStore } from "@/store/use-noti-store";
+import { mapNotificationType } from "@/constants/notifications";
 
 const inter = Inter({ subsets: ["latin"] });
 
-// export const metadata: Metadata = {
-//   title: "Courses Management",
-//   description: "Website for managing courses",
-// };
+let socket: any;
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // Getting the token value from a cookie
-  // const token = isClient() ? localStorage.getItem(AUTH_TOKEN_KEY) : null;
+  const { user, token } = useAuthStore();
+  const { addNotification } = useNotiStore();
 
-  // // Getting the setAuthentication function from the authentication store
-  // const setAuthentication = useAuthStore((state) => state.setAuthentication);
+  useEffect(() => {
+    if (!_.isEmpty(user)) {
+      const connectionID = uuidv4();
+      const userID = user.id;
+      connectSocket(userID, connectionID).then(() => {
+        socket = io(process.env.NEXT_PUBLIC_SOCKET_URL!);
 
-  // // Running a side effect whenever the token value changes
-  // useEffect(() => {
-  //   console.log(token); // Logging the token value for debugging purposes
-  //   if (token) {
-  //     setAuthentication(true); // Setting the authentication status to true if a token exists
-  //   }
-  // }, [setAuthentication, token]);
+        socket.on("connect", () => {
+          console.log("connected");
+          socket.emit("register", userID, connectionID);
+        });
+
+        socket.on("message", (message: any) => {
+          const newNotifications = {
+            title: mapNotificationType(message).title,
+            link: mapNotificationType(message).link,
+            createdAt: message.createdAt,
+            isViewed: message.isViewed,
+          };
+          addNotification(newNotifications);
+        });
+      });
+    }
+    return () => {
+      socket?.disconnect();
+    };
+  }, [user, token, addNotification]);
 
   return (
     <html lang="en">
@@ -43,6 +62,12 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <ToasterProvider />
+        {/* <button
+          onClick={() => socket.emit("message", "Hello")}
+          style={{ zIndex: 1000 }}
+        >
+          Send message
+        </button> */}
         {children}
       </body>
     </html>

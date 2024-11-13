@@ -49,7 +49,7 @@ const SignIn = () => {
       // For example: await signIn(values.email, values.password);
       console.log("Sign in attempt with:", values.email, values.password);
       const response = await signIn(values);
-      console.log(response);
+
       // setAuthentication(true);
       // setUser(response.data);
       // setToken(response.data.token);

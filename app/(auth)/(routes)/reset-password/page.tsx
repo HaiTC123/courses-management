@@ -44,7 +44,6 @@ export default function ResetPasswordPage() {
     // setIsOtpSent(true);
     try {
       const response = await resetPasswordService(values);
-      console.log(response);
       if (response) {
         toast.success("Đặt lại mật khẩu thành công");
         router.push("/sign-in");

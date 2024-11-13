@@ -25,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PlusCircle } from "lucide-react";
 import Link from "next/link";
+import Paginator from "./paginator";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -123,6 +124,22 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       <div className="flex items-center justify-end py-4 space-x-2">
+        <div className="flex-1 text-sm text-muted-foreground">
+          {table.getFilteredSelectedRowModel().rows.length
+            ? `${table.getFilteredSelectedRowModel().rows.length} of{" "}`
+            : null}
+          {table.getFilteredRowModel().rows.length} row(s)
+        </div>
+        <div className="flex justify-end">
+          <Paginator
+            currentPage={table.getState().pagination.pageIndex + 1}
+            totalPages={table.getPageCount()}
+            onPageChange={(pageNumber) => table.setPageIndex(pageNumber - 1)}
+            showPreviousNext
+          />
+        </div>
+      </div>
+      {/* <div className="flex items-center justify-end py-4 space-x-2">
         <Button
           variant="outline"
           size="sm"
@@ -139,7 +156,7 @@ export function DataTable<TData, TValue>({
         >
           Next
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 }

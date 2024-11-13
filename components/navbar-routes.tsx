@@ -18,6 +18,9 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { UserRole } from "@/enum/user-role";
+import { socket } from "@/lib/socket";
+import { useNotiStore } from "@/store/use-noti-store";
+import { cn } from "@/lib/utils";
 
 export const NavbarRoutes = () => {
   const pathname = usePathname();
@@ -29,6 +32,10 @@ export const NavbarRoutes = () => {
   const isSearchPage = pathname.startsWith("/search");
   const isRootPage = pathname === "/";
   const isLearningPage = pathname.startsWith("/learning");
+
+  const { notifications } = useNotiStore();
+
+  console.log("Notifications in NavbarRoutes:", notifications);
 
   const handleSignOut = async () => {
     await signOut();
@@ -57,36 +64,49 @@ export const NavbarRoutes = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm">
-                    <Bell className="size-4" />
+                    <div className="relative">
+                      <Bell className="size-4" />
+                      {notifications.filter((n: any) => !n.isViewed).length >
+                        0 && (
+                        <div className="absolute -top-2 -right-2 flex items-center justify-center w-4 h-4 text-[10px] text-white bg-red-500 rounded-full">
+                          {notifications.filter((n: any) => !n.isViewed).length}
+                        </div>
+                      )}
+                    </div>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>
-                    <div>Thông báo</div>
+                    <div className="flex items-center gap-x-2">
+                      <div>Thông báo</div>
+                      {/* {notifications.filter((n: any) => !n.isViewed).length >
+                        0 && (
+                        <div className="flex items-center justify-center w-5 h-5 text-xs text-white bg-red-500 rounded-full">
+                          {notifications.filter((n: any) => !n.isViewed).length}
+                        </div>
+                      )} */}
+                    </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   {/* TODO: Add notifications */}
-                  {[
-                    {
-                      id: 1,
-                      title: "[SYSTEM] Check hệ thống",
-                      description:
-                        "Đây là thông báo tự động từ server trả về để test",
-                    },
-                  ].map((notification: any) => (
-                    <DropdownMenuItem
-                      key={notification.id}
-                      className="cursor-pointer"
-                    >
-                      <div>
+                  {notifications.map((notification: any, idx: number) => (
+                    <DropdownMenuItem key={idx} className="cursor-pointer">
+                      <Link href={notification.link}>
                         <div className="flex items-center gap-x-2">
-                          <div className="bg-blue-500 rounded-full size-2"></div>
+                          <div
+                            className={cn(
+                              "rounded-full size-2",
+                              notification.isViewed
+                                ? "bg-gray-300"
+                                : "bg-blue-500"
+                            )}
+                          ></div>
                           {notification.title}
                         </div>
-                        <div className="mt-2 text-xs text-gray-500 line-clamp-2 max-w-[200px]">
-                          {notification.description}
+                        <div className="mt-2 text-xs text-gray-400">
+                          {new Date(notification.createdAt).toLocaleString()}
                         </div>
-                      </div>
+                      </Link>
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>

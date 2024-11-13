@@ -12,6 +12,7 @@ import {
 } from "@/services/course.service";
 import toast from "react-hot-toast";
 import { CourseStatus } from "@/enum/course-status";
+import { useAuthStore } from "@/store/use-auth-store";
 
 // const courses: any = [
 //   {

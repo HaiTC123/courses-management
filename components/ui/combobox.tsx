@@ -34,8 +34,6 @@ export const Combobox = ({
 }: ComboboxProps) => {
   const [open, setOpen] = React.useState(false);
 
-  console.log(value, options);
-
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>

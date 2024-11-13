@@ -59,7 +59,7 @@ const SettingsPage = () => {
     const response = await changePasswordService(
       omit(values, ["confirmPassword"])
     );
-    console.log(response);
+    // console.log(response);
 
     if (response) {
       toast.success("Đổi mật khẩu thành công");

@@ -70,8 +70,6 @@ const SignUp = () => {
       );
       const response = await signUp(values);
 
-      console.log(response);
-
       toast.success("Signed up successfully");
       router.push("/sign-in");
     } catch (error: any) {

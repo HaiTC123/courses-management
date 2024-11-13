@@ -100,7 +100,7 @@ export const MaterialDetailForm = ({
   const uploadFile = async (file: File) => {
     try {
       const response = await uploadFileService(file);
-      console.log(response);
+      // console.log(response);
       if (response.data.fileUrl) {
         console.log("response.data.fileUrl", response.data.fileUrl);
         form.setValue("materialURL", response.data.fileUrl, {
