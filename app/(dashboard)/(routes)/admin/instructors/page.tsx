@@ -23,7 +23,7 @@ const ListInstructorsPage = () => {
   const [users, setUsers] = useState<any[]>([]);
 
   const [params, setParams] = useState<IGetPaginatedUsersParams>({
-    pageSize: 10,
+    pageSize: 1000,
     pageNumber: 1,
     conditions: [],
     sortOrder: "",

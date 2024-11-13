@@ -40,3 +40,8 @@ export const forgotPasswordService = async (data: any) => {
   const response = await axiosInstance.post("/api/auth/forgotPassword", data);
   return response.data;
 };
+
+export const getCurrentUserService = async () => {
+  const response = await axiosInstance.get("/api/user/currentUser");
+  return response.data;
+};

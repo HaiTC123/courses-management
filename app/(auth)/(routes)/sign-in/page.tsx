@@ -31,7 +31,7 @@ const formSchema = z.object({
 const SignIn = () => {
   const router = useRouter();
 
-  const { setAuthentication, setUser, setToken, signIn } = useAuthStore();
+  const { signIn, getCurrentUser } = useAuthStore();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -45,14 +45,8 @@ const SignIn = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      // Here you would typically call your authentication service
-      // For example: await signIn(values.email, values.password);
-      console.log("Sign in attempt with:", values.email, values.password);
-      const response = await signIn(values);
-
-      // setAuthentication(true);
-      // setUser(response.data);
-      // setToken(response.data.token);
+      await signIn(values);
+      await getCurrentUser();
       router.push("/");
       toast.success("Signed in successfully");
     } catch (error) {

@@ -70,7 +70,7 @@ export const CourseForm = ({
   });
 
   const [params, setParams] = useState<IGetPaginatedCoursesParams>({
-    pageSize: 10,
+    pageSize: 1000,
     pageNumber: 1,
     conditions: [],
     sortOrder: "",

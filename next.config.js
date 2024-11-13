@@ -14,6 +14,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "files.fullstack.edu.vn",
       },
+      {
+        protocol: "https",
+        hostname: "github.com",
+      },
     ],
   },
 };

@@ -11,11 +11,11 @@ import { toast } from "react-hot-toast";
 import { createColumns } from "./_components/column";
 import { DataTable } from "./_components/data-table";
 
-const AdminCoursesPage = () => {
+const AdminCoursesApprovedPage = () => {
   const [courses, setCourses] = useState<any[]>([]);
 
   const [params, setParams] = useState<IGetPaginatedCoursesParams>({
-    pageSize: 10,
+    pageSize: 1000,
     pageNumber: 1,
     conditions: [
       {
@@ -80,4 +80,4 @@ const AdminCoursesPage = () => {
   );
 };
 
-export default AdminCoursesPage;
+export default AdminCoursesApprovedPage;

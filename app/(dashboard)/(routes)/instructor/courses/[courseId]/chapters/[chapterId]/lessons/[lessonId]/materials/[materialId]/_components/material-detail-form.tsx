@@ -198,7 +198,15 @@ export const MaterialDetailForm = ({
                     />
                   ) : (
                     <p className={cn("text-sm mt-2 text-slate-500 italic")}>
-                      {form.getValues("materialURL") || "Chưa có tài liệu"}
+                      {form.getValues("materialURL") ? (
+                        <iframe
+                          src={form.getValues("materialURL")}
+                          allowFullScreen
+                          className="w-full h-[600px]"
+                        />
+                      ) : (
+                        "Chưa có tài liệu"
+                      )}
                     </p>
                   )}
                 </FormControl>

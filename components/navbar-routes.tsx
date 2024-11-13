@@ -1,7 +1,15 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { ArrowLeft, Bell, LogIn, LogOut, Settings } from "lucide-react";
+import {
+  ArrowLeft,
+  Bell,
+  Coins,
+  DropletIcon,
+  LogIn,
+  LogOut,
+  Settings,
+} from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "./ui/button";
@@ -21,11 +29,12 @@ import { UserRole } from "@/enum/user-role";
 import { socket } from "@/lib/socket";
 import { useNotiStore } from "@/store/use-noti-store";
 import { cn } from "@/lib/utils";
+import { formatPrice } from "@/lib/format";
 
 export const NavbarRoutes = () => {
   const pathname = usePathname();
   const router = useRouter();
-  const { authenticated, user, signOut } = useAuthStore();
+  const { authenticated, user, signOut, role } = useAuthStore();
 
   const isInstructorPage = pathname.startsWith("/instructor");
   const isAdminPage = pathname.startsWith("/admin");
@@ -59,6 +68,41 @@ export const NavbarRoutes = () => {
         <div className="flex ml-auto gap-x-2">
           {authenticated ? (
             <>
+              {/* Coins */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm">
+                    <div className="relative">
+                      <Coins className="size-4" />
+                    </div>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>
+                    <div className="flex items-center gap-x-2">
+                      <div>Coin</div>
+                      <div className="text-xs text-gray-400">
+                        {formatPrice(user?.coinAmount ?? 0)}
+                      </div>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <Link href="/coins">
+                    <DropdownMenuItem className="cursor-pointer">
+                      <Coins className="mr-2 size-4" />
+                      Coin
+                    </DropdownMenuItem>
+                  </Link>
+                  <Link href="/coins/deposit">
+                    <DropdownMenuItem className="cursor-pointer">
+                      <DropletIcon className="mr-2 size-4" />
+                      Nạp Coins
+                    </DropdownMenuItem>
+                  </Link>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              {/* Notifications */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm">
@@ -77,16 +121,9 @@ export const NavbarRoutes = () => {
                   <DropdownMenuLabel>
                     <div className="flex items-center gap-x-2">
                       <div>Thông báo</div>
-                      {/* {notifications.filter((n: any) => !n.isViewed).length >
-                        0 && (
-                        <div className="flex items-center justify-center w-5 h-5 text-xs text-white bg-red-500 rounded-full">
-                          {notifications.filter((n: any) => !n.isViewed).length}
-                        </div>
-                      )} */}
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  {/* TODO: Add notifications */}
                   {notifications.map((notification: any, idx: number) => (
                     <DropdownMenuItem key={idx} className="cursor-pointer">
                       <Link href={notification.link}>
@@ -110,6 +147,7 @@ export const NavbarRoutes = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
 
+              {/* User */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Avatar className="cursor-pointer">
@@ -144,20 +182,19 @@ export const NavbarRoutes = () => {
                       </DropdownMenuItem>
                     </Link>
                   ) : (
-                    user?.role !== UserRole.STUDENT && (
+                    role !== UserRole.STUDENT && (
                       <>
                         <Link
                           href={`/${
-                            user?.role === UserRole.INSTRUCTOR
+                            role === UserRole.INSTRUCTOR
                               ? "instructor"
                               : "admin"
                           }`}
                         >
                           <DropdownMenuItem>
-                            {user?.role === UserRole.INSTRUCTOR &&
+                            {role === UserRole.INSTRUCTOR &&
                               "Chế độ người hướng dẫn"}
-                            {user?.role === UserRole.ADMIN &&
-                              "Chế độ quản trị viên"}
+                            {role === UserRole.ADMIN && "Chế độ quản trị viên"}
                           </DropdownMenuItem>
                         </Link>
                       </>

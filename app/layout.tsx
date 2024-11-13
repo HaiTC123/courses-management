@@ -41,6 +41,7 @@ export default function RootLayout({
         });
 
         socket.on("message", (message: any) => {
+          console.log("[LOGS] socket message", message);
           const newNotifications = {
             title: mapNotificationType(message).title,
             link: mapNotificationType(message).link,

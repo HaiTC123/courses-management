@@ -24,6 +24,8 @@ import { cn } from "@/lib/utils";
 import { uploadFileService } from "@/services/file.service";
 import Editor from "@/components/editor";
 import Preview from "@/components/preview";
+import Image from "next/image";
+import { DEFAULT_IMAGE } from "@/constants/default-image";
 
 interface LearningPathFormProps {
   initialData: {
@@ -181,7 +183,23 @@ export const LearningPathForm = ({
                           "text-sm mt-2 text-slate-500 italic truncate"
                         )}
                       >
-                        {form.getValues("backgroundUrl") || "Chưa có ảnh nền"}
+                        {form.getValues("backgroundUrl") ? (
+                          <Image
+                            src={form.getValues("backgroundUrl") ?? DEFAULT_IMAGE}
+                            alt="Background Image"
+                            width={0}
+                            height={0}
+                            sizes="100vw"
+                            style={{
+                              width: "100%",
+                              height: "auto",
+                              maxWidth: "600px",
+                              borderRadius: "10px",
+                            }}
+                          />
+                        ) : (
+                          "Chưa có ảnh nền"
+                        )}
                       </p>
                     )}
                   </FormControl>

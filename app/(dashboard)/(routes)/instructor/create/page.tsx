@@ -24,6 +24,7 @@ import { addCourseService } from "@/services/course.service";
 import { useAuthStore } from "@/store/use-auth-store";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { CATEGORIES } from "@/constants/category-data";
 
 const CreatePage = () => {
   const router = useRouter();
@@ -75,7 +76,7 @@ const CreatePage = () => {
     try {
       const body = {
         ...values,
-        instructorId: user?.instructorId,
+        instructorId: user?.instructor?.id,
       };
       const response = await addCourseService(body);
       toast.success("Course created successfully");
@@ -89,14 +90,14 @@ const CreatePage = () => {
 
   return (
     <div className="p-6 mx-auto">
-      <div>
+      <div className="flex flex-col items-start justify-center">
         <h1 className="text-2xl">Tạo khóa học</h1>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="mt-8 space-y-8"
+            className="w-full mt-8 space-y-8"
           >
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid max-w-xl grid-cols-1 gap-4 md:grid-cols-2">
               <FormField
                 control={form.control}
                 name="courseName"
@@ -179,10 +180,11 @@ const CreatePage = () => {
                   <FormItem>
                     <FormLabel>Category</FormLabel>
                     <FormControl>
-                      <Input
+                      <Combobox
+                        options={CATEGORIES}
+                        value={field.value}
+                        onChange={field.onChange}
                         disabled={isSubmitting}
-                        placeholder="e.g. 'Computer Science'"
-                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -222,7 +224,7 @@ const CreatePage = () => {
                     <FormControl>
                       <Input
                         type="number"
-                        disabled={isSubmitting}
+                        disabled={isSubmitting || form.getValues("isFree")}
                         {...field}
                         onChange={(e) => field.onChange(Number(e.target.value))}
                       />
@@ -237,12 +239,16 @@ const CreatePage = () => {
                 name="isFree"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-base">Free Course</FormLabel>
                     <FormControl>
                       <div className="flex items-center justify-start w-full">
                         <Checkbox
                           checked={field.value}
-                          onCheckedChange={field.onChange}
+                          onCheckedChange={(checked) => {
+                            field.onChange(checked);
+                            if (checked) {
+                              form.setValue("price", 0);
+                            }
+                          }}
                           disabled={isSubmitting}
                           className="mr-2"
                         />
@@ -264,12 +270,12 @@ const CreatePage = () => {
                     <Combobox
                       options={[
                         { value: CourseStatus.DRAFT, label: "Draft" },
-                        {
-                          value: CourseStatus.PENDING_APPROVAL,
-                          label: "Pending Approval",
-                        },
-                        { value: CourseStatus.APPROVED, label: "Approved" },
-                        { value: CourseStatus.REJECTED, label: "Rejected" },
+                        // {
+                        //   value: CourseStatus.PENDING_APPROVAL,
+                        //   label: "Pending Approval",
+                        // },
+                        // { value: CourseStatus.APPROVED, label: "Approved" },
+                        // { value: CourseStatus.REJECTED, label: "Rejected" },
                       ]}
                       value={field.value}
                       onChange={field.onChange}

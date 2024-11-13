@@ -1,5 +1,6 @@
 "use client";
 
+import { DEFAULT_IMAGE } from "@/constants/default-image";
 import { CourseCard } from "./_components/course-card";
 import {
   learningPathsData,
@@ -50,7 +51,7 @@ const LearningPathPage = () => {
         </div>
         {learningPath?.backgroundUrl ? (
           <Image
-            src={learningPath?.backgroundUrl ?? ""}
+            src={learningPath?.backgroundUrl ?? DEFAULT_IMAGE}
             alt="Background Image"
             width={0}
             height={0}

@@ -3,6 +3,7 @@
 import { AUTH_STORAGE_KEY } from "@/constants/local-storage-key";
 import { UserRole } from "@/enum/user-role";
 import {
+  getCurrentUserService,
   SignInParams,
   signInService,
   signOutService,
@@ -36,6 +37,7 @@ interface AuthStoreInterface {
   signIn: (params: SignInParams) => Promise<any>;
   signUp: (params: SignUpParams) => Promise<any>;
   signOut: () => Promise<any>;
+  getCurrentUser: () => Promise<any>;
 }
 
 // create our store
@@ -54,7 +56,7 @@ export const useAuthStore = create(
         const response = await signInService(params);
         set({
           authenticated: true,
-          user: response.data,
+          // user: response.data,
           token: response.data.token,
           role: response.data.role,
         });
@@ -68,6 +70,11 @@ export const useAuthStore = create(
         // const response = await signOutService();
         set({ authenticated: false, user: {}, token: null });
         return {};
+      },
+      getCurrentUser: async () => {
+        const response = await getCurrentUserService();
+        set({ user: response.data });
+        return response;
       },
     }),
     {

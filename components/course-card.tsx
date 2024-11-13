@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { IconBadge } from "./icon-badge";
-import { BookOpen } from "lucide-react";
+import { BookOpen, Users } from "lucide-react";
 import { formatPrice } from "@/lib/format";
 
 interface CourseCardProps {
@@ -10,8 +10,9 @@ interface CourseCardProps {
   imageUrl: string;
   price: number;
   category: any;
-  progress: number;
   userId: string;
+  isFree: boolean;
+  enrollmentsCount: number;
 }
 
 export const CourseCard: React.FC<CourseCardProps> = ({
@@ -19,9 +20,10 @@ export const CourseCard: React.FC<CourseCardProps> = ({
   imageUrl,
   price,
   category,
-  progress,
   userId,
   id,
+  isFree,
+  enrollmentsCount,
 }) => {
   return (
     <Link href={`/courses/${id}`}>
@@ -46,16 +48,20 @@ export const CourseCard: React.FC<CourseCardProps> = ({
           <div className="flex items-center my-3 text-sm gap-x-2 md:text-xs">
             <div className="flex items-center gap-x-1">
               <IconBadge size="sm" icon={BookOpen} />
-              <span>{progress}</span>
+              <strong>{isFree ? "Miễn phí" : formatPrice(price)}</strong>
             </div>
           </div>
-          {progress !== null ? (
+          <div className="flex items-center gap-x-2">
+            <IconBadge size="sm" icon={Users} />
+            <strong>{enrollmentsCount}</strong>
+          </div>
+          {/* {progress !== null ? (
             <div>Progress</div>
           ) : (
             <p className="font-medium transition-colors duration-300 text-md md:text-sm text-slate-600 group-hover:text-blue-600">
               {formatPrice(price)}
             </p>
-          )}
+          )} */}
         </div>
       </div>
     </Link>

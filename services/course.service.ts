@@ -3,7 +3,7 @@ import axiosInstance from "@/lib/axios-instance";
 export interface ICondition {
   key: string;
   condition: string;
-  value: string | number;
+  value: string | number | boolean;
 }
 
 export interface IGetPaginatedCoursesParams {
@@ -103,5 +103,13 @@ export const checkCourseService = async (courseId: number, status: string) => {
       status,
     }
   );
+  return response.data;
+};
+
+export const buyCourseService = async (courseId: number, semeterId: number) => {
+  const response = await axiosInstance.post(`/api/course/buyCourse`, {
+    courseId,
+    semeterId,
+  });
   return response.data;
 };

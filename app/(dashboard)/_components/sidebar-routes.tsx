@@ -70,6 +70,16 @@ const adminRoutes = [
     label: "Khóa học đã duyệt",
     href: "/admin/courses-approved",
   },
+  {
+    icon: Book,
+    label: "Khóa học từ chối",
+    href: "/admin/courses-rejected",
+  },
+  {
+    icon: Book,
+    label: "Khóa học đăng ký",
+    href: "/admin/enrollments",
+  },
   // {
   //   icon: List,
   //   label: "Khóa học",

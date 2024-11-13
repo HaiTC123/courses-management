@@ -26,6 +26,8 @@ import { updateCourseService } from "@/services/course.service";
 import { uploadFileService } from "@/services/file.service";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { DEFAULT_IMAGE } from "@/constants/default-image";
+import { CATEGORIES } from "@/constants/category-data";
 
 interface CourseFormProps {
   initialData: {
@@ -193,7 +195,7 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
                       />
                     ) : form.getValues("backgroundUrl") ? (
                       <Image
-                        src={form.getValues("backgroundUrl") ?? ""}
+                        src={form.getValues("backgroundUrl") ?? DEFAULT_IMAGE}
                         alt="Background Image"
                         width={0}
                         height={0}
@@ -262,10 +264,16 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
                 <FormItem>
                   <FormLabel>Category</FormLabel>
                   <FormControl>
-                    <Input
+                    {/* <Input
                       disabled={isSubmitting}
                       placeholder="e.g. 'Computer Science'"
                       {...field}
+                    /> */}
+                    <Combobox
+                      options={CATEGORIES}
+                      value={field.value}
+                      onChange={field.onChange}
+                      disabled={isSubmitting}
                     />
                   </FormControl>
                   <FormMessage />
@@ -307,7 +315,9 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
                   <FormControl>
                     <Input
                       type="number"
-                      disabled={isSubmitting}
+                      disabled={
+                        isSubmitting || !isEditing || form.getValues("isFree")
+                      }
                       {...field}
                       onChange={(e) => field.onChange(Number(e.target.value))}
                     />
@@ -315,7 +325,6 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
                   <FormMessage />
                 </FormItem>
               )}
-              disabled={isSubmitting || !isEditing}
             />
 
             <FormField
@@ -323,12 +332,16 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
               name="isFree"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base">Free Course</FormLabel>
                   <FormControl>
                     <div className="flex items-center justify-start w-full">
                       <Checkbox
                         checked={field.value}
-                        onCheckedChange={field.onChange}
+                        onCheckedChange={(checked) => {
+                          field.onChange(checked);
+                          if (checked) {
+                            form.setValue("price", 0);
+                          }
+                        }}
                         disabled={isSubmitting || !isEditing}
                         className="mr-2"
                       />
@@ -339,7 +352,6 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
                   </FormControl>
                 </FormItem>
               )}
-              disabled={isSubmitting || !isEditing}
             />
 
             <FormField
@@ -351,12 +363,12 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
                   <Combobox
                     options={[
                       { value: CourseStatus.DRAFT, label: "Draft" },
-                      {
-                        value: CourseStatus.PENDING_APPROVAL,
-                        label: "Pending Approval",
-                      },
-                      { value: CourseStatus.APPROVED, label: "Approved" },
-                      { value: CourseStatus.REJECTED, label: "Rejected" },
+                      // {
+                      //   value: CourseStatus.PENDING_APPROVAL,
+                      //   label: "Pending Approval",
+                      // },
+                      // { value: CourseStatus.APPROVED, label: "Approved" },
+                      // { value: CourseStatus.REJECTED, label: "Rejected" },
                     ]}
                     value={field.value}
                     onChange={field.onChange}
