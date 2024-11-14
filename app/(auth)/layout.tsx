@@ -1,21 +1,29 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { useAuthStore } from "@/store/use-auth-store";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   const { authenticated } = useAuthStore();
   const router = useRouter();
+  const [domLoaded, setDomLoaded] = useState(false);
 
   useEffect(() => {
+    setDomLoaded(true);
     if (authenticated) {
       router.back();
     }
   }, [authenticated, router]);
 
   return (
-    <div className="flex items-center justify-center h-full">{children}</div>
+    <>
+      {domLoaded && (
+        <div className="flex items-center justify-center h-full">
+          {children}
+        </div>
+      )}
+    </>
   );
 };
 

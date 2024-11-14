@@ -4,7 +4,11 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { getProgressByCourseId } from "@/services/progress.service";
+import {
+  getProgressByCourseId,
+  getProgressPaging,
+} from "@/services/progress.service";
+import { useAuthStore } from "@/store/use-auth-store";
 import { MinusCircle, PlusCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ChapterSidebarItem } from "./chapter-sidbar-item";
@@ -12,11 +16,14 @@ import { ScheduleCourse } from "./schedule-course";
 
 interface CourseSidebarProps {
   course: any;
+  enrollmentId: number;
 }
 
-export const CourseSidebar = ({ course }: CourseSidebarProps) => {
+export const CourseSidebar = ({ course, enrollmentId }: CourseSidebarProps) => {
+  const user = useAuthStore.getState().user;
   const [isOpen, setIsOpen] = useState(true);
   const [progress, setProgress] = useState(0);
+  const [progressDetails, setProgressDetails] = useState<any>(null);
 
   useEffect(() => {
     if (course.id) {
@@ -29,6 +36,39 @@ export const CourseSidebar = ({ course }: CourseSidebarProps) => {
       });
     }
   }, [course]);
+
+  useEffect(() => {
+    const fetchProgress = async () => {
+      const response = await getProgressPaging({
+        pageSize: 1000,
+        pageNumber: 1,
+        conditions: [
+          {
+            key: "courseId",
+            condition: "equal",
+            value: Number(course.id),
+          },
+          {
+            key: "enrollmentId",
+            condition: "equal",
+            value: enrollmentId,
+          },
+        ],
+        sortOrder: "createdAt desc",
+        searchKey: "",
+        searchFields: [],
+        includeReferences: {},
+      });
+      if (response?.data?.data?.length > 0) {
+        console.log(response.data.data);
+        setProgressDetails([...response.data.data]);
+        course.chapters = [...course.chapters];
+      }
+    };
+    if (course.id && enrollmentId) {
+      fetchProgress();
+    }
+  }, [course, enrollmentId]);
 
   return (
     <div className="flex flex-col h-full overflow-y-auto border-r shadow-sm">
@@ -62,6 +102,7 @@ export const CourseSidebar = ({ course }: CourseSidebarProps) => {
                   chapterId={chapter.id}
                   label={chapter.chapterTitle}
                   lessons={chapter.lessons}
+                  progressDetails={progressDetails}
                 />
               ))}
           </CollapsibleContent>

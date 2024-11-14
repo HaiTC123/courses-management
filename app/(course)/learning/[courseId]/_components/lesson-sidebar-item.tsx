@@ -4,7 +4,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { MinusCircle, PlusCircle } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CourseSidebarItem } from "./course-sidebar-item";
 
 interface LessonSidebarItemProps {
@@ -13,6 +13,7 @@ interface LessonSidebarItemProps {
   courseId: number;
   chapterId: number;
   lessonId: number;
+  progressDetails: any[];
 }
 
 export const LessonSidebarItem: React.FC<LessonSidebarItemProps> = ({
@@ -21,8 +22,14 @@ export const LessonSidebarItem: React.FC<LessonSidebarItemProps> = ({
   courseId,
   chapterId,
   lessonId,
+  progressDetails,
 }) => {
   const [isOpen, setIsOpen] = useState(true);
+  const [materialsItem, setMaterialsItem] = useState<any[]>([]);
+
+  useEffect(() => {
+    setMaterialsItem([...materials]);
+  }, [materials]);
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -37,12 +44,10 @@ export const LessonSidebarItem: React.FC<LessonSidebarItemProps> = ({
         </div>
       </CollapsibleTrigger>
       <CollapsibleContent className="ml-5">
-        {materials.map((material) => (
+        {materialsItem.map((material) => (
           <CourseSidebarItem
             key={material.id}
             label={material.materialTitle}
-            isCompleted={false}
-            isLocked={false}
             courseId={courseId}
             chapterId={chapterId}
             lessonId={lessonId}

@@ -1,12 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { CourseSidebar } from "./_components/course-sidebar";
-import toast from "react-hot-toast";
 import { getCourseByIdService } from "@/services/course.service";
-import { CourseNavbar } from "./_components/course-navbar";
-import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/use-auth-store";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { CourseNavbar } from "./_components/course-navbar";
+import { CourseSidebar } from "./_components/course-sidebar";
+import { getPaginatedEnrollmentsService } from "@/services/enrollment.service";
+import { getProgressPaging } from "@/services/progress.service";
 
 const CourseIdLayout = ({
   children,
@@ -16,21 +18,17 @@ const CourseIdLayout = ({
   params: { courseId: string };
 }) => {
   const { courseId } = params;
-  const { authenticated, user } = useAuthStore.getState();
+  const authenticated = useAuthStore.getState().authenticated;
+  const user = useAuthStore.getState().user;
   const router = useRouter();
   const [domLoaded, setDomLoaded] = useState(false);
-
-  useEffect(() => {
-    setDomLoaded(true);
-  }, []);
-
   const [course, setCourse] = useState<any>({});
-  // const [enrolledCourseIds, setEnrolledCourseIds] = useState<number[]>([]);
+  const [enrollmentId, setEnrollmentId] = useState(0);
+
   const fetchCourse = useCallback(async () => {
     try {
       const response = await getCourseByIdService(Number(courseId));
       if (response.data) {
-        console.log(response.data);
         setCourse(response.data);
       }
     } catch (error: any) {
@@ -48,7 +46,6 @@ const CourseIdLayout = ({
         user.enrolledCourseIds
           .split(";")
           .map((course: any) => Number(course)) ?? [];
-      // setEnrolledCourseIds(courseIds);
       if (courseId && !courseIds.includes(Number(courseId))) {
         toast.error("Bạn chưa đăng ký khóa học này");
         router.push("/");
@@ -56,10 +53,43 @@ const CourseIdLayout = ({
     }
   }, [courseId, router, user]);
 
-  if (!authenticated) {
-    router.push("/sign-in");
-    return null;
-  }
+  useEffect(() => {
+    const fetchEnrollment = async () => {
+      const response = await getPaginatedEnrollmentsService({
+        pageSize: 1000,
+        pageNumber: 1,
+        conditions: [
+          {
+            key: "courseId",
+            condition: "equal",
+            value: Number(courseId),
+          },
+          {
+            key: "studentId",
+            condition: "equal",
+            value: user?.student?.id,
+          },
+        ],
+        sortOrder: "createdAt desc",
+        searchKey: "",
+        searchFields: [],
+        includeReferences: {},
+      });
+      if (response?.data?.data?.length > 0) {
+        setEnrollmentId(response.data.data[0].id);
+      }
+    };
+    if (courseId && user?.student?.id) {
+      fetchEnrollment();
+    }
+  }, [courseId, user]);
+
+  useEffect(() => {
+    setDomLoaded(true);
+    if (!authenticated) {
+      router.push("/sign-in");
+    }
+  }, [authenticated, router]);
 
   return (
     <>
@@ -69,7 +99,7 @@ const CourseIdLayout = ({
             <CourseNavbar course={course} />
           </div>
           <div className="fixed inset-y-0 z-50 flex-col hidden h-full md:flex w-80">
-            <CourseSidebar course={course} />
+            <CourseSidebar course={course} enrollmentId={enrollmentId} />
           </div>
           <main className="h-full md:pl-80 md:pt-[80px]">{children}</main>
         </div>

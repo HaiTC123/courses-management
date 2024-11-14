@@ -13,10 +13,11 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
     setDomLoaded(true);
   }, []);
 
-  if (!authenticated) {
-    router.push("/sign-in");
-    return null;
-  }
+  useEffect(() => {
+    if (!authenticated) {
+      router.push("/sign-in");
+    }
+  }, [router, authenticated]);
 
   return <>{domLoaded && <main>{children}</main>}</>;
 };

@@ -3,19 +3,19 @@
 import { connectSocket } from "@/services/socket.service";
 import { isEmpty } from "lodash";
 import { Inter } from "next/font/google";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect } from "react";
 import { io } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 
 import { ToasterProvider } from "@/components/providers/toaster-provider";
-import { useAuthStore } from "@/store/use-auth-store";
 import { mapNotificationType } from "@/constants/notifications";
+import { useAuthStore } from "@/store/use-auth-store";
 import { useNotiStore } from "@/store/use-noti-store";
 
-import { getListNotification } from "@/services/notification.service";
-import "./globals.css";
 import { AdviseChat } from "@/components/advise-chat";
 import { SocketInstance } from "@/lib/socket-instance";
+import { getListNotification } from "@/services/notification.service";
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -100,7 +100,7 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <ToasterProvider />
-        {children}
+        <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
         <AdviseChat />
       </body>
     </html>

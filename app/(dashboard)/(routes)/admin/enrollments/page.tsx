@@ -1,25 +1,55 @@
 "use client";
 
+import { Combobox } from "@/components/ui/combobox";
+import { CourseStatus } from "@/enum/course-status";
+import { getPaginatedCoursesService } from "@/services/course.service";
+import { getPaginatedEnrollmentsService } from "@/services/enrollment.service";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-
-import { getPaginatedEnrollmentsService } from "@/services/enrollment.service";
 import { createColumns } from "./_components/column";
 import { DataTable } from "./_components/data-table";
 
 const ListEnrollmentsPage = () => {
   const [enrollments, setEnrollments] = useState<any[]>([]);
+  const [selectedCourse, setSelectedCourse] = useState<any>(null);
 
   const fetchEnrollments = useCallback(async () => {
     try {
+      const params = selectedCourse
+        ? [
+            {
+              key: "semesterId",
+              condition: "equal",
+              value: 2,
+            },
+            {
+              key: "courseId",
+              condition: "equal",
+              value: selectedCourse,
+            },
+          ]
+        : [
+            {
+              key: "semesterId",
+              condition: "equal",
+              value: 2,
+            },
+          ];
       const response = await getPaginatedEnrollmentsService({
         pageSize: 1000,
         pageNumber: 1,
-        conditions: [],
+        conditions: [...params],
         sortOrder: "",
         searchKey: "",
         searchFields: [],
-        includeReferences: {},
+        includeReferences: {
+          student: {
+            include: {
+              user: true,
+            },
+          },
+          course: true,
+        },
       });
       if (response.data.data) {
         const listEnrollments = response.data.data.map((enrollment: any) => ({
@@ -30,11 +60,40 @@ const ListEnrollmentsPage = () => {
     } catch (error) {
       toast.error((error as any).message);
     }
-  }, []);
+  }, [selectedCourse]);
 
   useEffect(() => {
     fetchEnrollments();
   }, [fetchEnrollments]);
+
+  const [courses, setCourses] = useState<any[]>([]);
+
+  useEffect(() => {
+    getPaginatedCoursesService({
+      pageSize: 1000,
+      pageNumber: 1,
+      conditions: [
+        {
+          key: "status",
+          condition: "equal",
+          value: CourseStatus.APPROVED,
+        },
+      ],
+      sortOrder: "",
+      searchKey: "",
+      searchFields: [],
+      includeReferences: [],
+    }).then((response) => {
+      if (response.data.data) {
+        setCourses(
+          response.data.data.map((item: any) => ({
+            label: item.courseName,
+            value: item.id,
+          }))
+        );
+      }
+    });
+  }, []);
 
   const handleDelete = async (id: string, userId: string) => {
     // try {
@@ -51,6 +110,21 @@ const ListEnrollmentsPage = () => {
 
   return (
     <div className="p-6">
+      <div className="flex items-center justify-between mb-4">
+        <Combobox
+          options={courses}
+          value={selectedCourse}
+          onChange={setSelectedCourse}
+        />
+        {/* <MultiSelect
+          options={courses}
+          onValueChange={setSelectedCourse}
+          placeholder="Chọn khóa học"
+          variant="inverted"
+          animation={2}
+          maxCount={2}
+        /> */}
+      </div>
       <DataTable
         columns={columns}
         data={enrollments}

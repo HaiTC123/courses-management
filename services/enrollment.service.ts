@@ -19,6 +19,6 @@ export interface IGetPaginatedEnrollmentsParams {
 export const getPaginatedEnrollmentsService = async (
   params: IGetPaginatedEnrollmentsParams
 ) => {
-  const response = await axiosInstance.post("/api/enrollment/paging", params);
+  const response = await axiosInstance.post("/api/enrollment/pagingV2", params);
   return response.data;
 };

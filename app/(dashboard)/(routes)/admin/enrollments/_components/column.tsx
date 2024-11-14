@@ -52,47 +52,49 @@ export const createColumns = (
     },
   },
   {
-    accessorKey: "studentId",
+    accessorKey: "student",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          ID Học viên
+          Học viên
           <ArrowUpDown className="w-4 h-4 ml-2" />
         </Button>
       );
     },
     cell: ({ row }) => {
-      const studentId: any = row.getValue("studentId") || "";
+      const student: any = row.getValue("student") || "";
 
       return (
         <div className="text-center text-blue-500">
-          <Link href={`/admin/students/edit/${studentId}`}>{studentId}</Link>
+          <Link href={`/admin/students/edit/${student?.id}`}>
+            {student?.user?.fullName}
+          </Link>
         </div>
       );
     },
   },
   {
-    accessorKey: "courseId",
+    accessorKey: "course",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          ID Khóa học
+          Khóa học
           <ArrowUpDown className="w-4 h-4 ml-2" />
         </Button>
       );
     },
     cell: ({ row }) => {
-      const courseId: any = row.getValue("courseId") || "";
+      const course: any = row.getValue("course") || "";
 
       return (
-        <div className="text-center text-blue-500">
-          <Link href={`/courses/${courseId}`}>{courseId}</Link>
+        <div className="text-center text-blue-500 whitespace-nowrap">
+          <Link href={`/courses/${course.id}`}>{course.courseName}</Link>
         </div>
       );
     },

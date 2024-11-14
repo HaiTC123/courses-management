@@ -1,6 +1,5 @@
 "use client";
 
-import { learningPaths } from "@/constants/learning-paths-data";
 import { LearningCard } from "./_components/learning-card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";

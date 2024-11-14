@@ -38,6 +38,9 @@ import {
 } from "@/services/user.service";
 import { useCallback, useEffect, useState } from "react";
 import { DatePicker } from "../../../../../../../components/date-picker";
+import Image from "next/image";
+import { DEFAULT_IMAGE } from "@/constants/default-image";
+import { uploadFileService } from "@/services/file.service";
 
 const EditUserPage = () => {
   const router = useRouter();
@@ -62,6 +65,10 @@ const EditUserPage = () => {
     city: z.string(),
     state: z.nativeEnum(UserState),
     postalCode: z.string(),
+    profilePictureURL: z.string().optional(),
+    profilePictureURLTmp: z.string().optional(),
+    bannerPictureURL: z.string().optional(),
+    bannerPictureURLTmp: z.string().optional(),
   });
 
   const studentFormSchema = z.object({
@@ -85,6 +92,10 @@ const EditUserPage = () => {
       city: "",
       state: UserState.ACTIVE,
       postalCode: "",
+      profilePictureURL: "",
+      profilePictureURLTmp: "",
+      bannerPictureURL: "",
+      bannerPictureURLTmp: "",
     },
   });
 
@@ -157,6 +168,10 @@ const EditUserPage = () => {
         city: general.city || "",
         state: general.state || UserState.ACTIVE,
         postalCode: general.postalCode || "",
+        profilePictureURL: general.profilePictureURL || "",
+        profilePictureURLTmp: "",
+        bannerPictureURL: general.bannerPictureURL || "",
+        bannerPictureURLTmp: "",
       });
     }
 
@@ -172,7 +187,10 @@ const EditUserPage = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const userResponse = await updateUserService(userId, values);
+      const userResponse = await updateUserService(
+        userId,
+        omit(values, ["profilePictureURLTmp", "bannerPictureURLTmp"])
+      );
       if (userResponse) {
         toast.success("Student updated successfully");
       }
@@ -189,6 +207,18 @@ const EditUserPage = () => {
       }
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Something went wrong");
+    }
+  };
+
+  const uploadFile = async (file: File, fieldName: string) => {
+    try {
+      const response = await uploadFileService(file);
+      if (response.data.fileUrl) {
+        form.setValue(fieldName as any, response.data.fileUrl);
+        toast.success("File được tải lên thành công");
+      }
+    } catch (error: any) {
+      toast.error(error?.message);
     }
   };
 
@@ -245,12 +275,89 @@ const EditUserPage = () => {
                         </FormItem>
                       )}
                     />
+
+                    <FormField
+                      control={form.control}
+                      name="profilePictureURLTmp"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Ảnh đại diện</FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              type="file"
+                              onChange={(event) => {
+                                if (event.target.files?.[0]) {
+                                  uploadFile(
+                                    event.target.files?.[0],
+                                    "profilePictureURL"
+                                  );
+                                }
+                              }}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    {form.getValues("profilePictureURL") && (
+                      <div>
+                        <Image
+                          src={
+                            form.getValues("profilePictureURL") ?? DEFAULT_IMAGE
+                          }
+                          alt="Profile Picture"
+                          width={0}
+                          height={0}
+                          sizes="100px"
+                          style={{ width: "100px", height: "auto" }}
+                        />
+                      </div>
+                    )}
+                    <FormField
+                      control={form.control}
+                      name="bannerPictureURLTmp"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Ảnh bìa</FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              type="file"
+                              onChange={(event) => {
+                                if (event.target.files?.[0]) {
+                                  uploadFile(
+                                    event.target.files?.[0],
+                                    "bannerPictureURL"
+                                  );
+                                }
+                              }}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    {form.getValues("bannerPictureURL") && (
+                      <div>
+                        <Image
+                          src={
+                            form.getValues("bannerPictureURL") ?? DEFAULT_IMAGE
+                          }
+                          alt="Banner Picture"
+                          width={0}
+                          height={0}
+                          sizes="100px"
+                          style={{ width: "100px", height: "auto" }}
+                        />
+                      </div>
+                    )}
                     <FormField
                       control={form.control}
                       name="gender"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Gender</FormLabel>
+                          <FormLabel>Giới tính</FormLabel>
                           <FormControl>
                             <Combobox
                               options={[

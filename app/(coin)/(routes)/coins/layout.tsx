@@ -11,12 +11,10 @@ const CoinsLayout = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     setDomLoaded(true);
-  }, []);
-
-  if (!authenticated) {
-    router.push("/sign-in");
-    return null;
-  }
+    if (!authenticated) {
+      router.push("/sign-in");
+    }
+  }, [router, authenticated]);
 
   return <>{domLoaded && <main className="pt-6">{children}</main>}</>;
 };

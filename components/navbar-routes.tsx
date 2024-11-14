@@ -32,10 +32,7 @@ export const NavbarRoutes = () => {
 
   const isInstructorPage = pathname.startsWith("/instructor");
   const isAdminPage = pathname.startsWith("/admin");
-  const isSearchPage = pathname.startsWith("/search");
   const isRootPage = pathname === "/";
-  const isLearningPage = pathname.startsWith("/learning");
-  const isAdvisePage = pathname.includes("advise");
 
   const { notifications, setNotifications } = useNotiStore();
 

@@ -20,3 +20,8 @@ export const markAsCompleted = async (courseLessonId: number) => {
   );
   return response.data;
 };
+
+export const getProgressPaging = async (params: any) => {
+  const response = await axiosInstance.post(`/api/progress/paging`, params);
+  return response.data;
+};

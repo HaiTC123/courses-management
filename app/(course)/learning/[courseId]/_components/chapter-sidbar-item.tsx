@@ -4,7 +4,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { MinusCircle, PlusCircle } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LessonSidebarItem } from "./lesson-sidebar-item";
 
 interface ChapterSidebarItemProps {
@@ -12,6 +12,7 @@ interface ChapterSidebarItemProps {
   lessons: any[];
   courseId: number;
   chapterId: number;
+  progressDetails: any[];
 }
 
 export const ChapterSidebarItem: React.FC<ChapterSidebarItemProps> = ({
@@ -19,8 +20,14 @@ export const ChapterSidebarItem: React.FC<ChapterSidebarItemProps> = ({
   lessons,
   courseId,
   chapterId,
+  progressDetails,
 }) => {
   const [isOpen, setIsOpen] = useState(true);
+  const [lessonsItem, setLessonsItem] = useState<any[]>([]);
+
+  useEffect(() => {
+    setLessonsItem([...lessons]);
+  }, [lessons]);
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -35,7 +42,7 @@ export const ChapterSidebarItem: React.FC<ChapterSidebarItemProps> = ({
         </div>
       </CollapsibleTrigger>
       <CollapsibleContent className="ml-5">
-        {lessons
+        {lessonsItem
           ?.sort((a: any, b: any) => a.lessonOrder - b.lessonOrder)
           .map((lesson) => (
             <LessonSidebarItem
@@ -45,6 +52,7 @@ export const ChapterSidebarItem: React.FC<ChapterSidebarItemProps> = ({
               courseId={courseId}
               chapterId={chapterId}
               lessonId={lesson.id}
+              progressDetails={progressDetails}
             />
           ))}
       </CollapsibleContent>

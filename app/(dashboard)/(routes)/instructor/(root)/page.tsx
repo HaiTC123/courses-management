@@ -58,11 +58,12 @@ export default function InstructorDashboard() {
     fetchData();
   }, []);
 
-  if (role !== UserRole.INSTRUCTOR) {
-    router.push("/");
-    toast.error("Bạn không có quyền truy cập vào trang này");
-    return null;
-  }
+  useEffect(() => {
+    if (role !== UserRole.INSTRUCTOR) {
+      router.push("/");
+      toast.error("Bạn không có quyền truy cập vào trang này");
+    }
+  }, [router, role]);
 
   return (
     <div className="p-6 space-y-4">

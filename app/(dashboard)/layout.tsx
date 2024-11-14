@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { Navbar } from "./_components/navbar";
 import { Sidebar } from "./_components/sidebar";
 import { useAuthStore } from "@/store/use-auth-store";
@@ -14,12 +14,10 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     setDomLoaded(true);
-  }, []);
-
-  if (!authenticated) {
-    router.push("/sign-in");
-    return null;
-  }
+    if (!authenticated) {
+      router.push("/sign-in");
+    }
+  }, [router, authenticated]);
 
   return (
     <>
@@ -33,7 +31,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               <Sidebar />
             </div>
             <main className="pt-[80px] h-full w-full md:pl-56 overflow-y-auto">
-              {children}
+              <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
             </main>
           </div>
           <Footer />

@@ -1,27 +1,20 @@
 "use client";
 
-import { Collapsible } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { CheckCircle, Clock } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
 export const CourseSidebarItem = ({
   label,
-  isCompleted,
   isLocked,
+  isCompleted,
   courseId,
   chapterId,
   lessonId,
   materialId,
-}: {
-  label: string;
-  isCompleted: boolean;
-  isLocked: boolean;
-  courseId: number;
-  chapterId: number;
-  lessonId: number;
-  materialId: number;
-}) => {
+  progressDetails,
+}: any) => {
   const pathName = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -29,6 +22,25 @@ export const CourseSidebarItem = ({
   const chapterIdParam = searchParams.get("chapterId");
   const lessonIdParam = searchParams.get("lessonId");
   const materialIdParam = searchParams.get("materialId");
+
+  // useEffect(() => {
+  //   const isMaterialCompleted = (progressDetails || []).find(
+  //     (progress: any) =>
+  //       progress.materialId === materialId && progress.status === "Completed"
+  //   );
+  //   setIsCompleted(isMaterialCompleted);
+
+  //   const isMaterialLocked = (progressDetails || []).find(
+  //     (progress: any) =>
+  //       progress.materialId === materialId && progress.status === "NotStarted"
+  //   );
+  //   setIsLocked(isMaterialLocked);
+  // }, [materialId, progressDetails]);
+
+  useEffect(() => {
+    console.log(progressDetails, 123);
+    console.log(materialId, 123);
+  }, [progressDetails, materialId]);
 
   const Icon: any = isLocked ? Lock : isCompleted ? CheckCircle : Clock;
 

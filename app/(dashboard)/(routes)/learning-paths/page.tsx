@@ -1,16 +1,13 @@
 "use client";
 
-import { SearchInput } from "@/components/search-input";
-import { CourseList } from "@/components/course-list";
-import { LearningCard } from "./_components/learning-card";
-import { learningPaths } from "@/constants/learning-paths-data";
-import { useCallback, useEffect, useState } from "react";
+import { toSlug } from "@/lib/to-slug";
 import {
   getPaginatedLearningPathsService,
   IGetPaginatedLearningPathsParams,
 } from "@/services/learn-path.service";
+import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { toSlug } from "@/lib/to-slug";
+import { LearningCard } from "./_components/learning-card";
 
 const LearningPathsPage = () => {
   const [learningPaths, setLearningPaths] = useState<any[]>([]);

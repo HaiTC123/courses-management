@@ -43,11 +43,12 @@ export default function AdminDashboard() {
     fetchData();
   }, []);
 
-  if (role !== UserRole.ADMIN) {
-    router.push("/");
-    toast.error("Bạn không có quyền truy cập vào trang này");
-    return null;
-  }
+  useEffect(() => {
+    if (role !== UserRole.ADMIN) {
+      router.push("/");
+      toast.error("Bạn không có quyền truy cập vào trang này");
+    }
+  }, [router, role]);
 
   return (
     <div className="h-full p-6">

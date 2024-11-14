@@ -1,17 +1,12 @@
 "use client";
 
 import { DEFAULT_IMAGE } from "@/constants/default-image";
-import { CourseCard } from "./_components/course-card";
-import {
-  learningPathsData,
-  LearningPathSlug,
-} from "@/constants/learning-paths-data";
 import { getLearningPathByIdService } from "@/services/learn-path.service";
 import Image from "next/image";
-import Link from "next/link";
-import { useRouter, useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { CourseCard } from "./_components/course-card";
 
 const LearningPathPage = () => {
   const router = useRouter();
