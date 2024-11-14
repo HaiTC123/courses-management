@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   buyCourseService,
   getCourseByIdService,
+  registerCourseService,
 } from "@/services/course.service";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
@@ -71,12 +72,21 @@ const CourseIdPage = () => {
   const handleRegister = async () => {
     if (course.isFree) {
       toast.success("Đăng ký học thành công");
-      router.push(`/learning/${courseId}`);
+      try {
+        const response = await registerCourseService(Number(courseId), 2);
+        const response2 = await getCurrentUser();
+        if (response.success && response2.success) {
+          router.push(`/learning/${courseId}`);
+        }
+      } catch (error: any) {
+        toast.error(error.response.data.message);
+      }
     } else {
       try {
         const response = await buyCourseService(Number(courseId), 2);
-        const response2 = await getCurrentUser();
-        if (response.success && response2.success) {
+        const response2 = await registerCourseService(Number(courseId), 2);
+        const response3 = await getCurrentUser();
+        if (response && response2 && response3) {
           toast.success("Mua và đăng ký khóa học thành công");
           router.push(`/learning/${courseId}`);
         }
@@ -152,7 +162,7 @@ const CourseIdPage = () => {
               <h3 className="p-4 text-xl font-bold text-center">
                 Bạn đã đăng ký khóa học này
               </h3>
-              <Button className="w-full mt-4" onClick={handleRegister}>
+              <Button className="w-full mt-4" onClick={handleContinueLearning}>
                 Tiếp tục học
               </Button>
             </>

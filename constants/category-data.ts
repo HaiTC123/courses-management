@@ -13,10 +13,22 @@ export const CATEGORIES = [
   },
   {
     label: "Web Development",
-    value: "web-development",
+    value: "Web Development",
   },
   {
     label: "Data Science",
     value: "Data Science",
+  },
+  {
+    label: "Mobile Development",
+    value: "Mobile Development",
+  },
+  {
+    label: "Ngôn ngữ",
+    value: "Ngôn ngữ",
+  },
+  {
+    label: "Lập trình AI",
+    value: "Lập trình AI",
   },
 ];

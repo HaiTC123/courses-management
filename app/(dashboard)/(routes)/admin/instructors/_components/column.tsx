@@ -25,7 +25,7 @@ import { cn } from "@/lib/utils";
 // };
 
 export const createColumns = (
-  onDelete: (id: string, userId: string) => Promise<void>
+  onDelete: (id: number, userId: number) => Promise<void>
 ): ColumnDef<any>[] => [
   {
     accessorKey: "fullName",
@@ -35,7 +35,7 @@ export const createColumns = (
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Full Name
+          Họ và tên
           <ArrowUpDown className="w-4 h-4 ml-2" />
         </Button>
       );
@@ -78,7 +78,7 @@ export const createColumns = (
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <Link href={`/instructor/courses/${id}`}>
+            <Link href={`/admin/instructors/edit/${id}`}>
               <DropdownMenuItem>
                 <Pencil className="w-4 h-4 mr-2" />
                 Sửa

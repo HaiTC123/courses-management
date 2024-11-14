@@ -64,6 +64,11 @@ const LearningPathsPage = () => {
             />
           ))}
         </div>
+        {learningPaths.length === 0 && (
+          <div className="flex items-center justify-center h-full">
+            <p className="text-gray-500">Không tìm thấy lộ trình học</p>
+          </div>
+        )}
       </div>
     </>
   );

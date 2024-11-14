@@ -1,22 +1,21 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
-import {
-  ArrowLeft,
-  Bell,
-  Coins,
-  DropletIcon,
-  LogIn,
-  LogOut,
-  Settings,
-} from "lucide-react";
+import { ArrowLeft, Bell, LogIn, LogOut, Settings } from "lucide-react";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 
-import { Button } from "./ui/button";
+import { DEFAULT_AVATAR } from "@/constants/default-avatar";
+import { UserRole } from "@/enum/user-role";
+import { cn } from "@/lib/utils";
+import {
+  getListNotification,
+  updateNotification,
+} from "@/services/notification.service";
+import { useAuthStore } from "@/store/use-auth-store";
+import { useNotiStore } from "@/store/use-noti-store";
 import { SearchInput } from "./search-input";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { useAuthStore } from "@/store/use-auth-store";
-import { DEFAULT_AVATAR } from "@/constants/default-avatar";
+import { Button } from "./ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,11 +24,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { UserRole } from "@/enum/user-role";
-import { socket } from "@/lib/socket";
-import { useNotiStore } from "@/store/use-noti-store";
-import { cn } from "@/lib/utils";
-import { formatPrice } from "@/lib/format";
 
 export const NavbarRoutes = () => {
   const pathname = usePathname();
@@ -41,12 +35,42 @@ export const NavbarRoutes = () => {
   const isSearchPage = pathname.startsWith("/search");
   const isRootPage = pathname === "/";
   const isLearningPage = pathname.startsWith("/learning");
+  const isAdvisePage = pathname.includes("advise");
 
-  const { notifications } = useNotiStore();
+  const { notifications, setNotifications } = useNotiStore();
 
   const handleSignOut = async () => {
     await signOut();
     router.push("/sign-in");
+  };
+
+  const handleUpdateNotification = async (notification: any) => {
+    if (notification.id) {
+      const res = await updateNotification(notification.id);
+      const res2 = await getListNotification({
+        pageSize: 1000,
+        pageNumber: 1,
+        conditions: [
+          {
+            key: "receiveId",
+            value: user.id,
+            condition: "equal",
+          },
+        ],
+        sortOrder: "createdAt desc",
+        searchKey: "",
+        searchFields: [],
+      });
+      setNotifications(res2.data.data);
+      if (res && res2 && notification.link) {
+        router.push(notification.link);
+        setTimeout(() => {
+          if (window !== undefined) {
+            window.location.reload();
+          }
+        }, 500);
+      }
+    }
   };
 
   return (
@@ -54,54 +78,26 @@ export const NavbarRoutes = () => {
       <div className="flex items-center w-full">
         <div className="hidden mr-2 md:block">
           {!isRootPage && (
-            <Button variant="ghost" size="sm" onClick={() => router.push("/")}>
+            <Button variant="ghost" size="sm" onClick={() => router.back()}>
               <ArrowLeft className="mr-2 size-4" />
               <span>Quay lại</span>
             </Button>
           )}
         </div>
 
-        <div className="block">
+        <div className="flex gap-x-2">
           <SearchInput />
+          {!isRootPage && (
+            <Button variant="ghost" size="sm" onClick={() => router.push("/")}>
+              {/* <ArrowLeft className="mr-2 size-4" /> */}
+              <span>Trang chủ</span>
+            </Button>
+          )}
         </div>
 
         <div className="flex ml-auto gap-x-2">
           {authenticated ? (
             <>
-              {/* Coins */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm">
-                    <div className="relative">
-                      <Coins className="size-4" />
-                    </div>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>
-                    <div className="flex items-center gap-x-2">
-                      <div>Coin</div>
-                      <div className="text-xs text-gray-400">
-                        {formatPrice(user?.coinAmount ?? 0)}
-                      </div>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <Link href="/coins">
-                    <DropdownMenuItem className="cursor-pointer">
-                      <Coins className="mr-2 size-4" />
-                      Coin
-                    </DropdownMenuItem>
-                  </Link>
-                  <Link href="/coins/deposit">
-                    <DropdownMenuItem className="cursor-pointer">
-                      <DropletIcon className="mr-2 size-4" />
-                      Nạp Coins
-                    </DropdownMenuItem>
-                  </Link>
-                </DropdownMenuContent>
-              </DropdownMenu>
-
               {/* Notifications */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -124,26 +120,36 @@ export const NavbarRoutes = () => {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  {notifications.map((notification: any, idx: number) => (
-                    <DropdownMenuItem key={idx} className="cursor-pointer">
-                      <Link href={notification.link}>
-                        <div className="flex items-center gap-x-2">
+                  <div className="max-h-[300px] overflow-y-auto">
+                    {notifications.map((notification: any, idx: number) => (
+                      <DropdownMenuItem key={idx} className="cursor-pointer">
+                        <div>
                           <div
-                            className={cn(
-                              "rounded-full size-2",
-                              notification.isViewed
-                                ? "bg-gray-300"
-                                : "bg-blue-500"
-                            )}
-                          ></div>
-                          {notification.title}
+                            className="flex items-center gap-x-2"
+                            onClick={() =>
+                              handleUpdateNotification(notification)
+                            }
+                          >
+                            <div
+                              className={cn(
+                                "rounded-full size-2",
+                                notification.isViewed
+                                  ? "bg-gray-300"
+                                  : "bg-blue-500"
+                              )}
+                            ></div>
+                            {notification.title}
+                          </div>
+                          <div className="mt-2 text-xs text-gray-400">
+                            {new Date(notification.createdAt).toLocaleString()}
+                          </div>
                         </div>
-                        <div className="mt-2 text-xs text-gray-400">
-                          {new Date(notification.createdAt).toLocaleString()}
-                        </div>
-                      </Link>
-                    </DropdownMenuItem>
-                  ))}
+                      </DropdownMenuItem>
+                    ))}
+                    {notifications.length === 0 && (
+                      <DropdownMenuLabel>Không có thông báo</DropdownMenuLabel>
+                    )}
+                  </div>
                 </DropdownMenuContent>
               </DropdownMenu>
 

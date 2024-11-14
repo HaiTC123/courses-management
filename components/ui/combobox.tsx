@@ -20,9 +20,9 @@ import {
 } from "@/components/ui/popover";
 
 interface ComboboxProps {
-  options: { value: string; label: string }[];
-  value?: string;
-  onChange: (value: string) => void;
+  options: { value: any; label: string }[];
+  value?: any;
+  onChange: (value: any) => void;
   disabled?: boolean;
 }
 
@@ -46,7 +46,7 @@ export const Combobox = ({
         >
           {value
             ? options.find((option) => option.value === value)?.label
-            : "Select option..."}
+            : "Lựa chọn..."}
           <ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
         </Button>
       </PopoverTrigger>

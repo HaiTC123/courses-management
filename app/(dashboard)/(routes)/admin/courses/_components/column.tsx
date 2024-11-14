@@ -120,7 +120,7 @@ export const createColumns = (
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <Link href={`/instructor/courses/${id}`}>
+            <Link href={`/admin/courses/${id}`}>
               <DropdownMenuItem>
                 <Pencil className="w-4 h-4 mr-2" />
                 Sửa

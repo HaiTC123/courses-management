@@ -35,9 +35,11 @@ export function CarouselCourse({ items }: { items: any[] }) {
               <Card className="w-full h-[300px]">
                 <CardContent
                   className={cn(
-                    "flex items-center justify-between w-full h-full p-6 aspect-square rounded-lg",
-                    item.classBackground
+                    "flex items-center justify-between w-full h-full p-6 aspect-square rounded-lg overflow-hidden"
                   )}
+                  style={{
+                    background: item.classBackground,
+                  }}
                 >
                   <div>
                     <h1 className="mb-4 text-3xl font-semibold text-white">
@@ -54,6 +56,7 @@ export function CarouselCourse({ items }: { items: any[] }) {
                         height={0}
                         sizes="100vw"
                         style={{ width: "100%", height: "auto" }}
+                        priority={true}
                       />
                     ) : null}
                   </div>

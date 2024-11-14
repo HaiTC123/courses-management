@@ -1,10 +1,15 @@
 "use client";
 
-import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { VideoPlayer } from "./_components/video-player";
-import { Suspense, useCallback, useEffect, useState } from "react";
 import { getCourseByIdService } from "@/services/course.service";
+import {
+  getProgressByCourseId,
+  markAsCompleted,
+} from "@/services/progress.service";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { VideoPlayer } from "./_components/video-player";
+import { Button } from "@/components/ui/button";
 
 const LearningCourseIdPage = () => {
   const params = useParams();
@@ -51,12 +56,34 @@ const LearningCourseIdPage = () => {
     fetchCourse();
   }, [fetchCourse]);
 
+  // useEffect(() => {
+  //   getProgressByCourseId(Number(courseId)).then((res: any) => {
+  //     console.log(res);
+  //   });
+  // }, [courseId]);
+
+  const handleMarkAsCompleted = async () => {
+    console.log("Mark as completed");
+    try {
+      const res = await markAsCompleted(Number(material?.id));
+      console.log(res);
+      if (window !== undefined) {
+        window.location.reload();
+      }
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
   return material ? (
     <div className="flex flex-col max-w-4xl pb-20 mx-auto">
       <div className="p-4">
         <Suspense fallback={<p>Loading video...</p>}>
           <VideoPlayer url={material?.materialURL ?? ""} />
         </Suspense>
+        <Button className="w-[200px] mt-4" onClick={handleMarkAsCompleted}>
+          Đánh dấu hoàn thành
+        </Button>
       </div>
     </div>
   ) : (

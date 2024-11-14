@@ -12,19 +12,27 @@ const CoinsPage = () => {
   const [params, setParams] = useState({
     pageSize: 1000,
     pageNumber: 1,
-    // condition: [
-    // {
-    //   key: "userId",
-    //   condition: "equal",
-    //   value: user?.id,
-    // },
-    // ],
     sortOrder: "createdAt desc",
     searchKey: "",
     searchFields: [],
     includeReferences: {},
   });
   const [transactions, setTransactions] = useState([]);
+
+  useEffect(() => {
+    if (user?.id) {
+      setParams((prevParams: any) => ({
+        ...prevParams,
+        conditions: [
+          {
+            key: "userId",
+            value: user?.id,
+            condition: "equal",
+          },
+        ],
+      }));
+    }
+  }, [user]);
 
   useEffect(() => {
     getCurrentUser();
@@ -37,8 +45,8 @@ const CoinsPage = () => {
   }, [params]);
 
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen mt-4">
-      <h1 className="mb-4 text-4xl font-bold">Coins Page</h1>
+    <div className="flex flex-col items-center justify-start">
+      <h1 className="mb-4 text-4xl font-bold">Trang quản lý coin</h1>
       <div className="flex items-center gap-2 mb-8 text-2xl">
         {formatPrice(user?.coinAmount || 0)}
         <svg
@@ -61,18 +69,18 @@ const CoinsPage = () => {
           onClick={() => router.push("/")}
           className="px-4 py-2 text-white bg-gray-600 rounded-md hover:bg-gray-700"
         >
-          Back to Home
+          Trở về trang chủ
         </button>
         <button
           onClick={() => router.push("/coins/deposit")}
           className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
         >
-          Deposit Coins
+          Nạp coin
         </button>
       </div>
 
       <div className="w-full max-w-3xl">
-        <h2 className="mb-4 text-2xl font-semibold">Transaction History</h2>
+        <h2 className="mb-4 text-2xl font-semibold">Lịch sử giao dịch</h2>
         <div className="overflow-hidden bg-white border rounded-lg">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
@@ -81,7 +89,7 @@ const CoinsPage = () => {
                   Id
                 </th>
                 <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                  Description
+                  Mô tả
                 </th>
               </tr>
             </thead>
@@ -102,7 +110,7 @@ const CoinsPage = () => {
                     colSpan={4}
                     className="px-6 py-4 text-center text-gray-500"
                   >
-                    No transactions found
+                    Không tìm thấy giao dịch
                   </td>
                 </tr>
               )}

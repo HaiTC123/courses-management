@@ -1,91 +1,13 @@
 "use client";
 
 import {
-  Book,
-  Computer,
-  Home,
-  LineChart,
-  List,
-  User,
-  User2,
-} from "lucide-react";
-
+  adminRoutes,
+  instructorRoutes,
+  studentRoutes,
+} from "@/constants/routes";
+import { uniqueId } from "lodash";
 import { usePathname } from "next/navigation";
 import { SidebarItem } from "./sidebar-item";
-
-const studentRoutes = [
-  {
-    icon: Home,
-    label: "Trang chủ",
-    href: "/",
-  },
-  {
-    icon: Book,
-    label: "Khóa học",
-    href: "/courses",
-  },
-  {
-    icon: LineChart,
-    label: "Lộ trình",
-    href: "/learning-paths",
-  },
-];
-
-const instructorRoutes = [
-  {
-    icon: List,
-    label: "Khóa học",
-    href: "/instructor/courses",
-  },
-  {
-    icon: Computer,
-    label: "Lộ trình",
-    href: "/instructor/learning-paths",
-  },
-  // {
-  //   icon: BarChart,
-  //   label: "Phân tích",
-  //   href: "/instructor/analytics",
-  // },
-];
-
-const adminRoutes = [
-  {
-    icon: User,
-    label: "Người hướng dẫn",
-    href: "/admin/instructors",
-  },
-  {
-    icon: User2,
-    label: "Học viên",
-    href: "/admin/students",
-  },
-  {
-    icon: Book,
-    label: "Khóa học",
-    href: "/admin/courses",
-  },
-  {
-    icon: Book,
-    label: "Khóa học đã duyệt",
-    href: "/admin/courses-approved",
-  },
-  {
-    icon: Book,
-    label: "Khóa học từ chối",
-    href: "/admin/courses-rejected",
-  },
-  {
-    icon: Book,
-    label: "Khóa học đăng ký",
-    href: "/admin/enrollments",
-  },
-  // {
-  //   icon: List,
-  //   label: "Khóa học",
-  //   href: "/admin/courses",
-  // },
-];
 
 export const SidebarRoutes = () => {
   const pathname = usePathname();
@@ -103,10 +25,11 @@ export const SidebarRoutes = () => {
     <div className="flex flex-col w-full">
       {routes.map((route) => (
         <SidebarItem
-          key={route.href}
+          key={uniqueId("sidebar-item-")}
           icon={route.icon}
           label={route.label}
           href={route.href}
+          nestedRoutes={route?.nestedRoutes ?? []}
         />
       ))}
     </div>

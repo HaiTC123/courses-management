@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
+import Editor from "@/components/editor";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -15,14 +16,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { uploadFileService } from "@/services/file.service";
 import { addLearningPathService } from "@/services/learn-path.service";
 import { useAuthStore } from "@/store/use-auth-store";
+import { omit } from "lodash";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import _ from "lodash";
-import Editor from "@/components/editor";
 
 const CreateLearningPathPage = () => {
   const router = useRouter();
@@ -56,7 +55,7 @@ const CreateLearningPathPage = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const body = _.omit(values, "linkBackgroundUrl");
+      const body = omit(values, "linkBackgroundUrl");
       const response = await addLearningPathService(body);
       toast.success("Lộ trình học được tạo thành công");
       if (response.data) {
@@ -93,7 +92,7 @@ const CreateLearningPathPage = () => {
             onSubmit={form.handleSubmit(onSubmit)}
             className="mt-8 space-y-8"
           >
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4">
               <FormField
                 control={form.control}
                 name="pathName"

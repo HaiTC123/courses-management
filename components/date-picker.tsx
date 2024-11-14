@@ -30,7 +30,7 @@ export function DatePicker({ date, setDate }: DatePickerProps) {
           )}
         >
           <CalendarIcon className="w-4 h-4 mr-2" />
-          {date ? format(date, "PPP") : "Pick a date"}
+          {date ? format(date, "PPP") : "Chọn ngày"}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">

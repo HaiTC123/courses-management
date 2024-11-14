@@ -9,7 +9,7 @@ const InstructorLayout = ({ children }: { children: React.ReactNode }) => {
   const { role } = useAuthStore();
   const router = useRouter();
 
-  if (role !== UserRole.INSTRUCTOR) {
+  if (role !== UserRole.INSTRUCTOR && role !== UserRole.ADMIN) {
     toast.error("Bạn không có quyền truy cập vào trang này");
     router.push("/");
     return;

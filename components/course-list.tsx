@@ -27,7 +27,7 @@ export const CourseList: React.FC<CourseListProps> = ({ title, items }) => {
       </div>
       {items.length === 0 && (
         <div className="mt-10 text-sm text-center text-muted-foreground">
-          No courses found
+          Không tìm thấy khóa học
         </div>
       )}
     </div>

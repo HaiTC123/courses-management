@@ -16,7 +16,7 @@ const CourseIdLayout = ({
   params: { courseId: string };
 }) => {
   const { courseId } = params;
-  const authenticated = useAuthStore.getState().authenticated;
+  const { authenticated, user } = useAuthStore.getState();
   const router = useRouter();
   const [domLoaded, setDomLoaded] = useState(false);
 
@@ -25,7 +25,7 @@ const CourseIdLayout = ({
   }, []);
 
   const [course, setCourse] = useState<any>({});
-
+  // const [enrolledCourseIds, setEnrolledCourseIds] = useState<number[]>([]);
   const fetchCourse = useCallback(async () => {
     try {
       const response = await getCourseByIdService(Number(courseId));
@@ -42,6 +42,20 @@ const CourseIdLayout = ({
     fetchCourse();
   }, [fetchCourse]);
 
+  useEffect(() => {
+    if (user.enrolledCourseIds) {
+      const courseIds =
+        user.enrolledCourseIds
+          .split(";")
+          .map((course: any) => Number(course)) ?? [];
+      // setEnrolledCourseIds(courseIds);
+      if (courseId && !courseIds.includes(Number(courseId))) {
+        toast.error("Bạn chưa đăng ký khóa học này");
+        router.push("/");
+      }
+    }
+  }, [courseId, router, user]);
+
   if (!authenticated) {
     router.push("/sign-in");
     return null;
@@ -55,7 +69,7 @@ const CourseIdLayout = ({
             <CourseNavbar course={course} />
           </div>
           <div className="fixed inset-y-0 z-50 flex-col hidden h-full md:flex w-80">
-            <CourseSidebar course={course} progressCount={0} />
+            <CourseSidebar course={course} />
           </div>
           <main className="h-full md:pl-80 md:pt-[80px]">{children}</main>
         </div>

@@ -25,6 +25,10 @@ import { useAuthStore } from "@/store/use-auth-store";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { CATEGORIES } from "@/constants/category-data";
+import { uploadFileService } from "@/services/file.service";
+import Image from "next/image";
+import { DEFAULT_IMAGE } from "@/constants/default-image";
+import { omit } from "lodash";
 
 const CreatePage = () => {
   const router = useRouter();
@@ -41,7 +45,7 @@ const CreatePage = () => {
     description: z.string().min(1, {
       message: "Description is required",
     }),
-    credits: z.number().min(0),
+    // credits: z.number().min(0),
     instructorId: z.number().min(0),
     durationWeeks: z.number().min(1),
     category: z.string().min(1, {
@@ -51,6 +55,8 @@ const CreatePage = () => {
     price: z.number().min(0),
     isFree: z.boolean(),
     status: z.nativeEnum(CourseStatus).optional(),
+    backgroundUrl: z.string().optional(),
+    backgroundUrlTmp: z.string().optional(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -59,7 +65,7 @@ const CreatePage = () => {
       courseCode: uuidv4(),
       courseName: "",
       description: "",
-      credits: 0,
+      // credits: 0,
       instructorId: 1,
       durationWeeks: 0,
       category: "",
@@ -67,24 +73,40 @@ const CreatePage = () => {
       price: 0,
       isFree: true,
       status: CourseStatus.DRAFT,
+      backgroundUrl: "",
+      backgroundUrlTmp: "",
     },
   });
 
-  const { isSubmitting, isValid } = form.formState;
+  const { isSubmitting, isValid, isSubmitted } = form.formState;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const body = {
-        ...values,
+        ...omit(values, ["backgroundUrlTmp"]),
         instructorId: user?.instructor?.id,
       };
       const response = await addCourseService(body);
-      toast.success("Course created successfully");
       if (response.data) {
+        toast.success("Tạo khóa học thành công");
         router.push(`/instructor/courses/${response.data}`);
       }
     } catch (error) {
-      toast.error("Something went wrong");
+      toast.error("Tạo khóa học thất bại");
+    }
+  };
+
+  const uploadFile = async (file: File, fieldName: string) => {
+    try {
+      const response = await uploadFileService(file);
+      if (response.data.fileUrl) {
+        form.setValue(fieldName as any, response.data.fileUrl, {
+          shouldValidate: isSubmitted,
+        });
+        toast.success("File được tải lên thành công");
+      }
+    } catch (error: any) {
+      toast.error(error?.message);
     }
   };
 
@@ -128,25 +150,6 @@ const CreatePage = () => {
                         placeholder="Describe your course"
                         rows={1}
                         {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="credits"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Credits</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        disabled={isSubmitting}
-                        {...field}
-                        onChange={(e) => field.onChange(Number(e.target.value))}
                       />
                     </FormControl>
                     <FormMessage />
@@ -263,28 +266,40 @@ const CreatePage = () => {
 
               <FormField
                 control={form.control}
-                name="status"
+                name="backgroundUrlTmp"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Status</FormLabel>
-                    <Combobox
-                      options={[
-                        { value: CourseStatus.DRAFT, label: "Draft" },
-                        // {
-                        //   value: CourseStatus.PENDING_APPROVAL,
-                        //   label: "Pending Approval",
-                        // },
-                        // { value: CourseStatus.APPROVED, label: "Approved" },
-                        // { value: CourseStatus.REJECTED, label: "Rejected" },
-                      ]}
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
+                    <FormLabel>Ảnh đại diện</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="file"
+                        onChange={(event) => {
+                          if (event.target.files?.[0]) {
+                            uploadFile(
+                              event.target.files?.[0],
+                              "backgroundUrl"
+                            );
+                          }
+                        }}
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
-                disabled
               />
+              {form.watch("backgroundUrl") && (
+                <div>
+                  <Image
+                    src={form.watch("backgroundUrl") ?? DEFAULT_IMAGE}
+                    alt="Background"
+                    width={0}
+                    height={0}
+                    sizes="100px"
+                    style={{ width: "100px", height: "auto" }}
+                  />
+                </div>
+              )}
             </div>
             <div className="flex items-center gap-x-2">
               <Link href="/">

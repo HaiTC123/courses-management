@@ -37,22 +37,22 @@ export const getPaginatedStudentsService = async (
   return response.data;
 };
 
-export const getUserByIdService = async (userId: string) => {
+export const getUserByIdService = async (userId: number) => {
   const response = await axiosInstance.get(`/api/user/${userId}`);
   return response.data;
 };
 
-export const getStudentByIdService = async (studentId: string) => {
+export const getStudentByIdService = async (studentId: number) => {
   const response = await axiosInstance.get(`/api/student/${studentId}`);
   return response.data;
 };
 
-export const getInstructorByIdService = async (instructorId: string) => {
+export const getInstructorByIdService = async (instructorId: number) => {
   const response = await axiosInstance.get(`/api/instructor/${instructorId}`);
   return response.data;
 };
 
-export const deleteInstructorService = async (instructorId: string) => {
+export const deleteInstructorService = async (instructorId: number) => {
   const response = await axiosInstance.delete(
     `/api/instructor/${instructorId}`
   );
@@ -74,12 +74,12 @@ export const createInstructorService = async (data: any) => {
   return response.data;
 };
 
-export const deleteUserService = async (userId: string) => {
+export const deleteUserService = async (userId: number) => {
   const response = await axiosInstance.delete(`/api/user/${userId}`);
   return response.data;
 };
 
-export const deleteStudentService = async (studentId: string) => {
+export const deleteStudentService = async (studentId: number) => {
   const response = await axiosInstance.delete(`/api/student/${studentId}`);
   return response.data;
 };
@@ -91,5 +91,16 @@ export const updateStudentService = async (studentId: number, data: any) => {
 
 export const updateUserService = async (userId: number, data: any) => {
   const response = await axiosInstance.put(`/api/user/${userId}`, data);
+  return response.data;
+};
+
+export const updateInstructorService = async (
+  instructorId: number,
+  data: any
+) => {
+  const response = await axiosInstance.put(
+    `/api/instructor/${instructorId}`,
+    data
+  );
   return response.data;
 };

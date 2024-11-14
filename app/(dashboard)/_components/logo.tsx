@@ -7,7 +7,7 @@ export const Logo = () => {
 
   return (
     <Image
-      className="m-auto"
+      className="cursor-pointer"
       height={60}
       width={60}
       alt="logo"

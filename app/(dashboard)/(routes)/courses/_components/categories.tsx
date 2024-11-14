@@ -7,7 +7,7 @@ export interface CategoriesProps {
     label: string;
     value: string;
   }[];
-  onSelect: (value: string) => void;
+  onSelect: (value: string, selected: boolean) => void;
 }
 
 export const Categories = ({ items, onSelect }: CategoriesProps) => {

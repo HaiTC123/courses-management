@@ -15,7 +15,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
     return;
   }
 
-  return <section>{children}</section>;
+  return <>{children}</>;
 };
 
 export default AdminLayout;

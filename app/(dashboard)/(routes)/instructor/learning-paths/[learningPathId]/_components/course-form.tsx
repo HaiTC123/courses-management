@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import {
   addChapterService,
+  getEligibleCoursesService,
   getPaginatedCoursesService,
   IGetPaginatedCoursesParams,
   updateChapterService,
@@ -43,7 +44,7 @@ const formSchema = z.object({
   title: z.string().min(1),
   description: z.string().min(1),
   sequenceOrder: z.number().min(1),
-  courseId: z.string(),
+  courseId: z.number(),
 });
 
 export const CourseForm = ({
@@ -53,7 +54,7 @@ export const CourseForm = ({
 }: CourseFormProps) => {
   const [isCreating, setIsCreating] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
-  const [listCourses, setListCourses] = useState([]);
+  const [listCourses, setListCourses] = useState<any[]>([]);
 
   const toggleCreating = () => setIsCreating((current) => !current);
 
@@ -65,27 +66,19 @@ export const CourseForm = ({
       title: "",
       description: "",
       sequenceOrder: 1,
-      courseId: "",
+      courseId: 0,
     },
   });
 
-  const [params, setParams] = useState<IGetPaginatedCoursesParams>({
-    pageSize: 1000,
-    pageNumber: 1,
-    conditions: [],
-    sortOrder: "",
-    searchKey: "",
-    searchFields: [],
-    includeReferences: [],
-  });
+  const [params, setParams] = useState<string>("");
 
   const fetchCourses = useCallback(() => {
-    getPaginatedCoursesService(params)
+    getEligibleCoursesService(params)
       .then((response) => {
-        if (response.data.data) {
-          const listCourses = response.data.data.map((course: any) => ({
+        if (response.data) {
+          const listCourses = response.data.map((course: any) => ({
             label: course.courseName,
-            value: course.id.toString(),
+            value: course.id,
           }));
           setListCourses(listCourses);
         }
@@ -98,6 +91,12 @@ export const CourseForm = ({
   useEffect(() => {
     fetchCourses();
   }, [fetchCourses]);
+
+  useEffect(() => {
+    if (initialData?.courses?.length) {
+      setParams(initialData.courses.map((course: any) => course.id).join(","));
+    }
+  }, [initialData]);
 
   const { isSubmitting, isValid } = form.formState;
 
@@ -122,18 +121,18 @@ export const CourseForm = ({
   };
 
   const onReorder = async (updateData: any[]) => {
-    try {
-      setIsUpdating(true);
-      await Promise.all(
-        updateData.map((course) => updateLearnCourseService(course.id, course))
-      );
-      toast.success("Sắp xếp khóa học thành công");
-      onFetchLearningPath();
-    } catch (error) {
-      toast.error("Sắp xếp khóa học thất bại");
-    } finally {
-      setIsUpdating(false);
-    }
+    // try {
+    //   setIsUpdating(true);
+    //   await Promise.all(
+    //     updateData.map((course) => updateLearnCourseService(course.id, course))
+    //   );
+    //   toast.success("Sắp xếp khóa học thành công");
+    //   onFetchLearningPath();
+    // } catch (error) {
+    //   toast.error("Sắp xếp khóa học thất bại");
+    // } finally {
+    //   setIsUpdating(false);
+    // }
   };
 
   const onEdit = (id: string) => {
@@ -167,16 +166,6 @@ export const CourseForm = ({
           )}
         </Button>
       </div>
-      {/* {!isCreating && (
-        <p
-          className={cn(
-            "text-sm mt-2",
-            !initialData.chapters.length && "text-slate-500 italic"
-          )}
-        >
-          {"No title"}
-        </p>
-      )} */}
       {isCreating && (
         <Form {...form}>
           <form

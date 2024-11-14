@@ -13,3 +13,10 @@ export const getProgressByCourseId = async (courseId: number) => {
   );
   return response.data;
 };
+
+export const markAsCompleted = async (courseLessonId: number) => {
+  const response = await axiosInstance.put(
+    `/api/progress/done/${courseLessonId}`
+  );
+  return response.data;
+};

@@ -2,59 +2,35 @@
 
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { redirect } from "next/navigation";
 
+import { getPaginatedEnrollmentsService } from "@/services/enrollment.service";
 import { createColumns } from "./_components/column";
 import { DataTable } from "./_components/data-table";
-import { useAuthStore } from "@/store/use-auth-store";
-import { UserRole } from "@/enum/user-role";
-import {
-  deleteStudentService,
-  deleteUserService,
-  getPaginatedStudentsService,
-  getPaginatedUsersService,
-  IGetPaginatedUsersParams,
-} from "@/services/user.service";
-import _ from "lodash";
-import {
-  getPaginatedEnrollmentsService,
-  IGetPaginatedEnrollmentsParams,
-} from "@/services/enrollment.service";
 
 const ListEnrollmentsPage = () => {
-  // const { authenticated, role } = useAuthStore();
-
-  // if (!authenticated || role !== UserRole.ADMIN) {
-  //   return redirect("/");
-  // }
-
   const [enrollments, setEnrollments] = useState<any[]>([]);
 
-  const [params, setParams] = useState<IGetPaginatedEnrollmentsParams>({
-    pageSize: 1000,
-    pageNumber: 1,
-    conditions: [],
-    sortOrder: "",
-    searchKey: "",
-    searchFields: [],
-    includeReferences: {},
-  });
-
-  const fetchEnrollments = useCallback(() => {
-    getPaginatedEnrollmentsService(params)
-      .then((response) => {
-        console.log(response.data.data);
-        if (response.data.data) {
-          const listEnrollments = response.data.data.map((enrollment: any) => ({
-            ...enrollment,
-          }));
-          setEnrollments(listEnrollments);
-        }
-      })
-      .catch((error) => {
-        toast.error(error.message);
+  const fetchEnrollments = useCallback(async () => {
+    try {
+      const response = await getPaginatedEnrollmentsService({
+        pageSize: 1000,
+        pageNumber: 1,
+        conditions: [],
+        sortOrder: "",
+        searchKey: "",
+        searchFields: [],
+        includeReferences: {},
       });
-  }, [params]);
+      if (response.data.data) {
+        const listEnrollments = response.data.data.map((enrollment: any) => ({
+          ...enrollment,
+        }));
+        setEnrollments(listEnrollments);
+      }
+    } catch (error) {
+      toast.error((error as any).message);
+    }
+  }, []);
 
   useEffect(() => {
     fetchEnrollments();

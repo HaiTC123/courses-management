@@ -33,7 +33,7 @@ interface CourseFormProps {
   initialData: {
     courseName: string;
     description: string;
-    credits: number;
+    // credits: number;
     durationWeeks: number;
     category: string;
     isMandatory: boolean;
@@ -53,9 +53,9 @@ const formSchema = z.object({
   description: z.string().min(1, {
     message: "Description is required",
   }),
-  credits: z.number().min(1, {
-    message: "Credits is required",
-  }),
+  // credits: z.number().min(1, {
+  //   message: "Credits is required",
+  // }),
   durationWeeks: z.number().min(1, {
     message: "Duration weeks is required",
   }),
@@ -142,7 +142,7 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
               name="courseName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Course Name</FormLabel>
+                  <FormLabel>Tên khóa học</FormLabel>
                   <FormControl>
                     <Input
                       disabled={isSubmitting}
@@ -161,7 +161,7 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>Mô tả</FormLabel>
                   <FormControl>
                     <Textarea
                       disabled={isSubmitting}
@@ -217,7 +217,7 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
               )}
             />
 
-            <FormField
+            {/* <FormField
               control={form.control}
               name="credits"
               render={({ field }) => (
@@ -235,14 +235,14 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
                 </FormItem>
               )}
               disabled={isSubmitting || !isEditing}
-            />
+            /> */}
 
             <FormField
               control={form.control}
               name="durationWeeks"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Duration (weeks)</FormLabel>
+                  <FormLabel>Thời gian (tuần)</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -262,7 +262,7 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
               name="category"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Category</FormLabel>
+                  <FormLabel>Danh mục</FormLabel>
                   <FormControl>
                     {/* <Input
                       disabled={isSubmitting}
@@ -273,7 +273,7 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
                       options={CATEGORIES}
                       value={field.value}
                       onChange={field.onChange}
-                      disabled={isSubmitting}
+                      disabled={isSubmitting || !isEditing}
                     />
                   </FormControl>
                   <FormMessage />
@@ -287,7 +287,7 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
               name="isMandatory"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base">Mandatory</FormLabel>
+                  <FormLabel className="text-base">Bắt buộc</FormLabel>
                   <FormControl>
                     <div className="flex items-center justify-start w-full">
                       <Checkbox
@@ -311,7 +311,7 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
               name="price"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Price</FormLabel>
+                  <FormLabel>Giá</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -359,7 +359,7 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
               name="status"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Status</FormLabel>
+                  <FormLabel>Trạng thái</FormLabel>
                   <Combobox
                     options={[
                       { value: CourseStatus.DRAFT, label: "Draft" },

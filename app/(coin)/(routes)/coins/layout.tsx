@@ -18,7 +18,7 @@ const CoinsLayout = ({ children }: { children: React.ReactNode }) => {
     return null;
   }
 
-  return <>{domLoaded && <main>{children}</main>}</>;
+  return <>{domLoaded && <main className="pt-6">{children}</main>}</>;
 };
 
 export default CoinsLayout;

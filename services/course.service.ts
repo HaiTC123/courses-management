@@ -106,10 +106,33 @@ export const checkCourseService = async (courseId: number, status: string) => {
   return response.data;
 };
 
+export const registerCourseService = async (
+  courseId: number,
+  semeterId: number
+) => {
+  const response = await axiosInstance.post(`/api/course/register`, {
+    courseId,
+    semeterId,
+  });
+  return response.data;
+};
+
 export const buyCourseService = async (courseId: number, semeterId: number) => {
   const response = await axiosInstance.post(`/api/course/buyCourse`, {
     courseId,
     semeterId,
   });
+  return response.data;
+};
+
+export const getEligibleCoursesService = async (courseIds: string) => {
+  const response = await axiosInstance.get(
+    `/api/course/eligible-courses?courseIds=${courseIds}`
+  );
+  return response.data;
+};
+
+export const getCourseByStudentIdService = async (studentId: number) => {
+  const response = await axiosInstance.get(`/api/course/student/${studentId}`);
   return response.data;
 };

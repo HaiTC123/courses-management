@@ -1,33 +1,34 @@
 "use client";
 
-import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { omit } from "lodash";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
-import { omit } from "lodash";
+import { z } from "zod";
 
+import { DatePicker } from "@/components/date-picker";
+import { Button } from "@/components/ui/button";
+import { Combobox } from "@/components/ui/combobox";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { DEFAULT_IMAGE } from "@/constants/default-image";
 import { UserGender } from "@/enum/user-gender";
-import { UserState } from "@/enum/user-state";
 import { UserRole } from "@/enum/user-role";
-import { Combobox } from "@/components/ui/combobox";
-import { Button } from "@/components/ui/button";
-import { DatePicker } from "../_components/date-picker";
+import { UserState } from "@/enum/user-state";
+import { uploadFileService } from "@/services/file.service";
 import {
   createInstructorService,
-  createStudentService,
   createUserService,
 } from "@/services/user.service";
+import Image from "next/image";
 
 const CreateUserPage = () => {
   const router = useRouter();
@@ -35,16 +36,16 @@ const CreateUserPage = () => {
   const formSchema = z.object({
     userId: z.number().optional(),
     fullName: z.string().min(1, {
-      message: "Full name is required",
+      message: "Họ và tên là bắt buộc",
     }),
     email: z.string().min(1, {
-      message: "Email is required",
+      message: "Email là bắt buộc",
     }),
     role: z.nativeEnum(UserRole),
     gender: z.nativeEnum(UserGender),
     dateOfBirth: z.date(),
     phoneNumber: z.string().refine((value) => /^[0-9]{10}$/.test(value), {
-      message: "Phone number must be 10 digits",
+      message: "Số điện thoại phải có 10 chữ số",
     }),
     addressLine1: z.string(),
     addressLine2: z.string().optional(),
@@ -56,6 +57,10 @@ const CreateUserPage = () => {
     gpa: z.number().min(0).max(4).optional(),
     graduationStatus: z.string().optional(),
     department: z.string().optional(),
+    profilePictureURL: z.string().optional(),
+    bannerPictureURL: z.string().optional(),
+    profilePictureURLTmp: z.string().optional(),
+    bannerPictureURLTmp: z.string().optional(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -77,8 +82,14 @@ const CreateUserPage = () => {
       gpa: 0,
       graduationStatus: "",
       department: "",
+      profilePictureURL: "",
+      bannerPictureURL: "",
+      profilePictureURLTmp: "",
+      bannerPictureURLTmp: "",
     },
   });
+
+  const { formState } = form;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -91,227 +102,52 @@ const CreateUserPage = () => {
           "gpa",
           "graduationStatus",
           "department",
+          "profilePictureURLTmp",
+          "bannerPictureURLTmp",
         ])
       );
       const userId = response.data;
-      if (values.role === UserRole.STUDENT) {
-        body.userId = userId;
-        body.major = values.major;
-        body.yearOfStudy = values.yearOfStudy;
-        body.gpa = values.gpa;
-        body.graduationStatus = values.graduationStatus;
-
-        const studentResponse = await createStudentService(body);
-        if (studentResponse) {
-          router.push(`/admin/students`);
-          toast.success("Tạo học viên thành công");
-        }
-      }
-      if (values.role === UserRole.INSTRUCTOR) {
-        body.userId = userId;
-        body.department = values.department;
-
-        const instructorResponse = await createInstructorService(body);
-        if (instructorResponse) {
-          router.push(`/admin/instructors`);
-          toast.success("Tạo giảng viên thành công");
-        }
+      body.userId = userId;
+      body.department = values.department;
+      const instructorResponse = await createInstructorService(body);
+      if (instructorResponse) {
+        router.push(`/admin/instructors`);
+        toast.success("Tạo giảng viên thành công");
       }
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || "Something went wrong");
+      toast.error(error?.response?.data?.message || "Tạo giảng viên thất bại");
+    }
+  };
+
+  const uploadFile = async (file: File, fieldName: string) => {
+    try {
+      const response = await uploadFileService(file);
+      if (response.data.fileUrl) {
+        form.setValue(fieldName as any, response.data.fileUrl, {
+          shouldValidate: formState.isSubmitted,
+        });
+        toast.success("File được tải lên thành công");
+      }
+    } catch (error: any) {
+      toast.error(error?.message);
     }
   };
 
   return (
-    <div className="max-w-xl p-6 mx-auto">
-      <h1 className="text-2xl">Thêm người hướng dẫn</h1>
+    <div className="p-6 mx-auto">
+      <h1 className="text-2xl text-center">Thêm người hướng dẫn</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8">
-          <FormField
-            control={form.control}
-            name="fullName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Họ và tên</FormLabel>
-                <FormControl>
-                  <Input placeholder="e.g. 'John Doe'" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input placeholder="e.g. 'john.doe@example.com'" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="gender"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Giới tính</FormLabel>
-                <FormControl>
-                  <Combobox
-                    options={[
-                      { value: UserGender.MALE, label: UserGender.MALE },
-                      { value: UserGender.FEMALE, label: UserGender.FEMALE },
-                      { value: UserGender.OTHER, label: UserGender.OTHER },
-                    ]}
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="dateOfBirth"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Ngày sinh</FormLabel>
-                <FormControl>
-                  <DatePicker date={field.value} setDate={field.onChange} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="phoneNumber"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Số điện thoại</FormLabel>
-                <FormControl>
-                  <Input placeholder="e.g. '09123456789'" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="addressLine1"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Địa chỉ 1</FormLabel>
-                <FormControl>
-                  <Input placeholder="e.g. '123 Main St'" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="addressLine2"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Địa chỉ 2</FormLabel>
-                <FormControl>
-                  <Input placeholder="e.g. 'Apt 4B'" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="city"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Thành phố</FormLabel>
-                <FormControl>
-                  <Input placeholder="e.g. 'New York'" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="state"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Tỉnh/Thành phố</FormLabel>
-                <FormControl>
-                  <Combobox
-                    options={[
-                      { value: UserState.ACTIVE, label: UserState.ACTIVE },
-                      {
-                        value: UserState.SUSPENDED,
-                        label: UserState.SUSPENDED,
-                      },
-                      {
-                        value: UserState.DEACTIVATED,
-                        label: UserState.DEACTIVATED,
-                      },
-                    ]}
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="postalCode"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Mã bưu điện</FormLabel>
-                <FormControl>
-                  <Input placeholder="e.g. '10001'" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="role"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Loại người dùng</FormLabel>
-                <FormControl>
-                  <Combobox
-                    options={[
-                      {
-                        value: UserRole.INSTRUCTOR,
-                        label: UserRole.INSTRUCTOR,
-                      },
-                    ]}
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {form.watch("role") === UserRole.STUDENT && (
-            <>
+          <div className="flex flex-col justify-center gap-4 md:flex-row">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <FormField
                 control={form.control}
-                name="major"
+                name="fullName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Major</FormLabel>
+                    <FormLabel>Họ và tên</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g. 'Computer Science'" {...field} />
+                      <Input placeholder="e.g. 'John Doe'" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -319,18 +155,14 @@ const CreateUserPage = () => {
               />
               <FormField
                 control={form.control}
-                name="yearOfStudy"
+                name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Năm học</FormLabel>
+                    <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="e.g. '3'"
+                        placeholder="e.g. 'john.doe@example.com'"
                         {...field}
-                        type="number"
-                        onChange={(event) =>
-                          field.onChange(+event.target.value)
-                        }
                       />
                     </FormControl>
                     <FormMessage />
@@ -339,19 +171,22 @@ const CreateUserPage = () => {
               />
               <FormField
                 control={form.control}
-                name="gpa"
+                name="gender"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>GPA</FormLabel>
+                    <FormLabel>Giới tính</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="e.g. '3.5'"
-                        {...field}
-                        type="number"
-                        step="0.01"
-                        onChange={(event) =>
-                          field.onChange(+event.target.value)
-                        }
+                      <Combobox
+                        options={[
+                          { value: UserGender.MALE, label: UserGender.MALE },
+                          {
+                            value: UserGender.FEMALE,
+                            label: UserGender.FEMALE,
+                          },
+                          { value: UserGender.OTHER, label: UserGender.OTHER },
+                        ]}
+                        value={field.value}
+                        onChange={field.onChange}
                       />
                     </FormControl>
                     <FormMessage />
@@ -360,22 +195,69 @@ const CreateUserPage = () => {
               />
               <FormField
                 control={form.control}
-                name="graduationStatus"
+                name="dateOfBirth"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Trạng thái tốt nghiệp</FormLabel>
+                    <FormLabel>Ngày sinh</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g. 'Graduated'" {...field} />
+                      <DatePicker date={field.value} setDate={field.onChange} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            </>
-          )}
-
-          {form.watch("role") === UserRole.INSTRUCTOR && (
-            <>
+              <FormField
+                control={form.control}
+                name="phoneNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Số điện thoại</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g. '09123456789'" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="addressLine1"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Địa chỉ</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g. '123 Main St'" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="city"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Thành phố</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g. 'New York'" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="postalCode"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Mã bưu điện</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g. '10001'" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="department"
@@ -389,9 +271,83 @@ const CreateUserPage = () => {
                   </FormItem>
                 )}
               />
-            </>
-          )}
+            </div>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="profilePictureURLTmp"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Ảnh đại diện</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="file"
+                        onChange={(event) => {
+                          if (event.target.files?.[0]) {
+                            uploadFile(
+                              event.target.files?.[0],
+                              "profilePictureURL"
+                            );
+                          }
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {form.getValues("profilePictureURL") && (
+                <div>
+                  <Image
+                    src={form.getValues("profilePictureURL") ?? DEFAULT_IMAGE}
+                    alt="Profile Picture"
+                    width={0}
+                    height={0}
+                    sizes="100px"
+                    style={{ width: "100px", height: "auto" }}
+                  />
+                </div>
+              )}
 
+              <FormField
+                control={form.control}
+                name="bannerPictureURLTmp"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Ảnh nền</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="file"
+                        onChange={(event) => {
+                          if (event.target.files?.[0]) {
+                            uploadFile(
+                              event.target.files?.[0],
+                              "bannerPictureURL"
+                            );
+                          }
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {form.watch("bannerPictureURL") && (
+                <div>
+                  <Image
+                    src={form.watch("bannerPictureURL") ?? DEFAULT_IMAGE}
+                    alt="Banner Picture"
+                    width={0}
+                    height={0}
+                    sizes="100px"
+                    style={{ width: "100px", height: "auto" }}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
           <div className="flex justify-end gap-x-2">
             <Button
               type="button"

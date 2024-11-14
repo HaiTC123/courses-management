@@ -11,7 +11,7 @@ import {
 } from "@/services/user.service";
 import { createColumns } from "./_components/column";
 import { DataTable } from "./_components/data-table";
-import _ from "lodash";
+import { omit } from "lodash";
 
 const ListInstructorsPage = () => {
   // const { authenticated, role } = useAuthStore();
@@ -41,7 +41,7 @@ const ListInstructorsPage = () => {
           const listInstructors = response.data.data.map((instructor: any) => {
             return {
               ...instructor,
-              ..._.omit(instructor.user, "id"),
+              ...omit(instructor.user, "id"),
             };
           });
           setUsers(listInstructors);
@@ -57,7 +57,7 @@ const ListInstructorsPage = () => {
     fetchInstructors();
   }, [fetchInstructors]);
 
-  const handleDelete = async (id: string, userId: string) => {
+  const handleDelete = async (id: number, userId: number) => {
     try {
       await deleteInstructorService(id);
       await deleteUserService(userId);

@@ -1,7 +1,8 @@
 "use client";
 
 import { CourseList } from "@/components/course-list";
-import { useSpinner } from "@/components/providers/spinner-provider";
+import { carouselData } from "@/constants/carousel-data";
+import { CATEGORIES } from "@/constants/category-data";
 import { CourseStatus } from "@/enum/course-status";
 import {
   getPaginatedCoursesService,
@@ -11,42 +12,13 @@ import { useAuthStore } from "@/store/use-auth-store";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { CarouselCourse } from "./_components/carousel-course";
 import { Categories } from "./_components/categories";
-// import { CarouselCourse } from "./_components/carousel-course";
-import { CATEGORIES } from "@/constants/category-data";
-
-// const carouselItems = [
-//   {
-//     id: "1",
-//     title: "Học HTML CSS cho người mới",
-//     image:
-//       "https://files.fullstack.edu.vn/f8-prod/banners/20/6308a6bf603a4.png",
-//     description:
-//       "Thực hành dự án với Figma, hàng trăm bài tập và thử thách, v.v.",
-//     classBackground: "bg-gradient-to-r from-amber-500 to-pink-500",
-//   },
-//   {
-//     id: "2",
-//     title: "Học JS cho người mới",
-//     image:
-//       "https://files.fullstack.edu.vn/f8-prod/banners/20/6308a6bf603a4.png",
-//     description:
-//       "Thực hành dự án với Figma, hàng trăm bài tập và thử thách, v.v.",
-//     classBackground: "bg-gradient-to-r from-teal-400 to-yellow-200",
-//   },
-//   {
-//     id: "3",
-//     title: "Học ReactJS cho người mới",
-//     image:
-//       "https://files.fullstack.edu.vn/f8-prod/banners/20/6308a6bf603a4.png",
-//     description:
-//       "Thực hành dự án với Figma, hàng trăm bài tập và thử thách, v.v.",
-//     classBackground: "bg-gradient-to-r from-fuchsia-500 to-cyan-500",
-//   },
-// ];
+import { DocumentList } from "@/components/document-list";
 
 export default function Dashboard() {
   const router = useRouter();
+  const { authenticated } = useAuthStore();
   const [courses, setCourses] = useState<any[]>([]);
   const [coursesFree, setCoursesFree] = useState<any[]>([]);
   const [params, setParams] = useState<IGetPaginatedCoursesParams>({
@@ -90,8 +62,6 @@ export default function Dashboard() {
     searchFields: [],
     includeReferences: [],
   });
-
-  const { user, authenticated } = useAuthStore();
 
   useEffect(() => {
     if (!authenticated) {
@@ -158,12 +128,13 @@ export default function Dashboard() {
   return (
     <>
       <div className="p-6 space-y-4">
-        {/* <div className="mb-4">
-          <CarouselCourse items={carouselItems} />
-        </div> */}
+        <div className="mb-4">
+          <CarouselCourse items={carouselData} />
+        </div>
         <Categories items={CATEGORIES} onSelect={handleSelectCategory} />
         <CourseList title="Khóa học trả phí" items={courses} />
         <CourseList title="Khóa học miễn phí" items={coursesFree} />
+        <DocumentList title="Tài liệu" />
       </div>
     </>
   );
