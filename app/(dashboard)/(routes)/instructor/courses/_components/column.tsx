@@ -1,20 +1,18 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal, Pencil, Send, Trash } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import { CourseStatus } from "@/enum/course-status";
+import { cn } from "@/lib/utils";
+import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown, MoreHorizontal, Pencil, Send, Trash } from "lucide-react";
+import Link from "next/link";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -58,10 +56,13 @@ export const createColumns = (
     },
     cell: ({ row }) => {
       const price = parseFloat(row.getValue("price"));
-      const formatted = new Intl.NumberFormat("vi-VN", {
-        style: "currency",
-        currency: "VND",
-      }).format(price);
+      const formatted =
+        price !== 0
+          ? new Intl.NumberFormat("vi-VN", {
+              style: "currency",
+              currency: "VND",
+            }).format(price)
+          : "Miễn phí";
 
       return formatted;
     },

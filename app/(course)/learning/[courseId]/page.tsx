@@ -75,11 +75,18 @@ const LearningCourseIdPage = () => {
     }
   };
 
+  const handleVideoEnded = () => {
+    console.log("Video ended");
+  };
+
   return material ? (
     <div className="flex flex-col max-w-4xl pb-20 mx-auto">
       <div className="p-4">
         <Suspense fallback={<p>Loading video...</p>}>
-          <VideoPlayer url={material?.materialURL ?? ""} />
+          <VideoPlayer
+            url={material?.materialURL ?? ""}
+            onEnded={handleVideoEnded}
+          />
         </Suspense>
         <Button className="w-[200px] mt-4" onClick={handleMarkAsCompleted}>
           Đánh dấu hoàn thành

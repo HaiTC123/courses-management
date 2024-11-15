@@ -1,14 +1,12 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { CheckCircle, Clock } from "lucide-react";
+import { CheckCircle, Clock, Lock } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export const CourseSidebarItem = ({
   label,
-  isLocked,
-  isCompleted,
   courseId,
   chapterId,
   lessonId,
@@ -22,25 +20,24 @@ export const CourseSidebarItem = ({
   const chapterIdParam = searchParams.get("chapterId");
   const lessonIdParam = searchParams.get("lessonId");
   const materialIdParam = searchParams.get("materialId");
-
-  // useEffect(() => {
-  //   const isMaterialCompleted = (progressDetails || []).find(
-  //     (progress: any) =>
-  //       progress.materialId === materialId && progress.status === "Completed"
-  //   );
-  //   setIsCompleted(isMaterialCompleted);
-
-  //   const isMaterialLocked = (progressDetails || []).find(
-  //     (progress: any) =>
-  //       progress.materialId === materialId && progress.status === "NotStarted"
-  //   );
-  //   setIsLocked(isMaterialLocked);
-  // }, [materialId, progressDetails]);
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [isLocked, setIsLocked] = useState(false);
 
   useEffect(() => {
-    console.log(progressDetails, 123);
-    console.log(materialId, 123);
-  }, [progressDetails, materialId]);
+    if (progressDetails) {
+      const isMaterialCompleted = (progressDetails || []).find(
+        (progress: any) =>
+          progress.materialId === materialId && progress.status === "Completed"
+      );
+      setIsCompleted(isMaterialCompleted);
+
+      const isMaterialLocked = (progressDetails || []).find(
+        (progress: any) =>
+          progress.materialId === materialId && progress.status === "NotStarted"
+      );
+      setIsLocked(isMaterialLocked);
+    }
+  }, [materialId, progressDetails]);
 
   const Icon: any = isLocked ? Lock : isCompleted ? CheckCircle : Clock;
 
@@ -60,11 +57,11 @@ export const CourseSidebarItem = ({
       type="button"
       onClick={onClick}
       className={cn(
-        "flex items-center gap-x-2 text-sm font-medium text-slate-500 hover:text-slate-700 hover:bg-slate-300/50 rounded-md p-3 w-full",
+        "flex items-center gap-x-2 text-sm font-medium text-slate-500 hover:text-slate-700 hover:bg-slate-300/50 rounded-md p-3 w-full mb-1",
         isActive && "text-sky-700 bg-sky-200/50 hover:bg-sky-200/50",
         isCompleted &&
           "text-emerald-700 bg-emerald-200/50 hover:bg-emerald-200/50",
-        isCompleted && isActive && "bg-emerald-200/50 text-emerald-700"
+        isCompleted && isActive && "bg-sky-200/50 hover:bg-sky-200/50"
       )}
     >
       <div className="flex items-center gap-x-2">

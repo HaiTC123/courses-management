@@ -66,10 +66,13 @@ export const createColumns = (
     },
     cell: ({ row }) => {
       const price = parseFloat(row.getValue("price"));
-      const formatted = new Intl.NumberFormat("vi-VN", {
-        style: "currency",
-        currency: "VND",
-      }).format(price);
+      const formatted =
+        price !== 0
+          ? new Intl.NumberFormat("vi-VN", {
+              style: "currency",
+              currency: "VND",
+            }).format(price)
+          : "Miễn phí";
 
       return formatted;
     },

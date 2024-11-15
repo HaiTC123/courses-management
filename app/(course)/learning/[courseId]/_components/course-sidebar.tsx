@@ -60,9 +60,7 @@ export const CourseSidebar = ({ course, enrollmentId }: CourseSidebarProps) => {
         includeReferences: {},
       });
       if (response?.data?.data?.length > 0) {
-        console.log(response.data.data);
         setProgressDetails([...response.data.data]);
-        course.chapters = [...course.chapters];
       }
     };
     if (course.id && enrollmentId) {
@@ -73,7 +71,9 @@ export const CourseSidebar = ({ course, enrollmentId }: CourseSidebarProps) => {
   return (
     <div className="flex flex-col h-full overflow-y-auto border-r shadow-sm">
       <div className="h-[80px] flex flex-col p-4 border-b">
-        <h1 className="text-2xl font-bold">{course?.courseName}</h1>
+        <h1 className="text-2xl font-bold truncate" title={course?.courseName}>
+          {course?.courseName}
+        </h1>
       </div>
       <div className="flex flex-col w-full">
         <div className="flex items-center justify-center my-2">
