@@ -21,7 +21,7 @@ const InstructorAdvisePage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const adviseId = searchParams.get("adviseId");
-  const { user, role } = useAuthStore();
+  const { user, role } = useAuthStore.getState();
   const [selectedAdvise, setSelectedAdvise] = useState<any>(null);
 
   const [listAdvises, setListAdvises] = useState<any[]>([]);

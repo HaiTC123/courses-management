@@ -35,7 +35,7 @@ import { DEFAULT_IMAGE } from "@/constants/default-image";
 const CourseIdPage = () => {
   const router = useRouter();
   const params = useParams();
-  const { user, getCurrentUser } = useAuthStore();
+  const { user, getCurrentUser } = useAuthStore.getState();
   const [isOpen, setIsOpen] = useState(true);
   const [enrolledCourseIds, setEnrolledCourseIds] = useState<number[]>([]);
 
@@ -71,11 +71,11 @@ const CourseIdPage = () => {
 
   const handleRegister = async () => {
     if (course.isFree) {
-      toast.success("Đăng ký học thành công");
       try {
         const response = await registerCourseService(Number(courseId), 2);
         const response2 = await getCurrentUser();
         if (response.success && response2.success) {
+          toast.success("Đăng ký học thành công");
           router.push(`/learning/${courseId}`);
         }
       } catch (error: any) {

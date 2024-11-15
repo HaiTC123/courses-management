@@ -43,7 +43,7 @@ const formSchema = z.object({
 const SignUp = () => {
   const router = useRouter();
 
-  const { signUp } = useAuthStore();
+  const { signUp } = useAuthStore.getState();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

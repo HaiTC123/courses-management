@@ -1,15 +1,11 @@
 "use client";
 
 import { IconBadge } from "@/components/icon-badge";
-import { ArrowLeftIcon, LayoutDashboard, ListChecks } from "lucide-react";
-import Link from "next/link";
-import { redirect } from "next/navigation";
-import { MaterialDetailForm } from "./_components/material-detail-form";
-import { useCallback, useEffect, useState } from "react";
 import { getCourseByIdService } from "@/services/course.service";
-// import { MaterialForm } from "./_components/material-form";
-// import { ChapterDetailForm } from "./_components/chapter-detail-form";
-// import { LessonForm } from "../../_components/lesson-form";
+import { ArrowLeftIcon, LayoutDashboard } from "lucide-react";
+import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
+import { MaterialDetailForm } from "./_components/material-detail-form";
 
 const AdminMaterialIdPage = ({
   params,
@@ -21,8 +17,6 @@ const AdminMaterialIdPage = ({
     materialId: string;
   };
 }) => {
-  const { userId } = { userId: "123" };
-
   const { courseId, chapterId, lessonId, materialId } = params;
 
   const [material, setMaterial] = useState<any>(null);
@@ -63,7 +57,7 @@ const AdminMaterialIdPage = ({
       <div className="flex items-center justify-between">
         <div className="w-full">
           <Link
-            href={`/instructor/courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}`}
+            href={`/admin/courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}`}
             className="flex items-center mb-6 text-sm hover:opacity-75"
           >
             <ArrowLeftIcon className="w-4 h-4 mr-2" />

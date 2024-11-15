@@ -17,7 +17,7 @@ import { useAuthStore } from "@/store/use-auth-store";
 import { UserRole } from "@/enum/user-role";
 
 const CoursePage = () => {
-  const { user, role } = useAuthStore();
+  const { user, role } = useAuthStore.getState();
   const [courses, setCourses] = useState<any[]>([]);
   const [filteredCourses, setFilteredCourses] = useState<any[]>([]);
 

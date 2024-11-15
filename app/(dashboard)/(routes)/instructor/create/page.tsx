@@ -33,7 +33,7 @@ import { omit } from "lodash";
 const CreatePage = () => {
   const router = useRouter();
 
-  const { user } = useAuthStore();
+  const { user } = useAuthStore.getState();
 
   const formSchema = z.object({
     courseCode: z.string().min(1, {

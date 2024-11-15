@@ -9,7 +9,7 @@ import { SidebarItem } from "./sidebar-item";
 import { SidebarRoutes } from "./sidebar-routes";
 
 export const Sidebar = () => {
-  const { user, role } = useAuthStore();
+  const { user, role } = useAuthStore.getState();
   const pathname = usePathname();
   const isAdminPage = pathname?.startsWith("/admin");
   const isInstructorPage = pathname?.startsWith("/instructor");

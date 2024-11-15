@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 
 const AdviseLayout = ({ children }: { children: React.ReactNode }) => {
   const [domLoaded, setDomLoaded] = useState(false);
-  const { authenticated } = useAuthStore();
+  const { authenticated } = useAuthStore.getState();
   const router = useRouter();
 
   useEffect(() => {

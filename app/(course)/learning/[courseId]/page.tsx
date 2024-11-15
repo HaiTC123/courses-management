@@ -80,7 +80,7 @@ const LearningCourseIdPage = () => {
   };
 
   return material ? (
-    <div className="flex flex-col max-w-4xl pb-20 mx-auto">
+    <div className="flex flex-col pb-20 mx-auto">
       <div className="p-4">
         <Suspense fallback={<p>Loading video...</p>}>
           <VideoPlayer
@@ -88,9 +88,20 @@ const LearningCourseIdPage = () => {
             onEnded={handleVideoEnded}
           />
         </Suspense>
-        <Button className="w-[200px] mt-4" onClick={handleMarkAsCompleted}>
-          Đánh dấu hoàn thành
-        </Button>
+        <div className="mt-4">
+          <div className="flex items-center justify-between w-full gap-x-2">
+            <h2 className="text-lg font-medium">Nội dung bài học</h2>
+            <Button className="w-[200px]" onClick={handleMarkAsCompleted}>
+              Đánh dấu hoàn thành
+            </Button>
+          </div>
+          <p
+            className="mt-4 text-sm text-gray-500"
+            dangerouslySetInnerHTML={{
+              __html: material?.materialDescription ?? "",
+            }}
+          ></p>
+        </div>
       </div>
     </div>
   ) : (

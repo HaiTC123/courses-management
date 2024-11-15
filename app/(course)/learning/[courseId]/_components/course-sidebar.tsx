@@ -8,7 +8,6 @@ import {
   getProgressByCourseId,
   getProgressPaging,
 } from "@/services/progress.service";
-import { useAuthStore } from "@/store/use-auth-store";
 import { MinusCircle, PlusCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ChapterSidebarItem } from "./chapter-sidbar-item";
@@ -20,7 +19,6 @@ interface CourseSidebarProps {
 }
 
 export const CourseSidebar = ({ course, enrollmentId }: CourseSidebarProps) => {
-  const user = useAuthStore.getState().user;
   const [isOpen, setIsOpen] = useState(true);
   const [progress, setProgress] = useState(0);
   const [progressDetails, setProgressDetails] = useState<any>(null);
@@ -98,7 +96,7 @@ export const CourseSidebar = ({ course, enrollmentId }: CourseSidebarProps) => {
               .map((chapter: any, index: number) => (
                 <ChapterSidebarItem
                   key={chapter.id}
-                  courseId={course.id}
+                  course={course}
                   chapterId={chapter.id}
                   label={chapter.chapterTitle}
                   lessons={chapter.lessons}

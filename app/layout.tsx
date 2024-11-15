@@ -24,7 +24,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user } = useAuthStore();
+  const { user } = useAuthStore.getState();
   const { addNotification, setNotifications } = useNotiStore();
 
   useEffect(() => {

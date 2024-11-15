@@ -27,15 +27,6 @@ import {
   updateMaterialService,
 } from "@/services/course.service";
 
-// export interface Lesson {
-//   id: string;
-//   title: string;
-//   description: string;
-//   videoUrl: string;
-//   isPublished: boolean;
-//   isFree: boolean;
-// }
-
 interface MaterialFormProps {
   initialData: any;
   courseId: string;
@@ -117,7 +108,7 @@ export const MaterialForm = ({
 
   const onEdit = (id: string) => {
     router.push(
-      `/instructor/courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}/materials/${id}`
+      `/admin/courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}/materials/${id}`
     );
     setIsCreating(false);
     setIsUpdating(false);

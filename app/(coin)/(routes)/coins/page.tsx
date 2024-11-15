@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 
 const CoinsPage = () => {
   const router = useRouter();
-  const { user, getCurrentUser } = useAuthStore();
+  const { user, getCurrentUser } = useAuthStore.getState();
   const [params, setParams] = useState({
     pageSize: 1000,
     pageNumber: 1,

@@ -1,6 +1,13 @@
 "use client";
 
-import { ArrowLeft, Bell, LogIn, LogOut, Settings } from "lucide-react";
+import {
+  ArrowLeft,
+  Bell,
+  CheckSquare,
+  LogIn,
+  LogOut,
+  Settings,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -28,7 +35,7 @@ import {
 export const NavbarRoutes = () => {
   const pathname = usePathname();
   const router = useRouter();
-  const { authenticated, user, signOut, role } = useAuthStore();
+  const { authenticated, user, signOut, role } = useAuthStore.getState();
 
   const isInstructorPage = pathname.startsWith("/instructor");
   const isAdminPage = pathname.startsWith("/admin");
@@ -43,31 +50,45 @@ export const NavbarRoutes = () => {
 
   const handleUpdateNotification = async (notification: any) => {
     if (notification.id) {
-      const res = await updateNotification(notification.id);
-      const res2 = await getListNotification({
-        pageSize: 1000,
-        pageNumber: 1,
-        conditions: [
-          {
-            key: "receiveId",
-            value: user.id,
-            condition: "equal",
-          },
-        ],
-        sortOrder: "createdAt desc",
-        searchKey: "",
-        searchFields: [],
-      });
-      setNotifications(res2.data.data);
-      if (res && res2 && notification.link) {
-        router.push(notification.link);
-        setTimeout(() => {
-          if (window !== undefined) {
-            window.location.reload();
-          }
-        }, 500);
+      if (!notification.isViewed) {
+        const res = await updateNotification(notification.id);
+        const res2 = await getListNotification({
+          pageSize: 1000,
+          pageNumber: 1,
+          conditions: [
+            {
+              key: "receiveId",
+              value: user.id,
+              condition: "equal",
+            },
+          ],
+          sortOrder: "createdAt desc",
+          searchKey: "",
+          searchFields: [],
+        });
+        setNotifications(res2.data.data);
+        if (notification.link) {
+          router.push(notification.link);
+        }
+      } else {
+        if (notification.link) {
+          router.push(notification.link);
+        }
       }
     }
+  };
+
+  const handleMarkAllAsViewed = async () => {
+    Promise.all(
+      notifications
+        .filter((notification: any) => !notification.isViewed)
+        .map((notification: any) => updateNotification(notification.id))
+    ).then(() => {
+      router.refresh();
+      setNotifications(
+        notifications.map((n: any) => ({ ...n, isViewed: true }))
+      );
+    });
   };
 
   return (
@@ -86,7 +107,6 @@ export const NavbarRoutes = () => {
           <SearchInput />
           {!isRootPage && (
             <Button variant="ghost" size="sm" onClick={() => router.push("/")}>
-              {/* <ArrowLeft className="mr-2 size-4" /> */}
               <span>Trang chủ</span>
             </Button>
           )}
@@ -112,8 +132,15 @@ export const NavbarRoutes = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>
-                    <div className="flex items-center gap-x-2">
+                    <div className="flex items-center justify-between gap-x-2">
                       <div>Thông báo</div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleMarkAllAsViewed}
+                      >
+                        Đánh dấu tất cả đã xem
+                      </Button>
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />

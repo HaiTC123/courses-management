@@ -4,10 +4,9 @@ import { IconBadge } from "@/components/icon-badge";
 import { getCourseByIdService } from "@/services/course.service";
 import { ArrowLeftIcon, LayoutDashboard, ListChecks } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { LessonForm } from "./_components/lesson-form";
 import { ChapterDetailForm } from "./_components/chapter-detail-form";
+import { LessonForm } from "./_components/lesson-form";
 
 const AdminChapterIdPage = ({
   params,
@@ -43,7 +42,7 @@ const AdminChapterIdPage = ({
       <div className="flex items-center justify-between">
         <div className="w-full">
           <Link
-            href={`/instructor/courses/${courseId}`}
+            href={`/admin/courses/${courseId}`}
             className="flex items-center mb-6 text-sm hover:opacity-75"
           >
             <ArrowLeftIcon className="w-4 h-4 mr-2" />

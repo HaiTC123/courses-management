@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { CheckCircle, Clock, Lock } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 export const CourseSidebarItem = ({
   label,
@@ -12,6 +13,8 @@ export const CourseSidebarItem = ({
   lessonId,
   materialId,
   progressDetails,
+  canAccess,
+  isLearning,
 }: any) => {
   const pathName = usePathname();
   const router = useRouter();
@@ -39,7 +42,15 @@ export const CourseSidebarItem = ({
     }
   }, [materialId, progressDetails]);
 
-  const Icon: any = isLocked ? Lock : isCompleted ? CheckCircle : Clock;
+  // const Icon: any = isLocked ? Lock : isCompleted ? CheckCircle : Clock;
+
+  const Icon = isLearning
+    ? Clock
+    : isLocked
+    ? Lock
+    : isCompleted
+    ? CheckCircle
+    : Clock;
 
   const isActive =
     chapterIdParam === chapterId.toString() &&
@@ -47,10 +58,24 @@ export const CourseSidebarItem = ({
     materialIdParam === materialId.toString();
 
   const onClick = () => {
+    if (!canAccess) {
+      toast.error(
+        "Bạn cần hoàn thành các bài học trước để truy cập bài học này!"
+      );
+      return;
+    }
     router.push(
       `/learning/${courseId}?chapterId=${chapterId}&lessonId=${lessonId}&materialId=${materialId}`
     );
   };
+
+  useEffect(() => {
+    if (isLearning) {
+      router.push(
+        `/learning/${courseId}?chapterId=${chapterId}&lessonId=${lessonId}&materialId=${materialId}`
+      );
+    }
+  }, [chapterId, courseId, isLearning, lessonId, materialId, router]);
 
   return (
     <button

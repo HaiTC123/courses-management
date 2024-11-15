@@ -26,7 +26,7 @@ import toast from "react-hot-toast";
 const CreateLearningPathPage = () => {
   const router = useRouter();
 
-  const { user } = useAuthStore();
+  const { user } = useAuthStore.getState();
 
   const formSchema = z.object({
     pathName: z.string().min(1, {

@@ -14,7 +14,7 @@ import { DataTable } from "./_components/data-table";
 import { omit } from "lodash";
 
 const ListInstructorsPage = () => {
-  // const { authenticated, role } = useAuthStore();
+  // const { authenticated, role } = useAuthStore.getState();
 
   // if (!authenticated || role !== UserRole.ADMIN) {
   //   return redirect("/");

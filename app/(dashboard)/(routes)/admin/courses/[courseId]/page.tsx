@@ -4,7 +4,7 @@ import { LayoutDashboard, ListChecks } from "lucide-react";
 
 import { IconBadge } from "@/components/icon-badge";
 import { getCourseByIdService } from "@/services/course.service";
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ChapterForm } from "./_components/chapter-form";
 import { CourseForm } from "./_components/course-form";
 

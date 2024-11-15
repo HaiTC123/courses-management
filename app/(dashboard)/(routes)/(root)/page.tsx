@@ -18,7 +18,7 @@ import { DocumentList } from "@/components/document-list";
 
 export default function Dashboard() {
   const router = useRouter();
-  const { authenticated } = useAuthStore();
+  const { authenticated } = useAuthStore.getState();
   const [courses, setCourses] = useState<any[]>([]);
   const [coursesFree, setCoursesFree] = useState<any[]>([]);
   const [params, setParams] = useState<IGetPaginatedCoursesParams>({

@@ -100,7 +100,7 @@ export const LessonForm = ({
 
   const onEdit = (id: string) => {
     router.push(
-      `/instructor/courses/${courseId}/chapters/${chapterId}/lessons/${id}`
+      `/admin/courses/${courseId}/chapters/${chapterId}/lessons/${id}`
     );
     setIsCreating(false);
     setIsUpdating(false);

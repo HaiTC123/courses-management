@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useAuthStore } from "@/store/use-auth-store";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
-  const { authenticated } = useAuthStore();
+  const { authenticated } = useAuthStore.getState();
   const router = useRouter();
   const [domLoaded, setDomLoaded] = useState(false);
 

@@ -95,7 +95,7 @@ export const ChapterForm = ({
   };
 
   const onEdit = (id: string) => {
-    router.push(`/instructor/courses/${courseId}/chapters/${id}`);
+    router.push(`/admin/courses/${courseId}/chapters/${id}`);
     setIsCreating(false);
     setIsUpdating(false);
   };

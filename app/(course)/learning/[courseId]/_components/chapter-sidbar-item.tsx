@@ -10,7 +10,7 @@ import { LessonSidebarItem } from "./lesson-sidebar-item";
 interface ChapterSidebarItemProps {
   label: string;
   lessons: any[];
-  courseId: number;
+  course: any;
   chapterId: number;
   progressDetails: any[];
 }
@@ -18,7 +18,7 @@ interface ChapterSidebarItemProps {
 export const ChapterSidebarItem: React.FC<ChapterSidebarItemProps> = ({
   label,
   lessons,
-  courseId,
+  course,
   chapterId,
   progressDetails,
 }) => {
@@ -44,7 +44,7 @@ export const ChapterSidebarItem: React.FC<ChapterSidebarItemProps> = ({
               key={lesson.id}
               label={lesson.lessonTitle}
               materials={lesson.materials}
-              courseId={courseId}
+              course={course}
               chapterId={chapterId}
               lessonId={lesson.id}
               progressDetails={progressDetails}

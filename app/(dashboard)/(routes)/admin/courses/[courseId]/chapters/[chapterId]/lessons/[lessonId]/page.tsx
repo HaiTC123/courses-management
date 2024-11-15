@@ -1,15 +1,12 @@
 "use client";
 
 import { IconBadge } from "@/components/icon-badge";
+import { getCourseByIdService } from "@/services/course.service";
 import { ArrowLeftIcon, LayoutDashboard, ListChecks } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 import { LessonDetailForm } from "./_components/lesson-detail-form";
 import { MaterialForm } from "./_components/material-form";
-import { getCourseByIdService } from "@/services/course.service";
-import { useCallback, useEffect, useState } from "react";
-// import { ChapterDetailForm } from "./_components/chapter-detail-form";
-// import { LessonForm } from "../../_components/lesson-form";
 
 const AdminLessonIdPage = ({
   params,
@@ -52,7 +49,7 @@ const AdminLessonIdPage = ({
       <div className="flex items-center justify-between">
         <div className="w-full">
           <Link
-            href={`/instructor/courses/${courseId}/chapters/${chapterId}`}
+            href={`/admin/courses/${courseId}/chapters/${chapterId}`}
             className="flex items-center mb-6 text-sm hover:opacity-75"
           >
             <ArrowLeftIcon className="w-4 h-4 mr-2" />

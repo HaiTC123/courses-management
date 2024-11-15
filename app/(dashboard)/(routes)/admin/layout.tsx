@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import toast from "react-hot-toast";
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
-  const { role } = useAuthStore();
+  const { role } = useAuthStore.getState();
   const router = useRouter();
 
   useEffect(() => {

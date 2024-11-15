@@ -1,14 +1,13 @@
 "use client";
 
 import { getCourseByIdService } from "@/services/course.service";
+import { getPaginatedEnrollmentsService } from "@/services/enrollment.service";
 import { useAuthStore } from "@/store/use-auth-store";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { CourseNavbar } from "./_components/course-navbar";
 import { CourseSidebar } from "./_components/course-sidebar";
-import { getPaginatedEnrollmentsService } from "@/services/enrollment.service";
-import { getProgressPaging } from "@/services/progress.service";
 
 const CourseIdLayout = ({
   children,
