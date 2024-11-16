@@ -1,28 +1,56 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatPrice } from "@/lib/format";
-import { getTransactionsHistoryService } from "@/services/coin.service";
+import {
+  depositCoinService,
+  getTransactionsHistoryService,
+} from "@/services/coin.service";
 import { useAuthStore } from "@/store/use-auth-store";
-import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
+import * as z from "zod";
+import { DataTable } from "./_components/data-table";
+import { createColumns } from "./_components/column";
+
+const depositSchema = z.object({
+  numberCoin: z.string().transform((v) => Number(v) || 0),
+});
 
 const CoinsPage = () => {
-  const router = useRouter();
   const { user, getCurrentUser } = useAuthStore.getState();
-  const [params, setParams] = useState({
-    pageSize: 1000,
-    pageNumber: 1,
-    sortOrder: "createdAt desc",
-    searchKey: "",
-    searchFields: [],
-    includeReferences: {},
-  });
   const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
-    if (user?.id) {
-      setParams((prevParams: any) => ({
-        ...prevParams,
+    getCurrentUser();
+  }, [getCurrentUser]);
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      const response = await getTransactionsHistoryService({
+        pageSize: 1000,
+        pageNumber: 1,
+        sortOrder: "createdAt desc",
+        searchKey: "",
         conditions: [
           {
             key: "userId",
@@ -30,94 +58,118 @@ const CoinsPage = () => {
             condition: "equal",
           },
         ],
-      }));
+        searchFields: [],
+        includeReferences: {},
+      });
+      setTransactions(response.data.data ?? []);
+    };
+    if (user?.id) {
+      fetchTransactions();
     }
   }, [user]);
 
-  useEffect(() => {
-    getCurrentUser();
-  }, [getCurrentUser]);
+  const form = useForm<z.infer<typeof depositSchema>>({
+    resolver: zodResolver(depositSchema),
+    defaultValues: {
+      numberCoin: 0,
+    },
+  });
 
-  useEffect(() => {
-    getTransactionsHistoryService(params).then((res: any) => {
-      setTransactions(res.data.data ?? []);
-    });
-  }, [params]);
+  const onSubmit = async (values: z.infer<typeof depositSchema>) => {
+    if (Number.isNaN(values.numberCoin)) {
+      return;
+    }
+    try {
+      const response = await depositCoinService(values);
+      console.log(response);
+      if (response.success) {
+        const url = response.data;
+        if (typeof window !== "undefined") {
+          window.location.href = url;
+        }
+      }
+    } catch (error) {
+      toast.error("Yêu cầu nạp tiền thất bại");
+    }
+  };
+
+  const columns = createColumns();
 
   return (
     <div className="flex flex-col items-center justify-start">
-      <h1 className="mb-4 text-4xl font-bold">Trang quản lý coin</h1>
-      <div className="flex items-center gap-2 mb-8 text-2xl">
-        {formatPrice(user?.coinAmount || 0)}
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-6 h-6"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"
-          />
-        </svg>
-      </div>
-      <div className="flex gap-4 mb-8">
-        <button
-          onClick={() => router.push("/")}
-          className="px-4 py-2 text-white bg-gray-600 rounded-md hover:bg-gray-700"
-        >
-          Trở về trang chủ
-        </button>
-        <button
-          onClick={() => router.push("/coins/deposit")}
-          className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
-        >
-          Nạp coin
-        </button>
-      </div>
-
-      <div className="w-full max-w-3xl">
-        <h2 className="mb-4 text-2xl font-semibold">Lịch sử giao dịch</h2>
-        <div className="overflow-hidden bg-white border rounded-lg">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                  Id
-                </th>
-                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                  Mô tả
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {transactions?.map((transaction: any, index: number) => (
-                <tr key={index}>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {transaction.id}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {transaction.description}
-                  </td>
-                </tr>
-              ))}
-              {(!transactions || transactions.length === 0) && (
-                <tr>
-                  <td
-                    colSpan={4}
-                    className="px-6 py-4 text-center text-gray-500"
-                  >
-                    Không tìm thấy giao dịch
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+      <div className="flex flex-wrap items-center justify-between w-full gap-2 mb-8 text-lg md:text-2xl">
+        <span className="">Số coin hiện tại:</span>
+        <div className="flex items-center gap-1">
+          {formatPrice(user?.coinAmount || 0)}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-6 h-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"
+            />
+          </svg>
         </div>
       </div>
+
+      <Tabs
+        defaultValue="deposit"
+        orientation="vertical"
+        className="w-full mt-4"
+      >
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="deposit">Nạp coin</TabsTrigger>
+          <TabsTrigger value="history">Lịch sử giao dịch</TabsTrigger>
+        </TabsList>
+        <TabsContent value="deposit">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="w-full mt-8"
+            >
+              <Card>
+                <CardHeader>
+                  <CardTitle>Nạp coin</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="numberCoin"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Số tiền</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="string"
+                            placeholder="Nhập số tiền..."
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                        <p className="text-sm text-muted-foreground">
+                          Số tiền nạp tối thiểu là 10,000 VND
+                        </p>
+                      </FormItem>
+                    )}
+                  />
+                </CardContent>
+                <CardFooter className="flex justify-end gap-4">
+                  <Button type="submit">Xác nhận nạp tiền</Button>
+                </CardFooter>
+              </Card>
+            </form>
+          </Form>
+        </TabsContent>
+        <TabsContent value="history">
+          <DataTable columns={columns} data={transactions} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

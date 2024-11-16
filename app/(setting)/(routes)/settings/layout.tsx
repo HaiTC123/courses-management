@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
-  const authenticated = useAuthStore.getState().authenticated;
+  const {authenticated} = useAuthStore.getState();
   const router = useRouter();
   const [domLoaded, setDomLoaded] = useState(false);
 

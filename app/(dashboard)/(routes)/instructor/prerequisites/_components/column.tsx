@@ -22,11 +22,15 @@ export const createColumns = (
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          ID Khóa học
+          Tên Khóa học
           <ArrowUpDown className="w-4 h-4 ml-2" />
         </Button>
       );
     },
+    // cell: ({ row }) => {
+    //   const { id, courseName } = row.original.prerequisiteCourse;
+    //   return <Link href={`/instructor/courses/${id}`}>{courseName}</Link>;
+    // },
   },
   {
     accessorKey: "prerequisiteCourseId",
@@ -36,10 +40,14 @@ export const createColumns = (
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          ID Điều kiện tiên quyết
+          Tên khóa tiên quyết
           <ArrowUpDown className="w-4 h-4 ml-2" />
         </Button>
       );
+    },
+    cell: ({ row }) => {
+      const { id, courseName } = row.original.prerequisiteCourse;
+      return <Link href={`/instructor/courses/${id}`}>{courseName}</Link>;
     },
   },
   {

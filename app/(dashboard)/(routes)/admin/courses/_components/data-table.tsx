@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -8,11 +7,13 @@ import {
   getCoreRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  getFilteredRowModel,
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
+import * as React from "react";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -21,10 +22,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { PlusCircle } from "lucide-react";
-import Link from "next/link";
+import Paginator from "@/components/paginator";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -65,12 +63,6 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
-        {/* <Link href="/instructor/create">
-          <Button>
-            <PlusCircle className="w-4 h-4 mr-2" />
-            Tạo khóa học
-          </Button>
-        </Link> */}
       </div>
       <div className="border rounded-md">
         <Table>
@@ -123,22 +115,20 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       <div className="flex items-center justify-end py-4 space-x-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
+        <div className="flex-1 text-sm text-muted-foreground">
+          {table.getFilteredSelectedRowModel().rows.length
+            ? `${table.getFilteredSelectedRowModel().rows.length} of{" "}`
+            : null}
+          {table.getFilteredRowModel().rows.length} row(s)
+        </div>
+        <div className="flex justify-end">
+          <Paginator
+            currentPage={table.getState().pagination.pageIndex + 1}
+            totalPages={table.getPageCount()}
+            onPageChange={(pageNumber) => table.setPageIndex(pageNumber - 1)}
+            showPreviousNext
+          />
+        </div>
       </div>
     </div>
   );

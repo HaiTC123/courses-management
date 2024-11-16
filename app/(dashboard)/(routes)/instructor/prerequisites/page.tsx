@@ -29,22 +29,21 @@ const PrerequisitesPage = () => {
     },
   });
 
-  const fetchPrerequisites = useCallback(() => {
-    getPaginatedPrerequisitesService(params)
-      .then((response) => {
-        if (response.data.data) {
-          const listPrerequisites = response.data.data.map(
-            (prerequisite: any) => ({
-              ...prerequisite,
-            })
-          );
-          console.log(listPrerequisites);
-          setPrerequisites(listPrerequisites);
-        }
-      })
-      .catch((error) => {
-        toast.error(error.message);
-      });
+  const fetchPrerequisites = useCallback(async () => {
+    try {
+      const response = await getPaginatedPrerequisitesService(params);
+      if (response.data.data) {
+        const listPrerequisites = response.data.data.map(
+          (prerequisite: any) => ({
+            ...prerequisite,
+          })
+        );
+        console.log(listPrerequisites);
+        setPrerequisites(listPrerequisites);
+      }
+    } catch (error: any) {
+      toast.error(error.message);
+    }
   }, [params]);
 
   useEffect(() => {

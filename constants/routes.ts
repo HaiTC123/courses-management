@@ -8,6 +8,7 @@ import {
   File,
   User,
   User2,
+  Presentation,
 } from "lucide-react";
 
 export const studentRoutes: any[] = [
@@ -55,7 +56,7 @@ export const instructorRoutes: any[] = [
     href: "/instructor/documents",
   },
   {
-    icon: File,
+    icon: Presentation,
     label: "Điều kiện tiên quyết",
     href: "/instructor/prerequisites",
   },

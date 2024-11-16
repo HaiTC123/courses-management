@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import * as React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -12,8 +12,6 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { PlusCircle } from "lucide-react";
-import Link from "next/link";
 
 import {
   Table,
@@ -25,7 +23,8 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
+import { PlusCircle } from "lucide-react";
+import Link from "next/link";
 import Paginator from "@/components/paginator";
 
 interface DataTableProps<TData, TValue> {
@@ -37,8 +36,10 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
 
   const table = useReactTable({
     data,
@@ -53,15 +54,7 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div>
-      <div className="flex items-center justify-between py-4">
-        <Link href="/instructor/prerequisites/create">
-          <Button>
-            <PlusCircle className="w-4 h-4 mr-2" />
-            Tạo điều kiện tiên quyết
-          </Button>
-        </Link>
-      </div>
+    <div className="mt-8">
       <div className="border rounded-md">
         <Table>
           <TableHeader>

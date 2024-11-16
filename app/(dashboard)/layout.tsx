@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import Footer from "./_components/footer";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
-  const authenticated = useAuthStore.getState().authenticated;
+  const { authenticated } = useAuthStore.getState();
   const router = useRouter();
   const [domLoaded, setDomLoaded] = useState(false);
 

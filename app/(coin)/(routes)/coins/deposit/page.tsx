@@ -17,13 +17,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { X } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { toast } from "react-hot-toast";
 import { depositCoinService } from "@/services/coin.service";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
+import * as z from "zod";
 
 const depositSchema = z.object({
   numberCoin: z.string().transform((v) => Number(v) || 0),
@@ -62,17 +61,17 @@ const DepositCoinsPage = () => {
   };
 
   return (
-    <div className="max-w-3xl p-6 mx-auto">
-      <div className="flex items-center justify-between">
+    <>
+      {/* <div className="flex items-center justify-between">
         <h1 className="text-2xl">Nạp tiền</h1>
         <X className="w-8 h-8 cursor-pointer" onClick={() => router.back()} />
-      </div>
+      </div> */}
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8">
           <Card>
             <CardHeader>
-              <CardTitle>Thông tin nạp tiền</CardTitle>
+              <CardTitle>Nạp coin</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <FormField
@@ -80,7 +79,7 @@ const DepositCoinsPage = () => {
                 name="numberCoin"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Số tiền nạp</FormLabel>
+                    <FormLabel>Số tiền</FormLabel>
                     <FormControl>
                       <Input
                         type="string"
@@ -96,20 +95,20 @@ const DepositCoinsPage = () => {
                 )}
               />
             </CardContent>
-            <CardFooter className="flex gap-4">
+            <CardFooter className="flex justify-end gap-4">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => router.push("/coins")}
               >
-                Quay lại
+                Quay lại trang quản lý coin
               </Button>
               <Button type="submit">Xác nhận nạp tiền</Button>
             </CardFooter>
           </Card>
         </form>
       </Form>
-    </div>
+    </>
   );
 };
 

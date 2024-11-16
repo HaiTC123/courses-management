@@ -5,7 +5,7 @@ const Footer = () => {
     <footer className="relative z-[51] bg-gray-100 border-t">
       <div className="px-4 py-8 mx-auto max-w-7xl">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
-          {/* Company Info */}
+          {/* Thông tin công ty */}
           <div>
             <h3 className="mb-4 font-bold">
               <Logo />
@@ -13,7 +13,7 @@ const Footer = () => {
             <ul className="space-y-2">
               <li>
                 <a href="/about" className="text-gray-600 hover:text-gray-900">
-                  About Us
+                  Về chúng tôi
                 </a>
               </li>
               <li>
@@ -21,7 +21,7 @@ const Footer = () => {
                   href="/contact"
                   className="text-gray-600 hover:text-gray-900"
                 >
-                  Contact
+                  Liên hệ
                 </a>
               </li>
               <li>
@@ -29,15 +29,15 @@ const Footer = () => {
                   href="/careers"
                   className="text-gray-600 hover:text-gray-900"
                 >
-                  Careers
+                  Tuyển dụng
                 </a>
               </li>
             </ul>
           </div>
 
-          {/* Resources */}
+          {/* Tài nguyên */}
           <div>
-            <h3 className="mb-4 font-bold">Resources</h3>
+            <h3 className="mb-4 font-bold">Tài nguyên</h3>
             <ul className="space-y-2">
               <li>
                 <a href="/blog" className="text-gray-600 hover:text-gray-900">
@@ -46,32 +46,32 @@ const Footer = () => {
               </li>
               <li>
                 <a href="/help" className="text-gray-600 hover:text-gray-900">
-                  Help Center
+                  Trung tâm trợ giúp
                 </a>
               </li>
               <li>
                 <a href="/docs" className="text-gray-600 hover:text-gray-900">
-                  Documentation
+                  Tài liệu
                 </a>
               </li>
             </ul>
           </div>
 
-          {/* Legal */}
+          {/* Pháp lý */}
           <div>
-            <h3 className="mb-4 font-bold">Legal</h3>
+            <h3 className="mb-4 font-bold">Pháp lý</h3>
             <ul className="space-y-2">
               <li>
                 <a
                   href="/privacy"
                   className="text-gray-600 hover:text-gray-900"
                 >
-                  Privacy Policy
+                  Chính sách bảo mật
                 </a>
               </li>
               <li>
                 <a href="/terms" className="text-gray-600 hover:text-gray-900">
-                  Terms of Service
+                  Điều khoản dịch vụ
                 </a>
               </li>
               <li>
@@ -79,15 +79,15 @@ const Footer = () => {
                   href="/cookies"
                   className="text-gray-600 hover:text-gray-900"
                 >
-                  Cookie Policy
+                  Chính sách cookie
                 </a>
               </li>
             </ul>
           </div>
 
-          {/* Social Media */}
+          {/* Mạng xã hội */}
           <div>
-            <h3 className="mb-4 font-bold">Connect With Us</h3>
+            <h3 className="mb-4 font-bold">Kết nối với chúng tôi</h3>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-600 hover:text-gray-900">
                 <span className="sr-only">Twitter</span>
@@ -131,11 +131,10 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Copyright */}
+        {/* Bản quyền */}
         <div className="pt-8 mt-8 text-sm text-center text-gray-600 border-t">
           <p>
-            © {new Date().getFullYear()} Courses Management. All rights
-            reserved.
+            © {new Date().getFullYear()} Quản lý khóa học. Đã đăng ký bản quyền.
           </p>
         </div>
       </div>

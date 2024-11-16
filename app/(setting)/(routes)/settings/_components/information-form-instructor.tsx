@@ -32,7 +32,7 @@ import { UserRole } from "@/enum/user-role";
 import { UserState } from "@/enum/user-state";
 import { uploadFileService } from "@/services/file.service";
 import {
-  getPaginatedStudentsService,
+  getPaginatedInstructorsService,
   IGetPaginatedUsersParams,
   updateStudentService,
   updateUserService,
@@ -82,7 +82,7 @@ const InformationForm = () => {
     defaultValues: {
       fullName: "",
       email: "",
-      role: UserRole.STUDENT,
+      role: UserRole.INSTRUCTOR,
       gender: UserGender.OTHER,
       dateOfBirth: new Date(),
       phoneNumber: "",
@@ -98,18 +98,8 @@ const InformationForm = () => {
     },
   });
 
-  const studentForm = useForm<z.infer<typeof studentFormSchema>>({
-    resolver: zodResolver(studentFormSchema),
-    defaultValues: {
-      major: "",
-      yearOfStudy: 0,
-      gpa: 0,
-      graduationStatus: "",
-    },
-  });
-
   const [general, setGeneral] = useState<any>(null);
-  const [student, setStudent] = useState<any>(null);
+  const [instructor, setInstructor] = useState<any>(null);
   const [userId, setUserId] = useState<number>(0);
 
   const [params, setParams] = useState<IGetPaginatedUsersParams>({
@@ -119,7 +109,7 @@ const InformationForm = () => {
       {
         key: "id",
         condition: "equal",
-        value: user.student.id,
+        value: user.instructor.id,
       },
     ],
     sortOrder: "",
@@ -130,15 +120,15 @@ const InformationForm = () => {
     },
   });
 
-  const fetchStudents = useCallback(() => {
-    getPaginatedStudentsService(params)
+  const fetchInstructors = useCallback(() => {
+    getPaginatedInstructorsService(params)
       .then((response) => {
         if (response.data.data) {
-          const listStudents: any[] = response.data.data;
-          if (listStudents.length > 0) {
-            setGeneral(listStudents[0].user);
-            setStudent(omit(listStudents[0], ["user"]));
-            setUserId(listStudents[0].userId);
+          const listInstructors: any[] = response.data.data;
+          if (listInstructors.length > 0) {
+            setGeneral(listInstructors[0].user);
+            setInstructor(omit(listInstructors[0], ["user"]));
+            setUserId(listInstructors[0].userId);
           }
         }
       })
@@ -148,8 +138,8 @@ const InformationForm = () => {
   }, [params]);
 
   useEffect(() => {
-    fetchStudents();
-  }, [fetchStudents]);
+    fetchInstructors();
+  }, [fetchInstructors]);
 
   useEffect(() => {
     if (general) {
@@ -173,16 +163,7 @@ const InformationForm = () => {
         bannerPictureURLTmp: "",
       });
     }
-
-    if (student) {
-      studentForm.reset({
-        major: student.major || "",
-        yearOfStudy: student.yearOfStudy || 0,
-        gpa: student.gpa || 0,
-        graduationStatus: student.graduationStatus || "",
-      });
-    }
-  }, [student, general, form, studentForm]);
+  }, [instructor, general, form]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -491,8 +472,8 @@ const InformationForm = () => {
                         <Combobox
                           options={[
                             {
-                              value: UserRole.STUDENT,
-                              label: UserRole.STUDENT,
+                              value: UserRole.INSTRUCTOR,
+                              label: UserRole.INSTRUCTOR,
                             },
                           ]}
                           value={field.value}

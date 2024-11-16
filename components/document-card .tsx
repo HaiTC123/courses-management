@@ -44,7 +44,7 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({
           <div className="flex items-center my-3 text-sm gap-x-2 md:text-xs">
             <div className="flex items-center gap-x-1">
               <IconBadge size="sm" icon={File} />
-              <strong>Loại file: {fileType?.slice(1)}</strong>
+              <strong>Loại file: {fileType}</strong>
             </div>
           </div>
           <div className="flex items-center gap-x-2">

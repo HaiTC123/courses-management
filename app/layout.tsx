@@ -95,13 +95,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <title>Courses Management</title>
+        <title>Quản lý khóa học</title>
         <meta name="description" content="Website for managing courses" />
       </head>
       <body className={inter.className}>
         <ToasterProvider />
-        <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
-        <AdviseChat />
+        <Suspense fallback={<div>Loading...</div>}>
+          {children}
+          <AdviseChat />
+        </Suspense>
       </body>
     </html>
   );

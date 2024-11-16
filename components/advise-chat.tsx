@@ -7,53 +7,58 @@ import { useRouter } from "next/navigation";
 import Draggable from "react-draggable";
 import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { useEffect } from "react";
+import { useState } from "react";
 
 export const AdviseChat = () => {
   const router = useRouter();
   const { role } = useAuthStore.getState();
 
-  return (
-    role &&
-    role !== UserRole.ADMIN && (
-      <Draggable>
-        <div className="fixed cursor-move bottom-10 left-10 z-[52]">
-          <Popover>
-            <PopoverTrigger>
-              <div className="relative">
-                <div className="absolute rounded-full -inset-1 animate-pulse bg-blue-500/50"></div>
-                <PlusCircle
-                  size={32}
-                  className="relative transition-transform hover:scale-110 hover:cursor-pointer animate-bounce infinite"
-                />
-              </div>
-            </PopoverTrigger>
-            <PopoverContent>
-              <div className="flex flex-col gap-2">
-                {role === UserRole.STUDENT && (
-                  <Button
-                    onClick={() => router.push("/advise/create")}
-                    variant="outline"
-                  >
-                    Đăng ký tư vấn
-                  </Button>
-                )}
+  const [domLoaded, setDomLoaded] = useState(false);
+
+  useEffect(() => {
+    setDomLoaded(true);
+  }, []);
+
+  return domLoaded && role && role !== UserRole.ADMIN ? (
+    <Draggable>
+      <div className="fixed cursor-move bottom-10 left-10 z-[52]">
+        <Popover>
+          <PopoverTrigger>
+            <div className="relative">
+              <div className="absolute rounded-full -inset-1 animate-pulse bg-blue-500/50"></div>
+              <PlusCircle
+                size={32}
+                className="relative transition-transform hover:scale-110 hover:cursor-pointer animate-bounce infinite"
+              />
+            </div>
+          </PopoverTrigger>
+          <PopoverContent>
+            <div className="flex flex-col gap-2">
+              {role === UserRole.STUDENT && (
                 <Button
-                  onClick={() => {
-                    if (role === UserRole.INSTRUCTOR) {
-                      router.push("/instructor/advise");
-                    } else {
-                      router.push("/advise");
-                    }
-                  }}
+                  onClick={() => router.push("/advise/create")}
                   variant="outline"
                 >
-                  Xem các tư vấn
+                  Đăng ký tư vấn
                 </Button>
-              </div>
-            </PopoverContent>
-          </Popover>
-        </div>
-      </Draggable>
-    )
-  );
+              )}
+              <Button
+                onClick={() => {
+                  if (role === UserRole.INSTRUCTOR) {
+                    router.push("/instructor/advise");
+                  } else {
+                    router.push("/advise");
+                  }
+                }}
+                variant="outline"
+              >
+                Xem các tư vấn
+              </Button>
+            </div>
+          </PopoverContent>
+        </Popover>
+      </div>
+    </Draggable>
+  ) : null;
 };

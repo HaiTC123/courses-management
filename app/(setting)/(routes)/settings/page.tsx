@@ -27,9 +27,14 @@ import { omit } from "lodash";
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
+import InformationForm from "./_components/information-form";
+import { useAuthStore } from "@/store/use-auth-store";
+import { UserRole } from "@/enum/user-role";
+import InformationFormInstructor from "./_components/information-form-instructor";
 
 const SettingsPage = () => {
   const router = useRouter();
+  const { role } = useAuthStore.getState();
 
   const passwordSchema = z
     .object({
@@ -54,16 +59,17 @@ const SettingsPage = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof passwordSchema>) => {
-    // Handle password change logic here
+    try {
+      const response = await changePasswordService(
+        omit(values, ["confirmPassword"])
+      );
 
-    const response = await changePasswordService(
-      omit(values, ["confirmPassword"])
-    );
-    // console.log(response);
-
-    if (response) {
-      toast.success("Đổi mật khẩu thành công");
-    } else {
+      if (response) {
+        toast.success("Đổi mật khẩu thành công");
+      } else {
+        toast.error("Đổi mật khẩu thất bại");
+      }
+    } catch (error) {
       toast.error("Đổi mật khẩu thất bại");
     }
   };
@@ -82,7 +88,10 @@ const SettingsPage = () => {
         className="w-full mt-4"
       >
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="information">Thông tin cá nhân</TabsTrigger>
+          {role === UserRole.STUDENT ||
+            (role === UserRole.INSTRUCTOR && (
+              <TabsTrigger value="information">Thông tin cá nhân</TabsTrigger>
+            ))}
           <TabsTrigger value="changePassword">Đổi mật khẩu</TabsTrigger>
         </TabsList>
         <TabsContent value="changePassword">
@@ -143,7 +152,16 @@ const SettingsPage = () => {
             </form>
           </Form>
         </TabsContent>
-        <TabsContent value="information"></TabsContent>
+        {role === UserRole.STUDENT && (
+          <TabsContent value="information">
+            <InformationForm />
+          </TabsContent>
+        )}
+        {role === UserRole.INSTRUCTOR && (
+          <TabsContent value="information">
+            <InformationFormInstructor />
+          </TabsContent>
+        )}
       </Tabs>
     </div>
   );
