@@ -1,7 +1,6 @@
 "use client";
 
 import { connectSocket } from "@/services/socket.service";
-import { isEmpty } from "lodash";
 import { Inter } from "next/font/google";
 import { Suspense, useEffect } from "react";
 import { io } from "socket.io-client";
@@ -15,6 +14,7 @@ import { useNotiStore } from "@/store/use-noti-store";
 import { AdviseChat } from "@/components/advise-chat";
 import { SocketInstance } from "@/lib/socket-instance";
 import { getListNotification } from "@/services/notification.service";
+import { toast } from "react-hot-toast";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -57,37 +57,39 @@ export default function RootLayout({
   }, [setNotifications, user.id]);
 
   useEffect(() => {
-    if (!isEmpty(user)) {
+    const handleConnectSocket = async () => {
       const connectionID = uuidv4();
       const userID = user.id;
-      connectSocket(userID, connectionID).then(() => {
-        SocketInstance.socket = io(process.env.NEXT_PUBLIC_SOCKET_URL!);
-
-        SocketInstance.socket.on("connect", () => {
-          console.log("connected");
-          SocketInstance.socket.emit("register", userID, connectionID);
-        });
-
-        SocketInstance.socket.on("message", (message: any) => {
-          console.log("[LOGS] socket message", message);
-          const newNotifications = {
-            title: mapNotificationType(message).title,
-            link: mapNotificationType(message).link,
-            createdAt: message.createdAt,
-            isViewed: message.isViewed,
-            id: message.id,
-          };
-          addNotification(newNotifications);
-          if (
-            message.type === "Student_Chat_Advising_To_Advisor" ||
-            message.type === "Advisor_Chat_Advising_To_Student"
-          ) {
-            SocketInstance.socket?.emit("chatting", message);
-          }
-        });
-      });
+      try {
+        const res = await connectSocket(userID, connectionID);
+        if (res && !SocketInstance.socket) {
+          SocketInstance.socket = io(process.env.NEXT_PUBLIC_SOCKET_URL!);
+          SocketInstance.socket.on("connect", () => {
+            SocketInstance.socket.emit("register", userID, connectionID);
+          });
+          SocketInstance.socket.on("message", (message: any) => {
+            console.log("[LOGS] socket message", message);
+            const newNotifications = {
+              title: mapNotificationType(message).title,
+              link: mapNotificationType(message).link,
+              createdAt: message.createdAt,
+              isViewed: message.isViewed,
+              id: message.id,
+            };
+            addNotification(newNotifications);
+          });
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error("Lỗi kết nối socket");
+      }
+    };
+    if (user.id && !SocketInstance.socket) {
+      handleConnectSocket();
     }
     return () => {
+      SocketInstance.socket?.off("connect");
+      SocketInstance.socket?.off("message");
       SocketInstance.socket?.disconnect();
     };
   }, [user, addNotification]);

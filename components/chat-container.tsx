@@ -14,7 +14,6 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Textarea } from "./ui/textarea";
 import { Input } from "./ui/input";
 
 interface Message {
@@ -193,7 +192,7 @@ export const ChatContainer = ({
                     </AvatarFallback>
                   </Avatar>
                   <div
-                    className={`rounded-lg p-3 max-w-[70%] ${
+                    className={`rounded-lg p-3 max-w-[80%] ${
                       message.senderId === user.id
                         ? "bg-primary text-primary-foreground"
                         : "bg-muted"

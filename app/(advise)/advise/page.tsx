@@ -2,13 +2,17 @@
 
 import { ChatContainer } from "@/components/chat-container";
 import { LoadingSpinner } from "@/components/loading-spinner";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getPaginatedAdvisesService } from "@/services/advise.service";
 import { useAuthStore } from "@/store/use-auth-store";
+import { Ban, CheckCircle2, XCircle } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import SidebarAdvise from "../_components/sidebar-advise";
+import { MobileSidebarAdvise } from "../_components/sidebar-advise-mobile";
 
 const AdvisePage = () => {
   const router = useRouter();
@@ -61,53 +65,19 @@ const AdvisePage = () => {
   }, [listAdvises, adviseId]);
 
   return (
-    <div className="h-[calc(100vh-80px)] flex gap-4 p-4">
-      {/* Sidebar */}
-      <Card className="flex flex-col w-80">
-        <div className="p-4 border-b">
-          <Button
-            variant="outline"
-            onClick={() => router.push("/advise/create")}
-          >
-            Tạo cuộc tư vấn
-          </Button>
-        </div>
-        <ScrollArea className="flex-1">
-          <div className="p-2 space-y-2">
-            {listAdvises.map((advise) => (
-              <div
-                key={advise.id}
-                className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-accent ${
-                  selectedAdvise?.id === advise.id ? "bg-accent" : ""
-                }`}
-                onClick={() => {
-                  setIsLoading(true);
-                  router.push(`?adviseId=${advise.id}`);
-                }}
-              >
-                <div className="flex-1 overflow-hidden">
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium">{advise.topic}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {new Date(advise.advisingDate).toLocaleDateString()}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm truncate text-muted-foreground">
-                      {advise.notes}
-                    </span>
-                    <span className="flex items-center justify-center px-2 py-1 text-xs rounded-lg bg-primary text-primary-foreground">
-                      {advise.status}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </ScrollArea>
-      </Card>
+    <div className="h-[calc(100vh-80px)] flex gap-4 p-4 relative">
+      <MobileSidebarAdvise
+        listAdvises={listAdvises}
+        selectedAdvise={selectedAdvise}
+        setIsLoading={setIsLoading}
+      />
+      <SidebarAdvise
+        className="hidden overflow-auto md:block"
+        listAdvises={listAdvises}
+        selectedAdvise={selectedAdvise}
+        setIsLoading={setIsLoading}
+      />
 
-      {/* Chat Area */}
       {selectedAdvise ? (
         (() => {
           switch (selectedAdvise.status) {
@@ -120,19 +90,38 @@ const AdvisePage = () => {
                 />
               );
             case "Cancelled":
-              return <div>Tư vấn đã bị hủy</div>;
+              return (
+                <div className="flex flex-col items-center justify-center w-full gap-4 p-8 border rounded-lg">
+                  <XCircle className="w-16 h-16 text-red-500" />
+                  <h2 className="text-2xl font-semibold text-center">
+                    Tư vấn đã bị hủy
+                  </h2>
+                </div>
+              );
             case "Scheduled":
               return (
-                <>
-                  <h1>
+                <div className="flex flex-col items-center justify-center w-full gap-4 p-8 border rounded-lg">
+                  <h2 className="text-2xl font-semibold text-center">
                     Yêu cầu của bạn đã được gửi đi. Vui lòng chờ phê duyệt.
-                  </h1>
-                </>
+                  </h2>
+                </div>
+              );
+            case "Completed":
+              return (
+                <div className="flex flex-col items-center justify-center w-full gap-4 p-8 border rounded-lg">
+                  <CheckCircle2 className="w-16 h-16 text-green-500" />
+                  <h2 className="text-2xl font-semibold text-center">
+                    Tư vấn đã hoàn thành
+                  </h2>
+                </div>
               );
             default:
               return (
-                <div>
-                  <p>Trạng thái không hợp lệ</p>
+                <div className="flex flex-col items-center justify-center w-full gap-4 p-8 border rounded-lg">
+                  <Ban className="w-16 h-16 text-red-500" />
+                  <h2 className="text-2xl font-semibold text-center">
+                    Trạng thái không hợp lệ
+                  </h2>
                 </div>
               );
           }
@@ -144,7 +133,11 @@ const AdvisePage = () => {
       ) : (
         <div className="flex flex-col flex-1">
           <Card className="flex-1 p-4 mb-4">
-            <p>Chọn tư vấn để bắt đầu chat</p>
+            <div className="flex flex-col items-center justify-center w-full h-full gap-4 p-8">
+              <h2 className="text-2xl font-semibold text-center">
+                Chọn tư vấn để bắt đầu chat
+              </h2>
+            </div>
           </Card>
         </div>
       )}
