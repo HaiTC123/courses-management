@@ -133,6 +133,6 @@ export const getEligibleCoursesService = async (courseIds: string) => {
 };
 
 export const getCourseByStudentIdService = async (studentId: number) => {
-  const response = await axiosInstance.get(`/api/course/student/${studentId}`);
+  const response = await axiosInstance.get(`/api/course/admin/${studentId}`);
   return response.data;
 };

@@ -168,42 +168,41 @@ export const createColumns = (
       );
     },
   },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const { id, userId } = row.original;
+  // {
+  //   id: "actions",
+  //   cell: ({ row }) => {
+  //     const { id, userId } = row.original;
 
-      const handleDelete = async () => {
-        try {
-          await onDelete(id, userId);
-        } catch (error) {
-          console.error("Error deleting student:", error);
-          // Handle error (e.g., show an error toast)
-        }
-      };
+  //     const handleDelete = async () => {
+  //       try {
+  //         await onDelete(id, userId);
+  //       } catch (error) {
+  //         console.error("Error deleting student:", error);
+  //       }
+  //     };
 
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="w-4 h-4 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="w-4 h-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <Link href={`/admin/students/edit/${id}`}>
-              <DropdownMenuItem>
-                <Pencil className="w-4 h-4 mr-2" />
-                Sửa
-              </DropdownMenuItem>
-            </Link>
-            <DropdownMenuItem onClick={handleDelete}>
-              <Trash className="w-4 h-4 mr-2" />
-              Xóa
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
+  //     return (
+  //       <DropdownMenu>
+  //         <DropdownMenuTrigger asChild>
+  //           <Button variant="ghost" size="icon" className="w-4 h-4 p-0">
+  //             <span className="sr-only">Open menu</span>
+  //             <MoreHorizontal className="w-4 h-4" />
+  //           </Button>
+  //         </DropdownMenuTrigger>
+  //         <DropdownMenuContent align="end">
+  //           <Link href={`/admin/students/edit/${id}`}>
+  //             <DropdownMenuItem>
+  //               <Pencil className="w-4 h-4 mr-2" />
+  //               Sửa
+  //             </DropdownMenuItem>
+  //           </Link>
+  //           <DropdownMenuItem onClick={handleDelete}>
+  //             <Trash className="w-4 h-4 mr-2" />
+  //             Xóa
+  //           </DropdownMenuItem>
+  //         </DropdownMenuContent>
+  //       </DropdownMenu>
+  //     );
+  //   },
+  // },
 ];

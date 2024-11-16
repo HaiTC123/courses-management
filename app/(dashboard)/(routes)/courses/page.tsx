@@ -1,35 +1,18 @@
 "use client";
 
-import { SearchInput } from "@/components/search-input";
-import { Categories } from "./_components/categories";
 import { CourseList } from "@/components/course-list";
-import { InfoCard } from "./_components/info-card";
-import { CheckCircle, Clock } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
-import {
-  getPaginatedEnrollmentsService,
-  IGetPaginatedEnrollmentsParams,
-} from "@/services/enrollment.service";
-import toast from "react-hot-toast";
 import { CATEGORIES } from "@/constants/category-data";
+import { UserRole } from "@/enum/user-role";
 import { getCourseByStudentIdService } from "@/services/course.service";
 import { useAuthStore } from "@/store/use-auth-store";
-import { UserRole } from "@/enum/user-role";
+import { useCallback, useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { Categories } from "./_components/categories";
 
 const CoursePage = () => {
   const { user, role } = useAuthStore.getState();
   const [courses, setCourses] = useState<any[]>([]);
   const [filteredCourses, setFilteredCourses] = useState<any[]>([]);
-
-  // const [params, setParams] = useState<IGetPaginatedEnrollmentsParams>({
-  //   pageSize: 1000,
-  //   pageNumber: 1,
-  //   conditions: [],
-  //   sortOrder: "",
-  //   searchKey: "",
-  //   searchFields: [],
-  //   includeReferences: [],
-  // });
 
   const fetchCourses = useCallback(async () => {
     const id =

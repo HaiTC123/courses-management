@@ -15,6 +15,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Textarea } from "./ui/textarea";
+import { Input } from "./ui/input";
 
 interface Message {
   message: string;
@@ -213,7 +214,7 @@ export const ChatContainer = ({
         </ScrollArea>
       </Card>
       <div className="flex gap-2">
-        <Textarea
+        <Input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Nhập tin nhắn..."

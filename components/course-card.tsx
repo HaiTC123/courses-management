@@ -1,8 +1,11 @@
+import { formatPrice } from "@/lib/format";
+import { getProgressByCourseId } from "@/services/progress.service";
+import { BookOpen, DollarSign, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { IconBadge } from "./icon-badge";
-import { BookOpen, Users } from "lucide-react";
-import { formatPrice } from "@/lib/format";
+import CircularProgress from "./progress-bar-circle";
 
 interface CourseCardProps {
   id: string;
@@ -10,9 +13,9 @@ interface CourseCardProps {
   imageUrl: string;
   price: number;
   category: any;
-  userId: string;
   isFree: boolean;
   enrollmentsCount: number;
+  isEnrolled: boolean;
 }
 
 export const CourseCard: React.FC<CourseCardProps> = ({
@@ -20,11 +23,25 @@ export const CourseCard: React.FC<CourseCardProps> = ({
   imageUrl,
   price,
   category,
-  userId,
   id,
   isFree,
   enrollmentsCount,
+  isEnrolled,
 }) => {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    if (id) {
+      getProgressByCourseId(Number(id)).then((res: any) => {
+        if (res.data) {
+          const completed = res.data.completed;
+          const total = res.data.total || 1;
+          setProgress(Math.round((completed / total) * 100));
+        }
+      });
+    }
+  }, [id]);
+
   return (
     <Link href={`/courses/${id}`}>
       <div className="h-full overflow-hidden transition duration-300 ease-in-out border rounded-lg group hover:shadow-lg hover:scale-105">
@@ -47,21 +64,30 @@ export const CourseCard: React.FC<CourseCardProps> = ({
           </div>
           <div className="flex items-center my-3 text-sm gap-x-2 md:text-xs">
             <div className="flex items-center gap-x-1">
-              <IconBadge size="sm" icon={BookOpen} />
-              <strong>{isFree ? "Miễn phí" : formatPrice(price)}</strong>
+              {isEnrolled ? (
+                <>
+                  <IconBadge size="sm" icon={BookOpen} />
+                  <strong>Đã đăng ký</strong>
+                </>
+              ) : (
+                <>
+                  <IconBadge size="sm" icon={DollarSign} />
+                  <strong>{isFree ? "Miễn phí" : formatPrice(price)}</strong>
+                </>
+              )}
             </div>
           </div>
-          <div className="flex items-center gap-x-2">
-            <IconBadge size="sm" icon={Users} />
-            <strong>{enrollmentsCount}</strong>
+          <div className="flex items-center justify-between gap-x-2">
+            <div className="flex items-center gap-x-1">
+              <IconBadge size="sm" icon={Users} />
+              <strong>{enrollmentsCount}</strong>
+            </div>
+            {isEnrolled && (
+              <div className="flex items-center gap-x-2">
+                <CircularProgress value={progress} size={43} />
+              </div>
+            )}
           </div>
-          {/* {progress !== null ? (
-            <div>Progress</div>
-          ) : (
-            <p className="font-medium transition-colors duration-300 text-md md:text-sm text-slate-600 group-hover:text-blue-600">
-              {formatPrice(price)}
-            </p>
-          )} */}
         </div>
       </div>
     </Link>

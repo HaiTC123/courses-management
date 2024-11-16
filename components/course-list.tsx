@@ -1,5 +1,8 @@
 import { DEFAULT_IMAGE } from "@/constants/default-image";
 import { CourseCard } from "./course-card";
+import { useEffect } from "react";
+import { useState } from "react";
+import { useAuthStore } from "@/store/use-auth-store";
 
 interface CourseListProps {
   title: string;
@@ -7,6 +10,19 @@ interface CourseListProps {
 }
 
 export const CourseList: React.FC<CourseListProps> = ({ title, items }) => {
+  const { user } = useAuthStore.getState();
+  const [enrolledCourseIds, setEnrolledCourseIds] = useState<number[]>([]);
+
+  useEffect(() => {
+    if (user.enrolledCourseIds) {
+      const courseIds =
+        user.enrolledCourseIds
+          .split(";")
+          .map((course: any) => Number(course)) ?? [];
+      setEnrolledCourseIds(courseIds);
+    }
+  }, [user]);
+
   return (
     <div>
       <h2 className="mb-4 text-2xl font-bold">{title}</h2>
@@ -18,10 +34,10 @@ export const CourseList: React.FC<CourseListProps> = ({ title, items }) => {
             imageUrl={item.backgroundUrl || DEFAULT_IMAGE}
             price={item.price}
             category={item.category}
-            userId={item.instructorId}
             isFree={item.isFree}
             id={item.id}
             enrollmentsCount={item.enrollmentsCount}
+            isEnrolled={enrolledCourseIds.includes(item.id)}
           />
         ))}
       </div>

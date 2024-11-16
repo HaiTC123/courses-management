@@ -59,7 +59,7 @@ export const LessonSidebarItem: React.FC<LessonSidebarItemProps> = ({
       }
     }
 
-    let firstIndexNotStarted = -1;
+    let firstIdNotStarted = -1;
     for (let index = 0; index < listMaterials.length; index++) {
       const material = listMaterials[index];
       const isMaterialNotStarted = (progressDetails || []).find(
@@ -68,11 +68,11 @@ export const LessonSidebarItem: React.FC<LessonSidebarItemProps> = ({
           progress.status === "NotStarted"
       );
       if (isMaterialNotStarted) {
-        firstIndexNotStarted = index;
+        firstIdNotStarted = material.id;
         break;
       }
     }
-    return firstIndexNotStarted === materialId;
+    return firstIdNotStarted === materialId;
   };
 
   return (
