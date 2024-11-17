@@ -16,6 +16,7 @@ import { SocketInstance } from "@/lib/socket-instance";
 import { getListNotification } from "@/services/notification.service";
 import { toast } from "react-hot-toast";
 import "./globals.css";
+import { ThemeProvider } from "@/components/providers/theme-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -102,10 +103,17 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <ToasterProvider />
-        <Suspense fallback={<div>Loading...</div>}>
-          {children}
-          <AdviseChat />
-        </Suspense>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Suspense fallback={<div>Loading...</div>}>
+            {children}
+            <AdviseChat />
+          </Suspense>
+        </ThemeProvider>
       </body>
     </html>
   );

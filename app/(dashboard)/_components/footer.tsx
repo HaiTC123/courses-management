@@ -2,8 +2,8 @@ import { Logo } from "./logo";
 
 const Footer = () => {
   return (
-    <footer className="relative z-[51] bg-gray-100 border-t">
-      <div className="px-4 py-8 mx-auto max-w-7xl">
+    <footer className="relative z-[50]">
+      <div className="px-4 py-8 ml-56 border-t max-w-7xl">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           {/* Thông tin công ty */}
           <div>

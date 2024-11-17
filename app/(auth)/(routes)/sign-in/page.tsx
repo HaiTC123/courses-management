@@ -21,10 +21,10 @@ import toast from "react-hot-toast";
 
 const formSchema = z.object({
   email: z.string().email({
-    message: "Please enter a valid email address",
+    message: "Vui lòng nhập đúng địa chỉ email",
   }),
   password: z.string().min(6, {
-    message: "Password must be at least 6 characters long",
+    message: "Mật khẩu phải có ít nhất 6 ký tự",
   }),
 });
 
@@ -48,22 +48,22 @@ const SignIn = () => {
       await signIn(values);
       await getCurrentUser();
       router.push("/");
-      toast.success("Signed in successfully");
+      toast.success("Đăng nhập thành công");
     } catch (error) {
       console.log(error);
-      toast.error("Failed to sign in. Please check your credentials.");
+      toast.error("Đăng nhập thất bại. Vui lòng kiểm tra thông tin đăng nhập.");
     }
   };
 
   return (
-    <div className="flex items-center justify-center w-full h-full px-4 py-12 rounded-md bg-slate-100 sm:px-6 lg:px-8">
+    <div className="flex items-center justify-center w-full h-full px-4 py-12 rounded-md sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
         <div>
-          <h2 className="mt-6 text-3xl font-extrabold text-center text-gray-900">
-            Sign in
+          <h2 className="mt-6 text-3xl font-extrabold text-center">
+            Đăng nhập
           </h2>
         </div>
-        <div className="p-6 mt-8 bg-white rounded-lg shadow-sm">
+        <div className="p-6 mt-8 rounded-lg shadow-sm">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
@@ -71,12 +71,12 @@ const SignIn = () => {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email address</FormLabel>
+                    <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
                         disabled={isSubmitting}
-                        placeholder="Enter your email"
+                        placeholder="Nhập email"
                         type="email"
                       />
                     </FormControl>
@@ -89,12 +89,12 @@ const SignIn = () => {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>Mật khẩu</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
                         disabled={isSubmitting}
-                        placeholder="Enter your password"
+                        placeholder="Nhập mật khẩu"
                         type="password"
                       />
                     </FormControl>
@@ -108,7 +108,7 @@ const SignIn = () => {
                     href="/forgot-password"
                     className="font-medium text-indigo-600 hover:text-indigo-500"
                   >
-                    Forgot your password?
+                    Quên mật khẩu?
                   </Link>
                 </div>
               </div>
@@ -117,7 +117,7 @@ const SignIn = () => {
                 disabled={!isValid || isSubmitting}
                 className="w-full"
               >
-                Sign in
+                Đăng nhập
               </Button>
             </form>
           </Form>
@@ -127,7 +127,7 @@ const SignIn = () => {
             href="/sign-up"
             className="font-medium text-indigo-600 hover:text-indigo-500"
           >
-            Don&apos;t have an account? Sign up
+            Không có tài khoản? Đăng ký
           </Link>
         </div> */}
       </div>

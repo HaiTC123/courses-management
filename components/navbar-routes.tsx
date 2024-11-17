@@ -31,6 +31,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import ThemeToggle from "./theme-toggle";
 
 export const NavbarRoutes = () => {
   const pathname = usePathname();
@@ -115,6 +116,8 @@ export const NavbarRoutes = () => {
         <div className="flex ml-auto gap-x-2">
           {authenticated ? (
             <>
+              {/* Theme toggle */}
+              <ThemeToggle className="ml-auto" />
               {/* Notifications */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

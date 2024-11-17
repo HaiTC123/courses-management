@@ -15,8 +15,8 @@ export const Sidebar = () => {
   const isInstructorPage = pathname?.startsWith("/instructor");
 
   return (
-    <div className="flex flex-col h-full overflow-y-auto bg-white border-r shadow-sm">
-      <div className="flex items-center gap-1 p-6 cursor-pointer justify-evenly">
+    <div className="flex flex-col h-full overflow-y-auto border-r shadow-sm">
+      <div className="flex items-center justify-center gap-1 p-6 cursor-pointer">
         <Logo />
         <span className="text-lg font-bold">
           {role === UserRole.ADMIN && isAdminPage && "Quản lý"}

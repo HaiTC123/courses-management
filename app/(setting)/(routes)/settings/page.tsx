@@ -88,10 +88,9 @@ const SettingsPage = () => {
         className="w-full mt-4"
       >
         <TabsList className="grid w-full grid-cols-2">
-          {role === UserRole.STUDENT ||
-            (role === UserRole.INSTRUCTOR && (
-              <TabsTrigger value="information">Thông tin cá nhân</TabsTrigger>
-            ))}
+          {(role === UserRole.STUDENT || role === UserRole.INSTRUCTOR) && (
+            <TabsTrigger value="information">Thông tin cá nhân</TabsTrigger>
+          )}
           <TabsTrigger value="changePassword">Đổi mật khẩu</TabsTrigger>
         </TabsList>
         <TabsContent value="changePassword">

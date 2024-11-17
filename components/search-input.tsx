@@ -23,7 +23,7 @@ export const SearchInput = () => {
         value={value}
         onChange={onChangeHandler}
         placeholder="Tìm kiếm..."
-        className="w-full md:w-[300px] pl-9 rounded-full bg-slate-100 focus-visible:ring-slate-200"
+        className="w-full md:w-[300px] pl-9 rounded-full focus-visible:ring-slate-200"
       />
     </div>
   );

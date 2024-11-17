@@ -39,7 +39,7 @@ export const SidebarItem = ({
         }
         type="button"
         className={cn(
-          "w-full flex items-center gap-x-2 text-slate-500 text-sm font-[500] pl-6 transition-all hover:text-slate-600 hover:bg-neutral-300/20",
+          "w-full flex items-center gap-x-2 text-sm font-[500] pl-6 transition-all hover:text-slate-600 hover:bg-neutral-300/20",
           isActive && "text-sky-500 bg-sky-200/20 hover:bg-sky-200/20"
         )}
       >
@@ -48,7 +48,7 @@ export const SidebarItem = ({
             size={22}
             className={cn("text-neutral-400", isActive && "text-sky-500")}
           />
-          {label}
+          <span>{label}</span>
         </div>
         {nestedRoutes && nestedRoutes.length > 0 && (
           <ChevronDown
@@ -59,12 +59,6 @@ export const SidebarItem = ({
             )}
           />
         )}
-        {/* <div
-          className={cn(
-            "ml-auto opacity-0 border-2 border-sky-500 h-full transition-all",
-            isActive && "opacity-100"
-          )}
-        /> */}
       </button>
       {nestedRoutes && !collapsed && (
         <div className="pl-4">

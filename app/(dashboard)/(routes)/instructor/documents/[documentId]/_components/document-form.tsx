@@ -129,7 +129,7 @@ export const DocumentForm = ({
   };
 
   return (
-    <div className="p-4 mt-6 border rounded-md bg-slate-100">
+    <div className="p-4 mt-6 border rounded-md   ">
       <div className="flex items-center justify-between font-medium">
         Thông tin chung của tài liệu
         <Button type="button" variant="ghost" size="sm" onClick={toggleEdit}>

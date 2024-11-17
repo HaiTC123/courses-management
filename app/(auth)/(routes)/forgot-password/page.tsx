@@ -52,14 +52,14 @@ const ForgotPasswordPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center w-full h-full px-4 py-12 rounded-md bg-slate-100 sm:px-6 lg:px-8">
+    <div className="flex items-center justify-center w-full h-full px-4 py-12 rounded-md sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
         <div>
-          <h2 className="mt-6 text-3xl font-extrabold text-center text-gray-900">
+          <h2 className="mt-6 text-3xl font-extrabold text-center">
             Quên mật khẩu
           </h2>
         </div>
-        <div className="p-6 mt-8 bg-white rounded-lg shadow-sm">
+        <div className="p-6 mt-8 rounded-lg shadow-sm">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField

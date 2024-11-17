@@ -59,7 +59,7 @@ export default function ResetPasswordPage() {
 
   return (
     <div className="flex items-center justify-center min-h-screen">
-      <div className="w-full max-w-md p-8 space-y-4 bg-white rounded-lg shadow-md">
+      <div className="w-full max-w-md p-8 space-y-4   rounded-lg shadow-md">
         <h1 className="text-2xl font-bold text-center">Đặt lại mật khẩu</h1>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

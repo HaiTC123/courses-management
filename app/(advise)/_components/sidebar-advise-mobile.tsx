@@ -16,7 +16,7 @@ export const MobileSidebarAdvise = ({
       <SheetTrigger className="absolute transition top-4 left-4 md:hidden hover:opacity-75">
         <MenuSquare />
       </SheetTrigger>
-      <SheetContent side="left" className="p-0 bg-white">
+      <SheetContent side="left" className="p-0">
         <SidebarAdvise
           listAdvises={listAdvises}
           selectedAdvise={selectedAdvise}

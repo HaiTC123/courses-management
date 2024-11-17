@@ -142,7 +142,7 @@ export const CourseForm = ({
   };
 
   return (
-    <div className="relative p-4 mt-6 border rounded-md bg-slate-100">
+    <div className="relative p-4 mt-6 border rounded-md   ">
       {isUpdating && (
         <div className="absolute top-0 right-0 flex items-center justify-center w-full h-full rounded-md">
           <Loader2 className="w-6 h-6 text-sky-700 animate-spin" />

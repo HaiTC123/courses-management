@@ -106,7 +106,7 @@ export const LearningPathForm = ({
   };
 
   return (
-    <div className="p-4 mt-6 border rounded-md bg-slate-100">
+    <div className="p-4 mt-6 border rounded-md   ">
       <div className="flex items-center justify-between font-medium">
         Thông tin chung của khóa học
         <Button type="button" variant="ghost" size="sm" onClick={toggleEdit}>
@@ -185,7 +185,9 @@ export const LearningPathForm = ({
                       >
                         {form.getValues("backgroundUrl") ? (
                           <Image
-                            src={form.getValues("backgroundUrl") ?? DEFAULT_IMAGE}
+                            src={
+                              form.getValues("backgroundUrl") ?? DEFAULT_IMAGE
+                            }
                             alt="Background Image"
                             width={0}
                             height={0}

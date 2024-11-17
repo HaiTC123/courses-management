@@ -80,14 +80,14 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex items-center justify-center w-full h-full px-4 py-12 rounded-md bg-slate-100 sm:px-6 lg:px-8">
+    <div className="flex items-center justify-center w-full h-full px-4 py-12 rounded-md sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
         <div>
-          <h2 className="mt-6 text-3xl font-extrabold text-center text-gray-900">
-            Create an account
+          <h2 className="mt-6 text-3xl font-extrabold text-center">
+            Tạo tài khoản
           </h2>
         </div>
-        <div className="p-6 mt-8 bg-white rounded-lg shadow-sm">
+        <div className="p-6 mt-8 rounded-lg shadow-sm">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
@@ -95,12 +95,12 @@ const SignUp = () => {
                 name="fullName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>Họ và tên</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
                         disabled={isSubmitting}
-                        placeholder="Enter your name"
+                        placeholder="Nhập họ và tên"
                       />
                     </FormControl>
                     <FormMessage />
@@ -112,12 +112,12 @@ const SignUp = () => {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email address</FormLabel>
+                    <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
                         disabled={isSubmitting}
-                        placeholder="Enter your email"
+                        placeholder="Nhập email"
                         type="email"
                       />
                     </FormControl>
@@ -130,12 +130,12 @@ const SignUp = () => {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>Mật khẩu</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
                         disabled={isSubmitting}
-                        placeholder="Enter your password"
+                        placeholder="Nhập mật khẩu"
                         type="password"
                       />
                     </FormControl>
@@ -185,7 +185,7 @@ const SignUp = () => {
                 disabled={!isValid || isSubmitting}
                 className="w-full"
               >
-                Sign up
+                Tạo tài khoản
               </Button>
             </form>
           </Form>
@@ -195,7 +195,7 @@ const SignUp = () => {
             href="/sign-in"
             className="font-medium text-indigo-600 hover:text-indigo-500"
           >
-            Already have an account? Sign in
+            Đã có tài khoản? Đăng nhập
           </Link>
         </div>
       </div>
