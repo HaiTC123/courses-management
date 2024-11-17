@@ -95,7 +95,7 @@ const CourseIdLayout = ({
       {domLoaded && (
         <div className="w-full h-full">
           <div className="h-[80px] md:pl-80 fixed inset-y-0 z-50 w-full">
-            <CourseNavbar course={course} />
+            <CourseNavbar course={course} enrollmentId={enrollmentId} />
           </div>
           <div className="fixed inset-y-0 z-50 flex-col hidden h-full md:flex w-80">
             <CourseSidebar course={course} enrollmentId={enrollmentId} />

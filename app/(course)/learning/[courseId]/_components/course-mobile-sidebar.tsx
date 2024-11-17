@@ -2,14 +2,20 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { CourseSidebar } from "./course-sidebar";
 import { Menu } from "lucide-react";
 
-export const CourseMobileSidebar = ({ course }: { course: any }) => {
+export const CourseMobileSidebar = ({
+  course,
+  enrollmentId,
+}: {
+  course: any;
+  enrollmentId: number;
+}) => {
   return (
     <Sheet>
       <SheetTrigger className="pr-4 transition md:hidden hover:opacity-75">
         <Menu className="size-6" />
       </SheetTrigger>
       <SheetContent side="left" className="p-0   w-72">
-        <CourseSidebar course={course} />
+        <CourseSidebar course={course} enrollmentId={enrollmentId} />
       </SheetContent>
     </Sheet>
   );

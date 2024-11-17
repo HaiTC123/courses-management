@@ -12,12 +12,16 @@ interface EditorProps {
 
 const Editor = ({ onChange, value }: EditorProps) => {
   const ReactQuill = useMemo(
-    () => dynamic(() => import("react-quill"), { ssr: false }),
+    () =>
+      dynamic(() => import("react-quill"), {
+        ssr: false,
+        loading: () => <p>Loading...</p>,
+      }),
     []
   );
 
   return (
-    <div className=" ">
+    <div className="bg-white">
       <ReactQuill theme="snow" value={value} onChange={onChange} />
     </div>
   );

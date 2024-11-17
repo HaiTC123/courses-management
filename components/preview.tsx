@@ -11,7 +11,11 @@ interface PreviewProps {
 
 const Preview = ({ value }: PreviewProps) => {
   const ReactQuill = useMemo(
-    () => dynamic(() => import("react-quill"), { ssr: false }),
+    () =>
+      dynamic(() => import("react-quill"), {
+        ssr: false,
+        loading: () => <p>Loading...</p>,
+      }),
     []
   );
 
