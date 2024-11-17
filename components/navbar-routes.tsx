@@ -105,7 +105,9 @@ export const NavbarRoutes = () => {
         </div>
 
         <div className="flex gap-x-2">
-          <SearchInput />
+          <div className="hidden sm:block">
+            <SearchInput />
+          </div>
           {!isRootPage && (
             <Button variant="ghost" size="sm" onClick={() => router.push("/")}>
               <span>Trang chủ</span>

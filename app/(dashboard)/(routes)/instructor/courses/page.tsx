@@ -2,11 +2,9 @@
 
 import {
   getPaginatedCoursesService,
-  IGetPaginatedCoursesParams,
   sendToAdminApproveService,
 } from "@/services/course.service";
 import { useAuthStore } from "@/store/use-auth-store";
-import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { createColumns } from "./_components/column";
@@ -14,19 +12,24 @@ import { DataTable } from "./_components/data-table";
 
 const CoursesPage = () => {
   const [courses, setCourses] = useState<any[]>([]);
-
-  const [params, setParams] = useState<IGetPaginatedCoursesParams>({
-    pageSize: 20,
-    pageNumber: 1,
-    conditions: [],
-    sortOrder: "",
-    searchKey: "",
-    searchFields: [],
-    includeReferences: [],
-  });
+  const { user } = useAuthStore.getState();
 
   const fetchCourses = useCallback(() => {
-    getPaginatedCoursesService(params)
+    getPaginatedCoursesService({
+      pageSize: 1000,
+      pageNumber: 1,
+      conditions: [
+        {
+          key: "instructorId",
+          condition: "equal",
+          value: user.instructor.id,
+        },
+      ],
+      sortOrder: "",
+      searchKey: "",
+      searchFields: [],
+      includeReferences: [],
+    })
       .then((response) => {
         if (response.data.data) {
           const listCourses = response.data.data
@@ -44,11 +47,13 @@ const CoursesPage = () => {
       .catch((error) => {
         toast.error(error.message);
       });
-  }, [params]);
+  }, [user]);
 
   useEffect(() => {
-    fetchCourses();
-  }, [fetchCourses]);
+    if (user?.instructor?.id) {
+      fetchCourses();
+    }
+  }, [user, fetchCourses]);
 
   const handleDelete = async (id: string) => {
     // try {
@@ -66,7 +71,7 @@ const CoursesPage = () => {
     try {
       await sendToAdminApproveService(Number(id));
       toast.success("Gửi tới ADMIN thành công");
-      fetchCourses(); // Refresh the table data
+      fetchCourses();
     } catch (error) {
       toast.error("Gửi tới ADMIN thất bại");
     }

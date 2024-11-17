@@ -1,8 +1,8 @@
 import axiosInstance from "@/lib/axios-instance";
 
 // Báo cáo xem hiệu xuất của sv tham gia 1 khóa học hoàn thành bao nhiêu %
-export const getReportService = async (reportId: number) => {
-  return await axiosInstance.get(`/api/course/student/performance/${reportId}`);
+export const getReportPerformanceService = async (courseId: number) => {
+  return await axiosInstance.get(`/api/course/student/performance/${courseId}`);
 };
 
 // Doanh thu khóa học mất phí
