@@ -5,20 +5,25 @@ import {
   instructorRoutes,
   studentRoutes,
 } from "@/constants/routes";
+import { UserRole } from "@/enum/user-role";
+import { useAuthStore } from "@/store/use-auth-store";
 import { uniqueId } from "lodash";
 import { usePathname } from "next/navigation";
 import { SidebarItem } from "./sidebar-item";
 
 export const SidebarRoutes = () => {
   const pathname = usePathname();
+  const { role } = useAuthStore.getState();
 
   const isInstructorPage = pathname?.startsWith("/instructor");
   const isAdminPage = pathname?.startsWith("/admin");
 
-  const routes = isInstructorPage
+  let routes = isInstructorPage
     ? instructorRoutes
     : isAdminPage
     ? adminRoutes
+    : role === UserRole.INSTRUCTOR || role === UserRole.ADMIN
+    ? studentRoutes.filter((route) => route.href !== "/courses")
     : studentRoutes;
 
   return (

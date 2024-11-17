@@ -3,9 +3,11 @@ import { getProgressByCourseId } from "@/services/progress.service";
 import { BookOpen, DollarSign, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { IconBadge } from "./icon-badge";
 import CircularProgress from "./progress-bar-circle";
+import { getPaginatedPrerequisitesService } from "@/services/prerequisite.service";
+import toast from "react-hot-toast";
 
 interface CourseCardProps {
   id: string;
@@ -29,6 +31,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({
   isEnrolled,
 }) => {
   const [progress, setProgress] = useState(0);
+  const [prerequisiteCourses, setPrerequisiteCourses] = useState<any>(null);
 
   useEffect(() => {
     if (id) {
@@ -41,6 +44,44 @@ export const CourseCard: React.FC<CourseCardProps> = ({
       });
     }
   }, [id]);
+
+  const fetchPrerequisites = useCallback(async () => {
+    try {
+      const response = await getPaginatedPrerequisitesService({
+        pageSize: 1000,
+        pageNumber: 1,
+        conditions: [
+          {
+            key: "courseId",
+            condition: "equal",
+            value: id,
+          },
+        ],
+        sortOrder: "",
+        searchKey: "",
+        searchFields: [],
+        includeReferences: {
+          prerequisiteCourse: true,
+        },
+      });
+      if (response?.data?.data?.length > 0) {
+        const listPrerequisites = response.data.data.map(
+          (prerequisite: any) => ({
+            ...prerequisite,
+          })
+        );
+        setPrerequisiteCourses(listPrerequisites[0]?.prerequisiteCourse);
+      }
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (id) {
+      fetchPrerequisites();
+    }
+  }, [id, fetchPrerequisites]);
 
   return (
     <Link href={`/courses/${id}`}>
@@ -85,6 +126,20 @@ export const CourseCard: React.FC<CourseCardProps> = ({
             {isEnrolled && (
               <div className="flex items-center gap-x-2">
                 <CircularProgress value={progress} size={43} />
+              </div>
+            )}
+          </div>
+          <div className="flex items-center justify-between mt-2 gap-x-2">
+            {prerequisiteCourses && (
+              <div className="flex items-center gap-x-1">
+                {/* <IconBadge size="sm" icon={Users} /> */}
+                <p>Tiên quyết:</p>
+                <strong
+                  className="text-blue-600 truncate"
+                  title={prerequisiteCourses?.courseName}
+                >
+                  {prerequisiteCourses?.courseName}
+                </strong>
               </div>
             )}
           </div>

@@ -7,6 +7,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { CourseCard } from "./_components/course-card";
+import { useAuthStore } from "@/store/use-auth-store";
 
 const LearningPathPage = () => {
   const router = useRouter();
@@ -20,7 +21,6 @@ const LearningPathPage = () => {
     try {
       const response = await getLearningPathByIdService(Number(learningPathId));
       if (response.data) {
-        console.log(response.data);
         setLearningPath(response.data);
       }
     } catch (error: any) {
@@ -31,6 +31,19 @@ const LearningPathPage = () => {
   useEffect(() => {
     fetchLearningPath();
   }, [fetchLearningPath]);
+
+  const { user } = useAuthStore.getState();
+  const [enrolledCourseIds, setEnrolledCourseIds] = useState<number[]>([]);
+
+  useEffect(() => {
+    if (user.enrolledCourseIds) {
+      const courseIds =
+        user.enrolledCourseIds
+          .split(";")
+          .map((course: any) => Number(course)) ?? [];
+      setEnrolledCourseIds(courseIds);
+    }
+  }, [user]);
 
   return (
     <>
@@ -43,6 +56,17 @@ const LearningPathPage = () => {
               __html: learningPath?.description ?? "",
             }}
           ></p>
+          <div className="flex items-center gap-x-2">
+            <span>Thời gian học dự kiến:</span>
+            <span>
+              {learningPath?.courses?.reduce(
+                (acc: number, course: any) =>
+                  acc + Number(course.course.durationWeeks),
+                0
+              )}{" "}
+              tuần
+            </span>
+          </div>
         </div>
         {learningPath?.backgroundUrl ? (
           <Image
@@ -63,7 +87,10 @@ const LearningPathPage = () => {
               className="mt-4"
               dangerouslySetInnerHTML={{ __html: course.description ?? "" }}
             ></p>
-            <CourseCard id={course.courseId} />
+            <CourseCard
+              id={course.courseId}
+              isEnrolled={enrolledCourseIds.includes(course.courseId)}
+            />
           </div>
         ))}
       </div>

@@ -4,10 +4,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import {
-  getProgressByCourseId,
-  getProgressPaging,
-} from "@/services/progress.service";
+import { getProgressPaging } from "@/services/progress.service";
 import { MinusCircle, PlusCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ChapterSidebarItem } from "./chapter-sidbar-item";
@@ -20,20 +17,7 @@ interface CourseSidebarProps {
 
 export const CourseSidebar = ({ course, enrollmentId }: CourseSidebarProps) => {
   const [isOpen, setIsOpen] = useState(true);
-  const [progress, setProgress] = useState(0);
   const [progressDetails, setProgressDetails] = useState<any>(null);
-
-  useEffect(() => {
-    if (course.id) {
-      getProgressByCourseId(Number(course.id)).then((res: any) => {
-        if (res.data) {
-          const completed = res.data.completed;
-          const total = res.data.total || 1;
-          setProgress(Math.round((completed / total) * 100));
-        }
-      });
-    }
-  }, [course]);
 
   useEffect(() => {
     const fetchProgress = async () => {
@@ -66,6 +50,14 @@ export const CourseSidebar = ({ course, enrollmentId }: CourseSidebarProps) => {
     }
   }, [course, enrollmentId]);
 
+  const getProgress = (progressDetails: any) => {
+    const completed = (progressDetails || []).filter(
+      (item: any) => item.status === "Completed"
+    ).length;
+    const total = (progressDetails || []).length || 1;
+    return Math.round((completed / total) * 100);
+  };
+
   return (
     <div className="flex flex-col h-full overflow-y-auto border-r shadow-sm">
       <div className="h-[80px] flex flex-col p-4 border-b">
@@ -77,7 +69,7 @@ export const CourseSidebar = ({ course, enrollmentId }: CourseSidebarProps) => {
         <div className="flex items-center justify-center my-2">
           <ScheduleCourse courseId={Number(course.id)} />
           <p className="mr-2 text-sm">Tiến độ khóa học</p>
-          <CircularProgress value={progress} size={50} />
+          <CircularProgress value={getProgress(progressDetails)} size={50} />
         </div>
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
           <CollapsibleTrigger asChild>

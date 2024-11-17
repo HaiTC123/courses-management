@@ -9,6 +9,8 @@ import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Categories } from "./_components/categories";
 
+let listSelectedCategories: string[] = [];
+
 const CoursePage = () => {
   const { user, role } = useAuthStore.getState();
   const [courses, setCourses] = useState<any[]>([]);
@@ -42,8 +44,6 @@ const CoursePage = () => {
   useEffect(() => {
     fetchCourses();
   }, [fetchCourses]);
-
-  let listSelectedCategories: string[] = [];
 
   const handleSelectCategory = (value: string, selected: boolean) => {
     if (selected) {

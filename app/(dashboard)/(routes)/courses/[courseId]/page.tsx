@@ -31,6 +31,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useAuthStore } from "@/store/use-auth-store";
 import { DEFAULT_IMAGE } from "@/constants/default-image";
+import { getPaginatedPrerequisitesService } from "@/services/prerequisite.service";
+import Link from "next/link";
 
 const CourseIdPage = () => {
   const router = useRouter();
@@ -47,7 +49,6 @@ const CourseIdPage = () => {
     try {
       const response = await getCourseByIdService(Number(courseId));
       if (response.data) {
-        console.log(response.data);
         setCourse(response.data);
       }
     } catch (error: any) {
@@ -68,6 +69,45 @@ const CourseIdPage = () => {
       setEnrolledCourseIds(courseIds);
     }
   }, [user]);
+
+  const [prerequisiteCourses, setPrerequisiteCourses] = useState<any>(null);
+  const fetchPrerequisites = useCallback(async () => {
+    try {
+      const response = await getPaginatedPrerequisitesService({
+        pageSize: 1000,
+        pageNumber: 1,
+        conditions: [
+          {
+            key: "courseId",
+            condition: "equal",
+            value: Number(courseId),
+          },
+        ],
+        sortOrder: "",
+        searchKey: "",
+        searchFields: [],
+        includeReferences: {
+          prerequisiteCourse: true,
+        },
+      });
+      if (response?.data?.data?.length > 0) {
+        const listPrerequisites = response.data.data.map(
+          (prerequisite: any) => ({
+            ...prerequisite,
+          })
+        );
+        setPrerequisiteCourses(listPrerequisites[0]?.prerequisiteCourse);
+      }
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  }, [courseId]);
+
+  useEffect(() => {
+    if (courseId) {
+      fetchPrerequisites();
+    }
+  }, [courseId, fetchPrerequisites]);
 
   const handleRegister = async () => {
     if (course.isFree) {
@@ -156,6 +196,19 @@ const CourseIdPage = () => {
             <h3 className="p-4 text-xl font-bold text-center">
               Giá: {formatPrice(course.price)}
             </h3>
+          )}
+          {prerequisiteCourses && (
+            <p>
+              <strong>Môn tiên quyết:</strong>{" "}
+              <Link href={`/courses/${prerequisiteCourses?.id}`}>
+                <span
+                  className="text-blue-600 truncate"
+                  title={prerequisiteCourses?.courseName}
+                >
+                  {prerequisiteCourses?.courseName}
+                </span>
+              </Link>
+            </p>
           )}
           {enrolledCourseIds.includes(Number(courseId)) ? (
             <>

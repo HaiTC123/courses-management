@@ -16,6 +16,8 @@ import { CarouselCourse } from "./_components/carousel-course";
 import { Categories } from "./_components/categories";
 import { DocumentList } from "@/components/document-list";
 
+let listSelectedCategories: string[] = [];
+
 export default function Dashboard() {
   const router = useRouter();
   const { authenticated } = useAuthStore.getState();
@@ -77,6 +79,7 @@ export default function Dashboard() {
             ...course,
           }));
           setCourses(listCourses);
+          setFilteredCourses(listCourses);
         }
       })
       .catch((error) => {
@@ -96,6 +99,7 @@ export default function Dashboard() {
             ...course,
           }));
           setCoursesFree(listCourses);
+          setFilteredCoursesFree(listCourses);
         }
       })
       .catch((error) => {
@@ -107,22 +111,32 @@ export default function Dashboard() {
     fetchCoursesFree();
   }, [fetchCoursesFree]);
 
-  const handleSelectCategory = (value: string) => {
-    setParams({
-      ...params,
-      conditions: [
-        ...params.conditions,
-        { key: "category", condition: "equal", value },
-      ],
-    });
+  const [filteredCourses, setFilteredCourses] = useState<any[]>([]);
+  const [filteredCoursesFree, setFilteredCoursesFree] = useState<any[]>([]);
 
-    setParamsFree({
-      ...paramsFree,
-      conditions: [
-        ...paramsFree.conditions,
-        { key: "category", condition: "equal", value },
-      ],
-    });
+  const handleSelectCategory = (value: string, selected: boolean) => {
+    if (selected) {
+      listSelectedCategories.push(value);
+    } else {
+      listSelectedCategories = listSelectedCategories.filter(
+        (category) => category !== value
+      );
+    }
+    if (listSelectedCategories.length > 0) {
+      setFilteredCourses(
+        courses.filter((course) =>
+          listSelectedCategories.includes(course.category)
+        )
+      );
+      setFilteredCoursesFree(
+        coursesFree.filter((course) =>
+          listSelectedCategories.includes(course.category)
+        )
+      );
+    } else {
+      setFilteredCourses(courses);
+      setFilteredCoursesFree(coursesFree);
+    }
   };
 
   return (
@@ -132,8 +146,8 @@ export default function Dashboard() {
           <CarouselCourse items={carouselData} />
         </div>
         <Categories items={CATEGORIES} onSelect={handleSelectCategory} />
-        <CourseList title="Khóa học trả phí" items={courses} />
-        <CourseList title="Khóa học miễn phí" items={coursesFree} />
+        <CourseList title="Khóa học trả phí" items={filteredCourses} />
+        <CourseList title="Khóa học miễn phí" items={filteredCoursesFree} />
         <DocumentList title="Tài liệu" />
       </div>
     </>

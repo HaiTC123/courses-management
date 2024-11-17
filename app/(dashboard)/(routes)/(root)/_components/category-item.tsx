@@ -6,7 +6,7 @@ import { useState } from "react";
 interface CategoryItemProps {
   label: string;
   value?: string;
-  onSelect: (value: string) => void;
+  onSelect: (value: string, selected: boolean) => void;
 }
 
 export const CategoryItem = ({ label, value, onSelect }: CategoryItemProps) => {
@@ -19,7 +19,7 @@ export const CategoryItem = ({ label, value, onSelect }: CategoryItemProps) => {
         toggle && "border-sky-700 bg-sky-200 text-sky-800"
       )}
       onClick={() => {
-        onSelect(value || "");
+        onSelect(value || "", !toggle);
         setToggle(!toggle);
       }}
     >

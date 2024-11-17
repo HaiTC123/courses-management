@@ -27,7 +27,6 @@ const LearningPathIdPage = ({
     try {
       const response = await getLearningPathByIdService(Number(learningPathId));
       if (response.data) {
-        console.log(response.data);
         setLearningPath(response.data);
       }
     } catch (error: any) {

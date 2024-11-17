@@ -23,7 +23,6 @@ const PrerequisiteIdPage = ({
     try {
       const response = await getPrerequisiteByIdService(Number(prerequisiteId));
       if (response.data) {
-        console.log(response.data);
         setPrerequisite(response.data);
       }
     } catch (error: any) {

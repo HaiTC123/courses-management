@@ -23,7 +23,6 @@ const DocumentTypeIdPage = ({
     try {
       const response = await getDocumentTypeByIdService(Number(documentTypeId));
       if (response.data) {
-        console.log(response.data);
         setDocumentType(response.data);
       }
     } catch (error: any) {

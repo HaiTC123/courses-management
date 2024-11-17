@@ -23,7 +23,6 @@ const DocumentIdPage = ({
     try {
       const response = await getDocumentByIdService(Number(documentId));
       if (response.data) {
-        console.log(response.data);
         setDocument(response.data);
       }
     } catch (error: any) {

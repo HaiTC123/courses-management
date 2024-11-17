@@ -32,7 +32,7 @@ const PrerequisitesPage = () => {
   const fetchPrerequisites = useCallback(async () => {
     try {
       const response = await getPaginatedPrerequisitesService(params);
-      if (response.data.data) {
+      if (response?.data?.data) {
         const listPrerequisites = response.data.data.map(
           (prerequisite: any) => ({
             ...prerequisite,
