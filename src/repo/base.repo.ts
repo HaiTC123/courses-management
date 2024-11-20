@@ -122,7 +122,7 @@ export class BaseRepository<T extends { id: number }, U> {
                 ...moreData
             }
         };
-        if (!option && Object.keys(option).length > 0) {
+        if (option && Object.keys(option).length > 0) {
             createOption.select = option.select || { id: true };
         }
         return this.model.create(createOption);

@@ -81,6 +81,7 @@ model User {
   student           Student?       @relation("UserStudent")
   admin             Admin?         @relation("UserAdmin")
   Notification      Notification[]
+  Coin              Coin[]
 }
 
 model OtpRequest {
@@ -433,4 +434,45 @@ model AcademicAdvising {
 
   @@index([studentId])
   @@index([advisorId])
+}
+
+model JobConfig {
+  id           Int       @id @default(autoincrement())
+  status       String
+  startTime    DateTime?
+  endTime      DateTime?
+  cronJob      String?
+  typeJob      String
+  rawData      String?
+  key          String    @unique
+  typeBusiness String
+  createdAt    DateTime  @default(now()) // Thời gian tạo bản ghi
+  updatedAt    DateTime  @updatedAt // Thời gian cập nhật bản ghi
+}
+
+model Coin {
+  id     Int  @id @default(autoincrement()) // Khóa chính tự động tăng
+  amount Int // Số lượng coin
+  userId Int // ID của người dùng
+  user   User @relation(fields: [userId], references: [id]) // Quan hệ với bảng User
+}
+
+model Transaction {
+  id        String   @id @default(uuid()) // TransactionID sử dụng UUID
+  infor     String? // Thông tin chi tiết về giao dịch
+  orderId   Int // ID của đơn hàng liên kết
+  createdAt DateTime @default(now()) // Ngày tạo
+  updatedAt DateTime @updatedAt // Ngày cập nhật
+}
+
+model TransactionHistory {
+  id            Int     @id @default(autoincrement()) // ID tự động tăng
+  orderId       Int // ID của đơn hàng
+  description   String? // Mô tả giao dịch
+  userId        Int // ID của người dùng
+  object        String? // Đối tượng liên quan (có thể null)
+  paymentMethod Int // Phương thức thanh toán
+
+  createdAt DateTime @default(now()) // Thời gian tạo
+  updatedAt DateTime @updatedAt // Thời gian cập nhật
 }

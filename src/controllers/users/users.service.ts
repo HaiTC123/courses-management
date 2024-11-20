@@ -27,7 +27,7 @@ export class UsersService extends BaseService<UserEntity, Prisma.UserCreateInput
             passWord = "12345678";
         }
         entity.passwordHash = await hash(passWord, 10);
-        entity.role = Role.Student;
+        //entity.role = Role.Student;
         entity.inActive = false;
         entity.isBlock = false;
         var result = await this.repository.create(entity, {

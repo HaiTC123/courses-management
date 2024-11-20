@@ -23,7 +23,7 @@ import { CompleteCoursesModule } from './controllers/completeCourse/completeCour
 import { GoalsModule } from './controllers/goal/goal.module';
 import { AcademicAdvisingsModule } from './controllers/academicAdvising/academicAdvising.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { SemesterFinalizationService } from './common/services/semesterFinal.service';
+import { WorkerModule } from './common/services/worker/worker.module';
 
 @Module({
   imports: [
@@ -46,7 +46,8 @@ import { SemesterFinalizationService } from './common/services/semesterFinal.ser
     GradesModule,
     CompleteCoursesModule,
     GoalsModule,
-    AcademicAdvisingsModule
+    AcademicAdvisingsModule,
+    WorkerModule
   ],
   controllers: [AppController],
   providers: [AppService,
@@ -54,7 +55,7 @@ import { SemesterFinalizationService } from './common/services/semesterFinal.ser
       provide: APP_INTERCEPTOR,
       useClass: HttpContextInterceptor, // Kích hoạt Interceptor cho toàn bộ ứng dụng
     },
-    SemesterFinalizationService
+    
   ],
 })
 export class AppModule {}

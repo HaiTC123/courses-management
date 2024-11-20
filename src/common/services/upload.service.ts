@@ -1,14 +1,8 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import * as path from 'path';
-import { Response, Request } from 'express';
-
 import { UTApi } from "uploadthing/server";
-import { FileEsque } from 'uploadthing/types';
-
 @Injectable()
 export class UploadService {
-  private tempFolderPath = 'temp';
-  private mainFolderPath = 'main';
+
   private readonly utApi: UTApi;
   UPLOADTHING_TOKEN = "";
   constructor() {

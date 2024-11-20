@@ -29,6 +29,10 @@ import { NotificationDto } from 'src/model/dto/notification.dto';
 import { Notification } from 'src/model/entity/notification.entity';
 import { AcademicAdvisingDto, FailedCourseDto, GoalDto, GradeDto } from 'src/model/dto/grade.dto';
 import { AcademicAdvisingEntity, FailedCourseEntity, GoalEntity, GradeEntity } from 'src/model/entity/grade.entity';
+import { CoinEntity } from 'src/model/entity/coin.entity';
+import { CoinDto } from 'src/model/dto/coin.dto';
+import { TransactionHistoryDto } from 'src/model/dto/transactionHistory.dto';
+import { TransactionHistoryEntity } from 'src/model/entity/transactionHistory.entity';
 
 @Injectable()
 export class MapperService {
@@ -57,7 +61,10 @@ export class MapperService {
       forMember((dest) => dest.updatedAt, mapFrom(() => new Date())) // Set thời gian hiện tại cho updatedAt
     );
     createMap(this.mapper, UserEntity, RegisterResponse);
-    createMap(this.mapper, UserEntity, UserDto);
+    createMap(this.mapper, UserEntity, UserDto,
+      forMember((dest) => dest.accountStatus, mapFrom((src) => src.accountStatus))
+
+    );
     createMap(this.mapper, UserDto, UserEntity);
     createMap(this.mapper, StudentDto, StudentEntity,
       forMember((dest) => dest.id, mapFrom((src) => src.id)),
@@ -79,7 +86,8 @@ export class MapperService {
     );
     createMap(this.mapper, InstructorEntity, InstructorDto,
       forMember((dest) => dest.id, mapFrom((src) => src.id)),
-      forMember((dest) => dest.userId, mapFrom((src) => src.userId))
+      forMember((dest) => dest.userId, mapFrom((src) => src.userId)),
+      forMember((dest) => dest.user, mapFrom((src) => src.user))
 
     );
 
@@ -89,14 +97,17 @@ export class MapperService {
       forMember(dest => dest.credits, mapFrom(src => src.credits)),
       forMember(dest => dest.instructorId, mapFrom(src => src.instructorId)),
       forMember(dest => dest.enrollment, mapFrom(src => src.enrollment)),
-      forMember(dest => dest.instructor, mapFrom(src => src.instructor))
+      forMember(dest => dest.instructor, mapFrom(src => src.instructor)),
+      forMember(dest => dest.status, mapFrom(src => src.status))
     )
       ;
 
     createMap(this.mapper, CourseDto, CourseEntity,
       forMember(dest => dest.id, mapFrom(src => src.id)),
       forMember(dest => dest.credits, mapFrom(src => src.credits)),
-      forMember(dest => dest.instructorId, mapFrom(src => src.instructorId)));
+      forMember(dest => dest.instructorId, mapFrom(src => src.instructorId)),
+      forMember(dest => dest.status, mapFrom(src => src.status))
+    );
 
     // Map cho CourseChapter
     createMap(this.mapper, CourseChapterEntity, CourseChapterDto,
@@ -328,15 +339,35 @@ export class MapperService {
     createMap(this.mapper, GradeEntity, GradeDto);
     createMap(this.mapper, FailedCourseEntity, FailedCourseDto);
     createMap(this.mapper, CourseCompletionEntity, CourseCompletionDto);
-  
+
     createMap(this.mapper, GradeDto, GradeEntity);
     createMap(this.mapper, FailedCourseDto, FailedCourseEntity);
     createMap(this.mapper, CourseCompletionDto, CourseCompletionEntity);
     createMap(this.mapper, GoalEntity, GoalDto);
     createMap(this.mapper, GoalDto, GoalEntity);
-  
+
     createMap(this.mapper, AcademicAdvisingEntity, AcademicAdvisingDto);
     createMap(this.mapper, AcademicAdvisingDto, AcademicAdvisingEntity);
+    createMap(this.mapper, CoinEntity, CoinDto,
+      forMember(
+        (dest) => dest.id,
+        mapFrom((src) => src.id)
+      ),
+      forMember(
+        (dest) => dest.amount,
+        mapFrom((src) => src.amount)
+      ),
+      forMember(
+        (dest) => dest.userId,
+        mapFrom((src) => src.userId)
+      )
+    );
+
+    createMap(this.mapper, CoinDto, CoinEntity,
+      forMember((dest) => dest.user, mapFrom((src) => src.user))
+    );
+    createMap(this.mapper, TransactionHistoryDto, TransactionHistoryEntity);
+    createMap(this.mapper, TransactionHistoryEntity, TransactionHistoryDto);
   }
 
   mapData<S, D>(source: S, sourceClass: new (...args: unknown[]) => S, destinationClass: new (...args: unknown[]) => D): D {
