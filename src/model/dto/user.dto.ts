@@ -75,4 +75,6 @@ export class UserDetail extends UserDto{
     student?: StudentDto;
     instructor?: InstructorDto;
     admin?: AdminDto;
+    coinAmount?: any;
+    enrolledCourseIds?: any;
 }

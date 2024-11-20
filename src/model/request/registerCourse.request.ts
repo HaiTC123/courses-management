@@ -10,3 +10,14 @@ export class RegisterCourse {
     @IsInt()
     semeterId: number;
 }
+
+
+export class BuyCourse {
+    @ApiProperty()
+    @IsInt()
+    courseId: number;
+  
+    @ApiProperty()
+    @IsInt()
+    semeterId: number;
+}

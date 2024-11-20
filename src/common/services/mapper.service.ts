@@ -315,6 +315,10 @@ export class MapperService {
       forMember(
         (dest) => dest.admin,
         mapFrom((src) => src.admin)
+      ),
+      forMember(
+        (dest) => dest.id,
+        mapFrom((src) => src.id)
       )
 
     );

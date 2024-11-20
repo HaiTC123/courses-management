@@ -62,12 +62,28 @@ export class UsersService extends BaseService<UserEntity, Prisma.UserCreateInput
         }, {
             "instructor": true,
             "student": true,
-            "admin": true
+            "admin": true,
+            "coin": true
         });
         if (!userCurrent){
             throw new HttpException({message: 'User not exist'}, HttpStatus.BAD_REQUEST);
         }
         const result = this._mapperService.mapData(userCurrent, UserEntity, UserDetail);
+        result.coinAmount = userCurrent.coin?.amount;
+
+        // danh sách khóa học sinh viên đã đăng ký theo kỳ
+        if (userCurrent.role == Role.Student){
+            var enrollments = await this.prismaService.enrollment.findMany({
+                where: {
+                    studentId: this._authService.getStudentID(),
+                    // to-do id học kỳ
+                }
+            })
+            if (enrollments){
+                result.enrolledCourseIds = enrollments.map(x => x.courseId).join(";");
+            }
+        }
+        
         return ServiceResponse.onSuccess(result);
 
     }

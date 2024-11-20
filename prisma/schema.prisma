@@ -81,7 +81,7 @@ model User {
   student           Student?       @relation("UserStudent")
   admin             Admin?         @relation("UserAdmin")
   Notification      Notification[]
-  Coin              Coin[]
+  coin              Coin?          @relation("UserCoin")
 }
 
 model OtpRequest {
@@ -157,7 +157,7 @@ model Course {
   category              String? // Phân loại khóa học
   isMandatory           Boolean              @default(false) // Bắt buộc hay không
   semesterOffered       String? // Học kỳ được mở
-  price                 Float                @default(0.0) // Giá khóa học
+  price                 Int // Giá khóa học
   isFree                Boolean              @default(false) // Khóa học miễn phí
   createdAt             DateTime             @default(now()) // Thời gian tạo
   updatedAt             DateTime             @updatedAt // Thời gian cập nhật
@@ -453,8 +453,8 @@ model JobConfig {
 model Coin {
   id     Int  @id @default(autoincrement()) // Khóa chính tự động tăng
   amount Int // Số lượng coin
-  userId Int // ID của người dùng
-  user   User @relation(fields: [userId], references: [id]) // Quan hệ với bảng User
+  userId Int  @unique // ID của người dùng
+  user   User @relation("UserCoin", fields: [userId], references: [id]) // Quan hệ với bảng User
 }
 
 model Transaction {

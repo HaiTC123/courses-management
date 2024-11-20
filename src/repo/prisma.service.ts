@@ -66,7 +66,7 @@ export class PrismaService extends PrismaClient implements OnModuleDestroy {
       case "courseLessons":
         return this.courseLesson;
       case "courseMaterials":
-        return this.courseMaterial;  
+        return this.courseMaterial;
       case "file":
         return this.file;
       case "prerequisite":
@@ -91,6 +91,10 @@ export class PrismaService extends PrismaClient implements OnModuleDestroy {
         return this.courseCompleteRepo;
       case "coin":
         return this.coin;
+      case "transaction":
+        return this.transaction;
+      case "transactionHistory":
+        return this.transactionHistory;
     }
     return null;
   }

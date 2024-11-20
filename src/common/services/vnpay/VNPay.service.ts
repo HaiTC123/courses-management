@@ -1,10 +1,12 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { CoreService } from 'src/core/core.service';
-import { VNPayLib } from './vnpay.lib';
-import { PrismaService } from 'src/repo/prisma.service';
 import { DepositCoinRequest } from 'src/model/request/depositCoint.request';
 import { CoinEntity } from 'src/model/entity/coin.entity';
 import { OrderInfo } from 'src/model/enum/order.enum';
+import { PrismaService } from 'src/repo/prisma.service';
+import { PaymentMethod } from 'src/model/enum/payment.enum';
+import { VNPay } from 'vnpay';
+import { VNPayLib } from './VNPayLib';
 
 @Injectable()
 export class VNPayService {
@@ -16,8 +18,8 @@ export class VNPayService {
     private LinkPayFail: string = "";
     private LinkPayCoinSuccess: string = "";
     constructor(
-        coreService: CoreService,
-        prismaService: PrismaService
+        protected readonly coreService: CoreService,
+        protected readonly prismaService: PrismaService
     ) {
         this.VNPVersion = process.env.VNPVersion;
         this.VNPTmnCode = process.env.VNPTmnCode;
@@ -28,34 +30,32 @@ export class VNPayService {
         this.LinkPayCoinSuccess = process.env.LinkPayCoinSuccess;
     }
 
-    async paymentDepositAuction(request: DepositCoinRequest, coin: CoinEntity): Promise<string> {
+    async paymentForCoin(request: DepositCoinRequest, coin: CoinEntity): Promise<string> {
         const id = await this.createTransaction(JSON.stringify(coin));
         const orderInfo = OrderInfo.DepositCoin;
         return this.doPayment({
             txnRef: id,
-            amount: (request.numberCoin * 100).toString(),
+            amount: (request.numberCoin * 100),
             lang: request.lang,
             bankCode: request.bankCode,
             orderInfo
         });
     }
 
-    private doPayment({ bankCode = '', amount = '', lang = 'vn', orderInfo = '', txnRef = '' }): string {
-        const vnPayLib = new VNPayLib();
-        vnPayLib.addRequestData('vnp_Version', this.VNPVersion);
-        vnPayLib.addRequestData('vnp_Command', 'pay');
-        vnPayLib.addRequestData('vnp_TmnCode', this.VNPTmnCode);
-        vnPayLib.addRequestData('vnp_Amount', amount);
-        vnPayLib.addRequestData('vnp_BankCode', bankCode);
-        vnPayLib.addRequestData('vnp_CreateDate', new Date().toISOString().replace(/[-:]/g, '').slice(0, 14));
-        vnPayLib.addRequestData('vnp_CurrCode', 'VND');
-        vnPayLib.addRequestData('vnp_IpAddr', '127.0.0.1');
-        vnPayLib.addRequestData('vnp_Locale', lang);
-        vnPayLib.addRequestData('vnp_OrderInfo', orderInfo);
-        vnPayLib.addRequestData('vnp_OrderType', 'other');
-        vnPayLib.addRequestData('vnp_ReturnUrl', this.VNPReturnURL);
-        vnPayLib.addRequestData('vnp_TxnRef', txnRef);
-        return vnPayLib.createRequestUrl(this.VNPURL, this.VNPHashSecret);
+    private doPayment({ bankCode = '', amount = 0, lang = 'vn', orderInfo = '', txnRef = '' }): string {
+        const vnPayLib = new VNPay({
+            tmnCode: this.VNPTmnCode,
+            secureSecret: this.VNPHashSecret,
+            vnp_Version: this.VNPVersion,
+        });
+        const urlString = vnPayLib.buildPaymentUrl({
+            vnp_TxnRef: txnRef,
+            vnp_Amount: amount,
+            vnp_ReturnUrl: this.VNPReturnURL,
+            vnp_OrderInfo: orderInfo,
+            vnp_IpAddr: '127.0.0.1'
+        })
+        return urlString;
     }
 
     async processCallback(query: Record<string, string>): Promise<string> {
@@ -92,45 +92,55 @@ export class VNPayService {
     }
 
     private async depositCoin(transactionID: string, amount: number): Promise<boolean> {
-        const transaction = await this.unitOfWork.transactions.findOne({ transactionID });
+        const transaction = await this.prismaService.transaction.findUnique({
+            where: { id: transactionID },
+        });
         if (!transaction) return false;
 
-        const coin = JSON.parse(transaction.infor) as Coin;
-        const existingCoin = await this.prisma.coin.findUnique({ where: { id: coin.coinId } });
+        const coin = JSON.parse(transaction.infor);
+        const existingCoin = await this.prismaService.coin.findUnique({ where: { id: coin.id } });
         if (!existingCoin) {
             await this.logPayFailCoin(coin.userId);
             return false;
         }
 
         existingCoin.amount += amount;
-        await this.prisma.coin.update({ where: { id: coin.coinId }, data: { amount: existingCoin.amount } });
-        await this.transactionHistoryService.logTransaction({
-            userId: coin.userId,
-            objectType: ObjectType.Coin,
-            description: `Nạp coin thành công với số tiền: ${amount}`,
-            paymentMethod: PaymentMethod.BankOnline
+        await this.prismaService.coin.update({ where: { id: coin.id, userId: coin.userId }, data: { amount: existingCoin.amount } });
+        await this.prismaService.transactionHistory.create({
+            data: {
+                userId: coin.userId,
+                object: "Coin",// type coin
+                description: `Nạp coin thành công với số tiền: ${amount}`,
+                paymentMethod: PaymentMethod.BankOnline, //
+                orderId: -1
+            }
         });
 
         return true;
     }
 
     private async logPayFailCoin(userId: number) {
-        await this.transactionHistoryService.logTransaction({
-            userId,
-            objectType: ObjectType.Coin,
-            description: 'Thanh toán nạp coin thất bại',
-            paymentMethod: PaymentMethod.BankOnline
+        await this.prismaService.transactionHistory.create({
+            data: {
+                userId,
+                object: "Coin",
+                description: 'Thanh toán nạp coin thất bại',
+                paymentMethod: PaymentMethod.BankOnline,
+                orderId: -1
+            }
+
         });
     }
 
     private async createTransaction(rawData: string): Promise<string> {
-        const transaction = await this.unitOfWork.transactions.create({
+        const transaction = await this.prismaService.transaction.create({
             data: {
                 infor: rawData,
-                transactionID: this.generateTransactionID()
+                id: this.generateTransactionID(),
+                orderId: -1
             }
         });
-        return transaction.transactionID;
+        return transaction.id;
     }
 
     private generateTransactionID(): string {

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Res, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
 import { BaseController } from 'src/base/base.controller';
@@ -9,7 +9,10 @@ import { CoinsService } from './coin.service';
 import { GoalDto } from 'src/model/dto/grade.dto';
 import { CoinEntity } from 'src/model/entity/coin.entity';
 import { CoinDto } from 'src/model/dto/coin.dto';
-
+import { ServiceResponse } from 'src/model/response/service.response';
+import { DepositCoinRequest } from 'src/model/request/depositCoint.request';
+import { Response } from 'express';
+import { Public } from 'src/utils/public.decorator';
 
 @ApiTags('Coins')
 @Controller('api/coins')
@@ -32,7 +35,22 @@ export class CoinsController extends BaseController<CoinEntity, Prisma.CoinCreat
 
     @Get()
     async getCoin(){
-        
+        return ServiceResponse.onSuccess(await this.service.getCoinByUserId())
+    }
+
+    @Post("deposit")
+    async depositCoin(@Body() param: DepositCoinRequest){
+        return ServiceResponse.onSuccess(await this.service.depositCoin(param));
+    }
+
+    @Public()
+    @Get("callback")
+    async callBack(@Query() query: any, @Res()res: Response){
+        let link = '';
+        if (Object.keys(query).length){
+            link = await this.service.processCallback(query);
+        }
+        return res.redirect(link);
     }
 
 }

@@ -5,4 +5,4 @@ import { VNPayService } from './VNPay.service';
 @Module({
   providers: [PrismaService, VNPayService ]
 })
-export class WorkerModule {}
+export class VNPayModule {}

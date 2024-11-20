@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, Role } from '@prisma/client';
+import { query } from 'express';
 import { BaseService } from 'src/base/base.service';
+import { VNPayService } from 'src/common/services/vnpay/VNPay.service';
 import { CoreService } from 'src/core/core.service';
 import { CoinDto } from 'src/model/dto/coin.dto';
 import { CoinEntity } from 'src/model/entity/coin.entity';
+import { DepositCoinRequest } from 'src/model/request/depositCoint.request';
 import { PrismaService } from 'src/repo/prisma.service';
 
 
@@ -11,12 +14,13 @@ import { PrismaService } from 'src/repo/prisma.service';
 export class CoinsService extends BaseService<CoinEntity, Prisma.CoinCreateInput> {
     constructor(
         coreService: CoreService,
-        protected readonly prismaService: PrismaService) {
+        protected readonly prismaService: PrismaService,
+        protected readonly vnpayService: VNPayService
+    ) {
         super(prismaService, coreService)
     }
 
-    async getCoinByUserId(): Promise<CoinDto> {
-        const userId = this._authService.getUserID();
+    private async upsertCoin(userId: number){
         // Kiểm tra xem userId có bản ghi trong Coin không
         let coin = await this.repository.findOneWithCondition({
             userId
@@ -31,8 +35,24 @@ export class CoinsService extends BaseService<CoinEntity, Prisma.CoinCreateInput
                 },
             });
         }
+        return coin;
+    }
+
+    async getCoinByUserId(): Promise<CoinDto> {
+        const userId = this._authService.getUserID();
+        let coin = await this.upsertCoin(userId);
 
         // Chuyển đổi sang DTO để trả về
         return this._mapperService.mapData(coin, CoinEntity, CoinDto);
+    }
+
+    async depositCoin(request: DepositCoinRequest): Promise<string> {
+        const userId = this._authService.getUserID();
+        let coin = await this.upsertCoin(userId);
+        return this.vnpayService.paymentForCoin(request, coin)
+    }
+
+    async processCallback(request: any){
+        return this.vnpayService.processCallback(request);
     }
 }

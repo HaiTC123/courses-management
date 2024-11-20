@@ -5,6 +5,7 @@ import { NotificationType } from 'src/common/const/notification.type';
 import { CoreService } from 'src/core/core.service';
 import { CourseEntity } from 'src/model/entity/course.entity';
 import { EnrollmentEntity } from 'src/model/entity/enrollment.entity';
+import { PaymentMethod } from 'src/model/enum/payment.enum';
 import { ServiceResponse } from 'src/model/response/service.response';
 import { PrismaService } from 'src/repo/prisma.service';
 
@@ -57,6 +58,10 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
             return ServiceResponse.onBadRequest(null, "Khóa học không tồn tại");
         }
 
+        if (!course.isFree) {
+            return ServiceResponse.onBadRequest(null, "Khóa học trả phí vui lòng thanh toán trước khi đăng ký");
+        }
+
         // Kiểm tra học kỳ hiện tại có hợp lệ
         const semester = await this.prismaService.semester.findUnique({
             where: { id: semesterId }
@@ -102,6 +107,167 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
         if (existingEnrollment) {
             throw new HttpException('Bạn đã đăng ký khóa học này.', HttpStatus.BAD_REQUEST);
         }
+        var enrollment = {
+            studentId: studentInfo.id,
+            courseId: courseId,
+            semesterId: semesterId,
+            enrollmentStatus: 'In Progress',
+            completionDate: today,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        };
+
+        // Thực hiện đăng ký khóa học
+        const enrollment1 = await this.prismaService.enrollment.create({
+            data: enrollment
+        });
+
+        return ServiceResponse.onSuccess(enrollment1, "Bạn đã đăng ký khóa học thành công");
+    }
+
+    async buyCourse(courseId: number, semesterId: number): Promise<ServiceResponse> {
+        // check couse exist
+        var course = await super.getOne({
+            id: courseId
+        });
+        if (!course) {
+            return ServiceResponse.onBadRequest(null, "Khóa học không tồn tại");
+        }
+
+        if (course.isFree) {
+            return ServiceResponse.onBadRequest(null, "Khóa học miễn phí. Sai thông tin đăng ký");
+        }
+
+        const userId = this._authService.getUserID();
+        // Kiểm tra học kỳ hiện tại có hợp lệ
+        const semester = await this.prismaService.semester.findUnique({
+            where: { id: semesterId }
+        });
+
+        const today = new Date();
+        if (!semester || today < semester.startDate || today > semester.endDate) {
+            return ServiceResponse.onBadRequest(null, "Thời gian đăng ký đã hết.")
+        }
+        var studentInfo = await this.prismaService.userRepo.getStudentByUserId(this._authService.getUserID());
+        if (!studentInfo) {
+            throw new HttpException('Thông tin học sinh không tồn tại.', HttpStatus.BAD_REQUEST);
+        }
+
+        // Kiểm tra điều kiện tiên quyết (nếu có)
+        const prerequisites = await this.prismaService.prerequisite.findMany({
+            where: { courseId: courseId },
+            select: { prerequisiteCourseId: true }
+        });
+
+        for (const prerequisite of prerequisites) {
+            const completion = await this.prismaService.courseCompletion.findFirst({
+                where: {
+                    studentId: studentInfo.id,
+                    courseId: prerequisite.prerequisiteCourseId
+                }
+            });
+            if (!completion) {
+                throw new HttpException(
+                    `Chưa hoàn thành khóa học tiên quyết: ${prerequisite.prerequisiteCourseId}`,
+                    HttpStatus.BAD_REQUEST
+                );
+            }
+        }
+        // Kiểm tra trạng thái đăng ký
+        const existingEnrollment = await this.prismaService.enrollment.findFirst({
+            where: {
+                studentId: studentInfo.id,
+                courseId: courseId,
+                semesterId: semesterId
+            }
+        });
+        if (existingEnrollment) {
+            throw new HttpException('Bạn đã đăng ký khóa học này.', HttpStatus.BAD_REQUEST);
+        }
+
+        // Kiểm tra tiền coin
+
+        var coin = await this.prismaService.coin.findUnique({
+            where: {
+                userId: userId
+            }
+        })
+        if (!coin) {
+            coin = await this.prismaService.coin.create({
+                data: {
+                    amount: 0,
+                    userId: userId
+                },
+            });
+        }
+        if (coin.amount < course.price) {
+            throw new HttpException('Bạn không đủ coin để đăng ký. Vui lòng nạp thêm coin.', HttpStatus.BAD_REQUEST);
+        }
+        await this.prismaService.transactionHistory.create({
+            data: {
+                userId: userId,
+                object: "Coin",// type coin
+                description: `Đăng ký khóa học ${course.courseName} với số coin: ${course.price}`,
+                paymentMethod: PaymentMethod.Coin, //
+                orderId: -1
+            }
+        });
+
+        // trừ coin studen
+        await this.prismaService.coin.update({
+            where: {
+                id: coin.id,
+                userId: userId
+            },
+            data: {
+                amount: coin.amount - course.price
+            }
+        })
+        var instructor = await this.prismaService.instructor.findUnique({
+            where: {
+                id: course.instructorId
+            }
+        })
+        if (instructor) {
+            // cộng coin giáo viên
+            let cointInstruc = await this.prismaService.coin.findUnique({
+                where: {
+                    userId: instructor.userId
+                }
+            }
+            )
+
+            if (!cointInstruc) {
+                cointInstruc = await this.prismaService.coin.create({
+                    data: {
+                        amount: 0,
+                        userId: instructor.userId
+                    },
+                });
+            }
+
+            await this.prismaService.coin.update({
+                where: {
+                    id: cointInstruc.id,
+                    userId: instructor.userId
+                },
+                data: {
+                    amount: cointInstruc.amount + course.price
+                }
+            })
+
+            await this.prismaService.transactionHistory.create({
+                data: {
+                    userId: instructor.userId,
+                    object: "Coin",// type coin
+                    description: `Người dùng ${this._authService.getFullname()} đã mua khóa học với giá ${course.price}`,
+                    paymentMethod: PaymentMethod.Coin, //
+                    orderId: -1
+                }
+            });
+
+        }
+
         var enrollment = {
             studentId: studentInfo.id,
             courseId: courseId,

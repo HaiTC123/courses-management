@@ -24,6 +24,9 @@ import { GoalsModule } from './controllers/goal/goal.module';
 import { AcademicAdvisingsModule } from './controllers/academicAdvising/academicAdvising.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { WorkerModule } from './common/services/worker/worker.module';
+import { VNPayModule } from './common/services/vnpay/VNPay.module';
+import { CoinsModule } from './controllers/coin/coin.module';
+import { TransactionHistoryModule } from './controllers/transactionHistory/transactionHistory.module';
 
 @Module({
   imports: [
@@ -47,7 +50,10 @@ import { WorkerModule } from './common/services/worker/worker.module';
     CompleteCoursesModule,
     GoalsModule,
     AcademicAdvisingsModule,
-    WorkerModule
+    WorkerModule,
+    VNPayModule,
+    CoinsModule,
+    TransactionHistoryModule
   ],
   controllers: [AppController],
   providers: [AppService,
