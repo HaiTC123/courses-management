@@ -1,11 +1,13 @@
 "use client";
 
-import * as z from "zod";
-import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
+import Editor from "@/components/editor";
+import Preview from "@/components/preview";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -15,43 +17,42 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { updateExamService } from "@/services/exam.service";
 import { Pencil } from "lucide-react";
-import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { Textarea } from "@/components/ui/textarea";
-import Editor from "@/components/editor";
-import Preview from "@/components/preview";
-import { updateLessonService } from "@/services/course.service";
+import toast from "react-hot-toast";
 
-interface LessonDetailFormProps {
+interface ExamDetailFormProps {
   initialData: any;
   courseId: string;
-  chapterId: string;
-  lessonId: string;
-  onFetchLesson: () => Promise<void>;
+  examId: string;
+  onFetchExam: () => Promise<void>;
 }
 
 const formSchema = z.object({
-  lessonTitle: z.string().min(1, {
+  title: z.string().min(1, {
     message: "Title is required",
   }),
-  lessonDescription: z.string().min(1, {
+  description: z.string().min(1, {
     message: "Description is required",
+  }),
+  passingScore: z.number().min(1, {
+    message: "Điểm đạt là bắt buộc",
   }),
 });
 
-export const LessonDetailForm = ({
+export const ExamDetailForm = ({
   initialData,
   courseId,
-  chapterId,
-  lessonId,
-  onFetchLesson,
-}: LessonDetailFormProps) => {
+  examId,
+  onFetchExam,
+}: ExamDetailFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
 
-  const toggleEdit = () => setIsEditing((current) => !current);
+  const toggleEdit = () => {
+    setIsEditing((current) => !current);
+    form.reset(initialData);
+  };
 
   const router = useRouter();
 
@@ -62,33 +63,33 @@ export const LessonDetailForm = ({
 
   const { isSubmitting, isValid } = form.formState;
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      await updateLessonService(Number(lessonId), values);
-      toast.success("Bài học đã được cập nhật");
-      toggleEdit();
-      router.refresh();
-      onFetchLesson();
-    } catch (error) {
-      toast.error("Cập nhật bài học thất bại");
-    }
-  };
-
   useEffect(() => {
     form.reset(initialData);
-  }, [initialData, form]);
+  }, [form, initialData]);
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      await updateExamService(Number(examId), values);
+      toast.success("Cập nhật thông tin bài kiểm tra thành công");
+      toggleEdit();
+      router.refresh();
+      onFetchExam();
+    } catch (error) {
+      toast.error("Cập nhật thông tin bài kiểm tra thất bại");
+    }
+  };
 
   return (
     <div className="p-4 mt-6 border rounded-md ">
       <div className="flex items-center justify-between font-medium">
-        Thông tin bài học
+        Thông tin bài kiểm tra
         <Button type="button" variant="ghost" size="sm" onClick={toggleEdit}>
           {isEditing ? (
-            <>Hủy</>
+            <>Cancel</>
           ) : (
             <>
               <Pencil className="w-4 h-4 mr-2" />
-              Sửa thông tin bài học
+              Sửa thông tin bài kiểm tra
             </>
           )}
         </Button>
@@ -97,12 +98,12 @@ export const LessonDetailForm = ({
         <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 space-y-4">
           <FormField
             control={form.control}
-            name="lessonTitle"
+            name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Tên bài học</FormLabel>
+                <FormLabel>Tên bài kiểm tra</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="e.g. 'Bài 1'" />
+                  <Input {...field} placeholder="e.g. 'Bài kiểm tra 1'" />
                 </FormControl>
               </FormItem>
             )}
@@ -111,21 +112,49 @@ export const LessonDetailForm = ({
 
           <FormField
             control={form.control}
-            name="lessonDescription"
+            name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Mô tả bài học</FormLabel>
+                <FormLabel>Mô tả bài kiểm tra</FormLabel>
                 <FormControl>
                   {isEditing ? (
                     <Editor {...field} />
                   ) : (
-                    <Preview value={field.value} />
+                    <Preview
+                      value={
+                        field.value ||
+                        "<p style='font-size: 14px; font-style: italic; color: #64748b;'>Chưa có mô tả</p>"
+                      }
+                    />
                   )}
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+
+          <FormField
+            control={form.control}
+            name="passingScore"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Điểm đạt</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    disabled={isSubmitting || !isEditing}
+                    placeholder="e.g. 70"
+                    className="w-full mt-2"
+                    value={field.value}
+                    onChange={(e) => field.onChange(Number(e.target.value))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+            disabled={!isEditing}
+          />
+
           {isEditing && (
             <div className="flex items-center gap-x-2">
               <Button type="submit" disabled={!isValid || isSubmitting}>

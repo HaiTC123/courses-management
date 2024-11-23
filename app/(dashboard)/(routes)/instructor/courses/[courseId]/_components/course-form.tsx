@@ -33,7 +33,6 @@ interface CourseFormProps {
   initialData: {
     courseName: string;
     description: string;
-    // credits: number;
     durationWeeks: number;
     category: string;
     isMandatory: boolean;
@@ -42,34 +41,33 @@ interface CourseFormProps {
     status: CourseStatus;
     backgroundUrl: string;
     linkBackgroundUrl: string;
+    // score: number;
   };
   courseId: string;
 }
 
 const formSchema = z.object({
   courseName: z.string().min(1, {
-    message: "Course name is required",
+    message: "Tên khóa học là bắt buộc",
   }),
   description: z.string().min(1, {
-    message: "Description is required",
+    message: "Mô tả là bắt buộc",
   }),
-  // credits: z.number().min(1, {
-  //   message: "Credits is required",
-  // }),
   durationWeeks: z.number().min(1, {
-    message: "Duration weeks is required",
+    message: "Thời gian là bắt buộc",
   }),
   category: z.string().min(1, {
-    message: "Category is required",
+    message: "Danh mục là bắt buộc",
   }),
   isMandatory: z.boolean(),
   price: z.number().min(0, {
-    message: "Price is required",
+    message: "Giá tối thiểu là 0",
   }),
   isFree: z.boolean(),
   status: z.nativeEnum(CourseStatus),
   backgroundUrl: z.string().optional(),
   linkBackgroundUrl: z.string().optional(),
+  // score: z.number().min(0).max(100),
 });
 
 export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
@@ -120,7 +118,7 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
   };
 
   return (
-    <div className="p-4 mt-6 border rounded-md   ">
+    <div className="p-4 mt-6 border rounded-md ">
       <div className="flex items-center justify-between font-medium">
         Thông tin chung của khóa học
         <Button type="button" variant="ghost" size="sm" onClick={toggleEdit}>
@@ -217,26 +215,6 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
               )}
             />
 
-            {/* <FormField
-              control={form.control}
-              name="credits"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Credits</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      disabled={isSubmitting}
-                      {...field}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-              disabled={isSubmitting || !isEditing}
-            /> */}
-
             <FormField
               control={form.control}
               name="durationWeeks"
@@ -257,6 +235,26 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
               disabled={isSubmitting || !isEditing}
             />
 
+            {/* <FormField
+              control={form.control}
+              name="score"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Điểm</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      disabled={isSubmitting}
+                      {...field}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+              disabled={isSubmitting || !isEditing}
+            /> */}
+
             <FormField
               control={form.control}
               name="category"
@@ -264,11 +262,6 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
                 <FormItem>
                   <FormLabel>Danh mục</FormLabel>
                   <FormControl>
-                    {/* <Input
-                      disabled={isSubmitting}
-                      placeholder="e.g. 'Computer Science'"
-                      {...field}
-                    /> */}
                     <Combobox
                       options={CATEGORIES}
                       value={field.value}
@@ -352,32 +345,6 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
                   </FormControl>
                 </FormItem>
               )}
-            />
-
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Trạng thái</FormLabel>
-                  <Combobox
-                    options={[
-                      { value: CourseStatus.DRAFT, label: "Draft" },
-                      // {
-                      //   value: CourseStatus.PENDING_APPROVAL,
-                      //   label: "Pending Approval",
-                      // },
-                      // { value: CourseStatus.APPROVED, label: "Approved" },
-                      // { value: CourseStatus.REJECTED, label: "Rejected" },
-                    ]}
-                    value={field.value}
-                    onChange={field.onChange}
-                    disabled={isSubmitting || !isEditing}
-                  />
-                  <FormMessage />
-                </FormItem>
-              )}
-              disabled={isSubmitting || !isEditing}
             />
           </div>
           {isEditing && (

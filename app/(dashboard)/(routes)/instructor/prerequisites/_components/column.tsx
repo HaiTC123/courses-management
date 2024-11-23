@@ -27,10 +27,10 @@ export const createColumns = (
         </Button>
       );
     },
-    // cell: ({ row }) => {
-    //   const { id, courseName } = row.original.prerequisiteCourse;
-    //   return <Link href={`/instructor/courses/${id}`}>{courseName}</Link>;
-    // },
+    cell: ({ row }) => {
+      const { id, courseName } = row.original.course;
+      return <Link href={`/instructor/courses/${id}`}>{courseName}</Link>;
+    },
   },
   {
     accessorKey: "prerequisiteCourseId",

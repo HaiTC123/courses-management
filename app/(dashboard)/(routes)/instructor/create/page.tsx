@@ -57,6 +57,7 @@ const CreatePage = () => {
     status: z.nativeEnum(CourseStatus).optional(),
     backgroundUrl: z.string().optional(),
     backgroundUrlTmp: z.string().optional(),
+    // score: z.number().min(0).max(100),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -75,6 +76,7 @@ const CreatePage = () => {
       status: CourseStatus.DRAFT,
       backgroundUrl: "",
       backgroundUrlTmp: "",
+      // score: 0,
     },
   });
 
@@ -125,7 +127,7 @@ const CreatePage = () => {
                 name="courseName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Course Name</FormLabel>
+                    <FormLabel>Tên khóa học</FormLabel>
                     <FormControl>
                       <Input
                         disabled={isSubmitting}
@@ -143,7 +145,7 @@ const CreatePage = () => {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Description</FormLabel>
+                    <FormLabel>Mô tả</FormLabel>
                     <FormControl>
                       <Textarea
                         disabled={isSubmitting}
@@ -162,7 +164,7 @@ const CreatePage = () => {
                 name="durationWeeks"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Duration (weeks)</FormLabel>
+                    <FormLabel>Số tuần</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -175,13 +177,32 @@ const CreatePage = () => {
                   </FormItem>
                 )}
               />
+              {/* 
+              <FormField
+                control={form.control}
+                name="score"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Điểm</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        disabled={isSubmitting}
+                        {...field}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              /> */}
 
               <FormField
                 control={form.control}
                 name="category"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Category</FormLabel>
+                    <FormLabel>Danh mục</FormLabel>
                     <FormControl>
                       <Combobox
                         options={CATEGORIES}
@@ -200,7 +221,7 @@ const CreatePage = () => {
                 name="isMandatory"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-base">Mandatory</FormLabel>
+                    <FormLabel className="text-base">Bắt buộc</FormLabel>
                     <FormControl>
                       <div className="flex items-center justify-start w-full">
                         <Checkbox
@@ -223,7 +244,7 @@ const CreatePage = () => {
                 name="price"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Price</FormLabel>
+                    <FormLabel>Giá</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -304,11 +325,11 @@ const CreatePage = () => {
             <div className="flex items-center gap-x-2">
               <Link href="/">
                 <Button type="button" variant="ghost">
-                  Cancel
+                  Hủy
                 </Button>
               </Link>
               <Button type="submit" disabled={!isValid || isSubmitting}>
-                Continue
+                Tạo
               </Button>
             </div>
           </form>

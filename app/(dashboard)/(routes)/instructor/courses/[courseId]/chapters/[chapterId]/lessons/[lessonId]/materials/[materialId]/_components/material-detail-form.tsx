@@ -88,12 +88,12 @@ export const MaterialDetailForm = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await updateMaterialService(Number(materialId), values);
-      toast.success("Lesson updated");
+      toast.success("Tài liệu đã được cập nhật");
       toggleEdit();
       router.refresh();
       onFetchMaterial();
     } catch (error) {
-      toast.error("Something went wrong");
+      toast.error("Cập nhật tài liệu thất bại");
     }
   };
 
@@ -116,7 +116,7 @@ export const MaterialDetailForm = ({
   };
 
   return (
-    <div className="p-4 mt-6 border rounded-md   ">
+    <div className="p-4 mt-6 border rounded-md ">
       <div className="flex items-center justify-between font-medium">
         Thông tin tài liệu
         <Button type="button" variant="ghost" size="sm" onClick={toggleEdit}>

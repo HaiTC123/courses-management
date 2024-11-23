@@ -7,6 +7,7 @@ import { getCourseByIdService } from "@/services/course.service";
 import { useEffect, useState, useCallback } from "react";
 import { ChapterForm } from "./_components/chapter-form";
 import { CourseForm } from "./_components/course-form";
+import { ExamForm } from "./_components/exam-form";
 
 const CourseIdPage = ({
   params,
@@ -57,6 +58,17 @@ const CourseIdPage = ({
               <h2 className="text-xl">Tùy chỉnh chương học</h2>
             </div>
             <ChapterForm
+              initialData={course}
+              courseId={courseId}
+              onFetchCourse={fetchCourse}
+            />
+          </div>
+          <div>
+            <div className="flex items-center gap-x-2">
+              <IconBadge icon={ListChecks} />
+              <h2 className="text-xl">Tùy chỉnh bài thi cuối khóa học</h2>
+            </div>
+            <ExamForm
               initialData={course}
               courseId={courseId}
               onFetchCourse={fetchCourse}

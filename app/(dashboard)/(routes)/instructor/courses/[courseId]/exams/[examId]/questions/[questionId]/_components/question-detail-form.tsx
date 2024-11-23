@@ -1,11 +1,11 @@
 "use client";
 
-import * as z from "zod";
-import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -15,40 +15,29 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { updateQuestionService } from "@/services/question.service";
 import { Pencil } from "lucide-react";
-import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { Textarea } from "@/components/ui/textarea";
-import Editor from "@/components/editor";
-import Preview from "@/components/preview";
-import { updateLessonService } from "@/services/course.service";
+import toast from "react-hot-toast";
 
-interface LessonDetailFormProps {
+interface QuestionDetailFormProps {
   initialData: any;
-  courseId: string;
-  chapterId: string;
-  lessonId: string;
-  onFetchLesson: () => Promise<void>;
+  questionId: string;
 }
 
 const formSchema = z.object({
-  lessonTitle: z.string().min(1, {
-    message: "Title is required",
+  content: z.string().min(1, {
+    message: "Nội dung câu hỏi là bắt buộc",
   }),
-  lessonDescription: z.string().min(1, {
-    message: "Description is required",
+  correctAnswer: z.string().min(1, {
+    message: "Đáp án đúng là bắt buộc",
   }),
 });
 
-export const LessonDetailForm = ({
+export const QuestionDetailForm = ({
   initialData,
-  courseId,
-  chapterId,
-  lessonId,
-  onFetchLesson,
-}: LessonDetailFormProps) => {
+  questionId,
+}: QuestionDetailFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
@@ -64,13 +53,12 @@ export const LessonDetailForm = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await updateLessonService(Number(lessonId), values);
-      toast.success("Bài học đã được cập nhật");
+      await updateQuestionService(Number(questionId), values);
+      toast.success("Cập nhật câu hỏi thành công");
       toggleEdit();
       router.refresh();
-      onFetchLesson();
     } catch (error) {
-      toast.error("Cập nhật bài học thất bại");
+      toast.error("Cập nhật câu hỏi thất bại");
     }
   };
 
@@ -79,7 +67,7 @@ export const LessonDetailForm = ({
   }, [initialData, form]);
 
   return (
-    <div className="p-4 mt-6 border rounded-md   ">
+    <div className="p-4 mt-6 border rounded-md ">
       <div className="flex items-center justify-between font-medium">
         Thông tin bài học
         <Button type="button" variant="ghost" size="sm" onClick={toggleEdit}>
@@ -97,10 +85,10 @@ export const LessonDetailForm = ({
         <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 space-y-4">
           <FormField
             control={form.control}
-            name="lessonTitle"
+            name="content"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Tên bài học</FormLabel>
+                <FormLabel>Nội dung câu hỏi</FormLabel>
                 <FormControl>
                   <Input {...field} placeholder="e.g. 'Bài 1'" />
                 </FormControl>
@@ -111,20 +99,17 @@ export const LessonDetailForm = ({
 
           <FormField
             control={form.control}
-            name="lessonDescription"
+            name="correctAnswer"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Mô tả bài học</FormLabel>
+                <FormLabel>Đáp án đúng</FormLabel>
                 <FormControl>
-                  {isEditing ? (
-                    <Editor {...field} />
-                  ) : (
-                    <Preview value={field.value} />
-                  )}
+                  <Input {...field} placeholder="e.g. 'A'" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
+            disabled={!isEditing}
           />
           {isEditing && (
             <div className="flex items-center gap-x-2">

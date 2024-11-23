@@ -72,7 +72,7 @@ const CreatePrerequisitePage = () => {
       const response = await addPrerequisiteService(body);
       toast.success("Điều kiện tiên quyết được tạo thành công");
       if (response.data) {
-        router.push(`/prerequisites/${response.data}`);
+        router.push(`/instructor/prerequisites/${response.data}`);
       }
     } catch (error) {
       toast.error("Đã có lỗi xảy ra");

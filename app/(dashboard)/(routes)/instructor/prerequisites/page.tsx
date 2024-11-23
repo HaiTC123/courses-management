@@ -26,6 +26,7 @@ const PrerequisitesPage = () => {
     searchFields: [],
     includeReferences: {
       prerequisiteCourse: true,
+      course: true,
     },
   });
 
