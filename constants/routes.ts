@@ -9,6 +9,7 @@ import {
   User,
   User2,
   Presentation,
+  ListEnd,
 } from "lucide-react";
 
 export const studentRoutes: any[] = [
@@ -39,6 +40,11 @@ export const instructorRoutes: any[] = [
     icon: List,
     label: "Khóa học",
     href: "/instructor/courses",
+  },
+  {
+    icon: ListEnd,
+    label: "Bài kiểm tra",
+    href: "/instructor/exams",
   },
   {
     icon: Computer,

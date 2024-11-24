@@ -8,7 +8,7 @@ import {
 } from "@/services/course.service";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { ChapterDetail } from "./_components/chapter-detail";
 import {
@@ -33,6 +33,17 @@ import { useAuthStore } from "@/store/use-auth-store";
 import { DEFAULT_IMAGE } from "@/constants/default-image";
 import { getPaginatedPrerequisitesService } from "@/services/prerequisite.service";
 import Link from "next/link";
+import { getProgressByCourseId } from "@/services/progress.service";
+import { Certificate } from "@/components/certificate";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const CourseIdPage = () => {
   const router = useRouter();
@@ -40,7 +51,7 @@ const CourseIdPage = () => {
   const { user, getCurrentUser } = useAuthStore.getState();
   const [isOpen, setIsOpen] = useState(true);
   const [enrolledCourseIds, setEnrolledCourseIds] = useState<number[]>([]);
-
+  const certificateRef = useRef<any>(null);
   const { courseId } = params;
 
   const [course, setCourse] = useState<any>({});
@@ -140,6 +151,20 @@ const CourseIdPage = () => {
     router.push(`/learning/${courseId}`);
   };
 
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    if (courseId) {
+      getProgressByCourseId(Number(courseId)).then((res: any) => {
+        if (res.data) {
+          const completed = res.data.completed;
+          const total = res.data.total || 1;
+          setProgress(Math.round((completed / total) * 100));
+        }
+      });
+    }
+  }, [courseId]);
+
   return (
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -212,12 +237,60 @@ const CourseIdPage = () => {
           )}
           {enrolledCourseIds.includes(Number(courseId)) ? (
             <>
-              <h3 className="p-4 text-xl font-bold text-center">
-                Bạn đã đăng ký khóa học này
-              </h3>
-              <Button className="w-full mt-4" onClick={handleContinueLearning}>
-                Tiếp tục học
-              </Button>
+              {progress < 100 && (
+                <>
+                  <h3 className="p-4 text-xl font-bold text-center">
+                    Bạn đã đăng ký khóa học này
+                  </h3>
+                  <Button
+                    className="w-full mt-4"
+                    onClick={handleContinueLearning}
+                  >
+                    Tiếp tục học
+                  </Button>
+                </>
+              )}
+              {progress === 100 && (
+                <>
+                  <h3 className="p-4 text-xl font-bold text-center">
+                    Bạn đã hoàn thành khóa học này
+                  </h3>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        className="w-full mt-4"
+                      >
+                        Xem chứng chỉ
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-fit">
+                      <DialogHeader>
+                        <DialogTitle>Chứng chỉ của bạn</DialogTitle>
+                        <DialogDescription>
+                          Bạn đã xuất sắc hoàn thành khóa học này! Đây là chứng
+                          chỉ của bạn.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <Certificate
+                        ref={certificateRef}
+                        courseName={course?.courseName}
+                        userName={user?.fullName}
+                        instructorName={course?.createdBy}
+                      />
+                      <DialogFooter>
+                        <Button
+                          variant="default"
+                          onClick={() =>
+                            certificateRef.current?.downloadCertificate()
+                          }
+                        >
+                          Tải chứng chỉ
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </>
+              )}
             </>
           ) : course.isFree ? (
             <Button className="w-full mt-4" onClick={handleRegister}>

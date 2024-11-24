@@ -1,6 +1,6 @@
 import { formatPrice } from "@/lib/format";
 import { getProgressByCourseId } from "@/services/progress.service";
-import { BookOpen, DollarSign, Users } from "lucide-react";
+import { BookOpen, CheckCircle, DollarSign, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
@@ -123,9 +123,15 @@ export const CourseCard: React.FC<CourseCardProps> = ({
               <IconBadge size="sm" icon={Users} />
               <strong>{enrollmentsCount}</strong>
             </div>
-            {isEnrolled && (
+            {isEnrolled && progress < 100 && (
               <div className="flex items-center gap-x-2">
                 <CircularProgress value={progress} size={43} />
+              </div>
+            )}
+            {isEnrolled && progress === 100 && (
+              <div className="flex items-center gap-x-2">
+                <IconBadge size="sm" icon={CheckCircle} />
+                <strong>Hoàn thành</strong>
               </div>
             )}
           </div>

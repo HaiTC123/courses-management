@@ -57,6 +57,8 @@ export const CourseSidebarItem = ({
     lessonIdParam === lessonId.toString() &&
     materialIdParam === materialId.toString();
 
+  const isExam = pathName.startsWith("/learning") && pathName.includes("/exam");
+
   const onClick = () => {
     if (!canAccess) {
       toast.error(
@@ -70,12 +72,12 @@ export const CourseSidebarItem = ({
   };
 
   useEffect(() => {
-    if (isLearning) {
+    if (isLearning && !isExam) {
       router.push(
         `/learning/${courseId}?chapterId=${chapterId}&lessonId=${lessonId}&materialId=${materialId}`
       );
     }
-  }, [chapterId, courseId, isLearning, lessonId, materialId, router]);
+  }, [chapterId, courseId, isLearning, lessonId, materialId, router, isExam]);
 
   return (
     <button

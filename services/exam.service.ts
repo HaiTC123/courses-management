@@ -39,7 +39,10 @@ export const deleteExamService = async (examId: number) => {
 };
 
 export const getExamByIdService = async (examId: number, body: any) => {
-  const response = await axiosInstance.post(`/api/exam/${examId}/reference`, body);
+  const response = await axiosInstance.post(
+    `/api/exam/${examId}/reference`,
+    body
+  );
   return response.data;
 };
 
@@ -58,7 +61,12 @@ export const submitExamService = async (examId: number, data: any) => {
   return response.data;
 };
 
-export const getExamResultService = async (examId: number) => {
-  const response = await axiosInstance.get(`/api/exam/${examId}/1/result`);
+export const getExamResultService = async (
+  examId: number,
+  studentId: number
+) => {
+  const response = await axiosInstance.get(
+    `/api/exam/${examId}/${studentId}/result`
+  );
   return response.data;
 };

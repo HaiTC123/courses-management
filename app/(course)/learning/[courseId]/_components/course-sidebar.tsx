@@ -5,10 +5,14 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { getProgressPaging } from "@/services/progress.service";
-import { MinusCircle, PlusCircle } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ArrowRight, MinusCircle, PlusCircle } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import { ChapterSidebarItem } from "./chapter-sidbar-item";
 import { ScheduleCourse } from "./schedule-course";
+import { getPaginatedExamsService } from "@/services/exam.service";
+import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 interface CourseSidebarProps {
   course: any;
@@ -16,6 +20,8 @@ interface CourseSidebarProps {
 }
 
 export const CourseSidebar = ({ course, enrollmentId }: CourseSidebarProps) => {
+  const router = useRouter();
+  const pathName = usePathname();
   const [isOpen, setIsOpen] = useState(true);
   const [progressDetails, setProgressDetails] = useState<any>(null);
 
@@ -58,6 +64,41 @@ export const CourseSidebar = ({ course, enrollmentId }: CourseSidebarProps) => {
     return Math.round((completed / total) * 100);
   };
 
+  const [exam, setExam] = useState<any>(null);
+
+  const fetchExam = useCallback(async () => {
+    try {
+      const response = await getPaginatedExamsService({
+        pageSize: 1000,
+        pageNumber: 1,
+        conditions: [
+          {
+            key: "courseId",
+            condition: "equal",
+            value: Number(course.id),
+          },
+        ],
+        sortOrder: "",
+        searchKey: "",
+        searchFields: [],
+        includeReferences: {},
+      });
+      if (response?.data?.data?.length > 0) {
+        setExam(response.data.data[0]);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [course.id]);
+
+  useEffect(() => {
+    if (course.id) {
+      fetchExam();
+    }
+  }, [course.id, fetchExam]);
+
+  const isExam = pathName.startsWith("/learning") && pathName.includes("/exam");
+
   return (
     <div className="flex flex-col h-full overflow-y-auto border-r shadow-sm">
       <div className="h-[80px] flex flex-col p-4 border-b">
@@ -97,6 +138,19 @@ export const CourseSidebar = ({ course, enrollmentId }: CourseSidebarProps) => {
               ))}
           </CollapsibleContent>
         </Collapsible>
+        {getProgress(progressDetails) === 100 && (
+          <Link href={`/learning/${course.id}/exam/${exam?.id}`}>
+            <div
+              className={cn(
+                "flex items-center p-3 cursor-pointer hover:text-blue-500",
+                isExam && "bg-sky-200/50"
+              )}
+            >
+              <ArrowRight className="w-4 h-4 mr-2" />
+              <h2 className="text-xl font-bold">Bài kiểm tra</h2>
+            </div>
+          </Link>
+        )}
       </div>
     </div>
   );
