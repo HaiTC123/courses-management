@@ -84,7 +84,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({ id, isEnrolled }) => {
   }, [id, isEnrolled]);
 
   return (
-    <div className="flex items-center p-4 my-4 transition-shadow duration-300 border rounded-lg shadow-sm cursor-pointer hover:shadow-md">
+    <div className="flex items-center p-4 my-4 rounded-lg border shadow-sm transition-shadow duration-300 cursor-pointer hover:shadow-md">
       {course.backgroundUrl && (
         <Link href={`/courses/${id}`} key={id}>
           <div className="flex-shrink-0 mr-4">
@@ -122,16 +122,20 @@ export const CourseCard: React.FC<CourseCardProps> = ({ id, isEnrolled }) => {
           </p>
         )}
         {isEnrolled && (
-          <div className="flex items-center gap-x-2">
+          <div className="flex gap-x-2 items-center">
             <span>Tiến độ học</span>
-            <CircularProgress value={progress} size={50} />
+            {progress === 100 ? (
+              <span className="font-medium text-green-600">Hoàn thành</span>
+            ) : (
+              <CircularProgress value={progress} size={50} />
+            )}
           </div>
         )}
-        <div className="flex items-center gap-x-2">
+        <div className="flex gap-x-2 items-center">
           <span>Thời gian học dự kiến:</span>
           <span>{course.durationWeeks} tuần</span>
         </div>
-        <div className="flex items-center gap-x-2">
+        <div className="flex gap-x-2 items-center">
           <Button variant="outline" size="sm">
             <Link href={`/courses/${id}`}>Xem khóa học</Link>
           </Button>

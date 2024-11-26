@@ -80,8 +80,8 @@ const LearningCourseIdExamIdResultPage = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="w-12 h-12 border-t-2 border-b-2 rounded-full animate-spin border-primary"></div>
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="w-12 h-12 rounded-full border-t-2 border-b-2 animate-spin border-primary"></div>
       </div>
     );
   }
@@ -96,39 +96,41 @@ const LearningCourseIdExamIdResultPage = () => {
     <>
       <div className="px-4 py-8 mx-auto">
         {attemptResult && (
-          <div className="max-w-2xl p-6 mx-auto rounded-lg shadow-md">
-            <div className="flex items-center justify-between">
+          <div className="p-6 mx-auto max-w-2xl rounded-lg shadow-md">
+            <div className="flex justify-between items-center">
               <h1 className="mb-6 text-3xl font-bold text-center">
                 Kết quả bài kiểm tra
               </h1>
-              <Dialog>
-                <DialogTrigger>Xem chứng chỉ</DialogTrigger>
-                <DialogContent className="max-w-fit">
-                  <DialogHeader>
-                    <DialogTitle>Chứng chỉ của bạn</DialogTitle>
-                    <DialogDescription>
-                      Bạn đã xuất sắc hoàn thành khóa học này! Đây là chứng chỉ
-                      của bạn.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <Certificate
-                    ref={certificateRef}
-                    courseName={courseDetail?.courseName}
-                    userName={user?.fullName}
-                    instructorName={courseDetail?.createdBy}
-                  />
-                  <DialogFooter>
-                    <Button
-                      variant="default"
-                      onClick={() =>
-                        certificateRef.current?.downloadCertificate()
-                      }
-                    >
-                      Tải chứng chỉ
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+              {attemptResult.isPassed && (
+                <Dialog>
+                  <DialogTrigger>Xem chứng chỉ</DialogTrigger>
+                  <DialogContent className="max-w-fit">
+                    <DialogHeader>
+                      <DialogTitle>Chứng chỉ của bạn</DialogTitle>
+                      <DialogDescription>
+                        Bạn đã xuất sắc hoàn thành khóa học này! Đây là chứng
+                        chỉ của bạn.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <Certificate
+                      ref={certificateRef}
+                      courseName={courseDetail?.courseName}
+                      userName={user?.fullName}
+                      instructorName={courseDetail?.createdBy}
+                    />
+                    <DialogFooter>
+                      <Button
+                        variant="default"
+                        onClick={() =>
+                          certificateRef.current?.downloadCertificate()
+                        }
+                      >
+                        Tải chứng chỉ
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              )}
             </div>
             <div className="space-y-4">
               <div className="text-center">
@@ -160,13 +162,13 @@ const LearningCourseIdExamIdResultPage = () => {
               </div>
 
               <div className="grid grid-cols-2 gap-4 mt-8">
-                <div className="flex items-center justify-center p-4 rounded">
+                <div className="flex justify-center items-center p-4 rounded">
                   <p className="mr-2 text-sm">Đáp án đúng</p>
                   <p className="text-2xl font-bold">
                     {attemptResult.correctAnswers}
                   </p>
                 </div>
-                <div className="flex items-center justify-center p-4 rounded">
+                <div className="flex justify-center items-center p-4 rounded">
                   <p className="mr-2 text-sm">Đáp án sai</p>
                   <p className="text-2xl font-bold">
                     {attemptResult.incorrectAnswers}
@@ -181,7 +183,7 @@ const LearningCourseIdExamIdResultPage = () => {
                 <div className="space-y-4">
                   {attemptResult.result?.map((question: any, index: number) => (
                     <div key={index} className={`p-4 rounded-lg border`}>
-                      <div className="flex items-center justify-between mb-2">
+                      <div className="flex justify-between items-center mb-2">
                         <span className="font-medium">Câu hỏi {index + 1}</span>
                         <span
                           className={`px-3 py-1 text-sm rounded-full ${
@@ -237,9 +239,9 @@ const LearningCourseIdExamIdResultPage = () => {
           </div>
         )}
         {!loading && (
-          <div className="flex flex-col items-center justify-center mt-4">
+          <div className="flex flex-col justify-center items-center mt-4">
             <h2 className="mb-6 text-2xl font-bold">Lịch sử làm bài</h2>
-            <div className="w-full overflow-x-auto">
+            <div className="overflow-x-auto w-full">
               <table className="w-full border-collapse">
                 <thead>
                   <tr className="">
