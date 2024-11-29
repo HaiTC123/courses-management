@@ -51,7 +51,7 @@ const CreatePage = () => {
     category: z.string().min(1, {
       message: "Category is required",
     }),
-    isMandatory: z.boolean(),
+    isMandatory: z.boolean().optional(),
     price: z.number().min(0),
     isFree: z.boolean(),
     status: z.nativeEnum(CourseStatus).optional(),
@@ -114,14 +114,14 @@ const CreatePage = () => {
 
   return (
     <div className="p-6 mx-auto">
-      <div className="flex flex-col items-start justify-center">
+      <div className="flex flex-col justify-center items-start">
         <h1 className="text-2xl">Tạo khóa học</h1>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="w-full mt-8 space-y-8"
+            className="mt-8 space-y-8 w-full"
           >
-            <div className="grid max-w-xl grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 max-w-xl md:grid-cols-2">
               <FormField
                 control={form.control}
                 name="courseName"
@@ -216,14 +216,14 @@ const CreatePage = () => {
                 )}
               />
 
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="isMandatory"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-base">Bắt buộc</FormLabel>
                     <FormControl>
-                      <div className="flex items-center justify-start w-full">
+                      <div className="flex justify-start items-center w-full">
                         <Checkbox
                           checked={field.value}
                           onCheckedChange={field.onChange}
@@ -237,7 +237,7 @@ const CreatePage = () => {
                     </FormControl>
                   </FormItem>
                 )}
-              />
+              /> */}
 
               <FormField
                 control={form.control}
@@ -264,7 +264,7 @@ const CreatePage = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <div className="flex items-center justify-start w-full">
+                      <div className="flex justify-start items-center w-full">
                         <Checkbox
                           checked={field.value}
                           onCheckedChange={(checked) => {
@@ -322,7 +322,7 @@ const CreatePage = () => {
                 </div>
               )}
             </div>
-            <div className="flex items-center gap-x-2">
+            <div className="flex gap-x-2 items-center">
               <Link href="/">
                 <Button type="button" variant="ghost">
                   Hủy

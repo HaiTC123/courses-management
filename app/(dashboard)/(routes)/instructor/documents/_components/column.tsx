@@ -22,8 +22,8 @@ export const createColumns = (
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Tên loại tài liệu
-          <ArrowUpDown className="w-4 h-4 ml-2" />
+          Tên tài liệu
+          <ArrowUpDown className="ml-2 w-4 h-4" />
         </Button>
       );
     },
@@ -37,7 +37,7 @@ export const createColumns = (
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Mô tả
-          <ArrowUpDown className="w-4 h-4 ml-2" />
+          <ArrowUpDown className="ml-2 w-4 h-4" />
         </Button>
       );
     },
@@ -59,7 +59,7 @@ export const createColumns = (
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="w-4 h-4 p-0">
+            <Button variant="ghost" size="icon" className="p-0 w-4 h-4">
               <span className="sr-only">Open menu</span>
               <MoreHorizontal className="w-4 h-4" />
             </Button>
@@ -67,12 +67,12 @@ export const createColumns = (
           <DropdownMenuContent align="end">
             <Link href={`/instructor/documents/${id}`}>
               <DropdownMenuItem>
-                <Pencil className="w-4 h-4 mr-2" />
+                <Pencil className="mr-2 w-4 h-4" />
                 Sửa
               </DropdownMenuItem>
             </Link>
             <DropdownMenuItem onClick={() => onDelete(id)}>
-              <Trash className="w-4 h-4 mr-2" />
+              <Trash className="mr-2 w-4 h-4" />
               Xóa
             </DropdownMenuItem>
           </DropdownMenuContent>

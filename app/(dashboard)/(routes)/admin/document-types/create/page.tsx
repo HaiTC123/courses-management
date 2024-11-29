@@ -19,6 +19,8 @@ import { Input } from "@/components/ui/input";
 import { addDocumentTypeService } from "@/services/document-type.service";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { Combobox } from "@/components/ui/combobox";
+import { CATEGORIES } from "@/constants/category-data";
 
 const CreateDocumentTypePage = () => {
   const router = useRouter();
@@ -47,7 +49,7 @@ const CreateDocumentTypePage = () => {
       const response = await addDocumentTypeService(values);
       toast.success("Loại tài liệu được tạo thành công");
       if (response.data) {
-        router.push(`/instructor/document-types/${response.data}`);
+        router.push(`/admin/document-types/${response.data}`);
       }
     } catch (error) {
       toast.error("Đã có lỗi xảy ra");
@@ -71,10 +73,16 @@ const CreateDocumentTypePage = () => {
                   <FormItem>
                     <FormLabel>Tên loại tài liệu</FormLabel>
                     <FormControl>
-                      <Input
+                      {/* <Input
                         disabled={isSubmitting}
                         placeholder="e.g. 'Introduction to Computer Science'"
                         {...field}
+                      /> */}
+                      <Combobox
+                        options={CATEGORIES}
+                        value={field.value}
+                        onChange={field.onChange}
+                        disabled={isSubmitting}
                       />
                     </FormControl>
                     <FormMessage />
@@ -96,7 +104,7 @@ const CreateDocumentTypePage = () => {
                 )}
               />
             </div>
-            <div className="flex items-center gap-x-2">
+            <div className="flex gap-x-2 items-center">
               <Link href="/">
                 <Button type="button" variant="ghost">
                   Hủy

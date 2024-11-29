@@ -52,11 +52,11 @@ const formSchema = z.object({
     message: "Mô tả là bắt buộc",
   }),
   categoryId: z.number(),
-  accessUrl: z.string(),
+  accessUrl: z.string().optional(),
   fileType: z.string(),
-  backgroundUrl: z.string(),
-  accessUrlFile: z.string(),
-  backgroundUrlFile: z.string(),
+  backgroundUrl: z.string().optional(),
+  accessUrlFile: z.string().optional(),
+  backgroundUrlFile: z.string().optional(),
 });
 
 export const DocumentForm = ({
@@ -129,15 +129,15 @@ export const DocumentForm = ({
   };
 
   return (
-    <div className="p-4 mt-6 border rounded-md   ">
-      <div className="flex items-center justify-between font-medium">
+    <div className="p-4 mt-6 rounded-md border">
+      <div className="flex justify-between items-center font-medium">
         Thông tin chung của tài liệu
         <Button type="button" variant="ghost" size="sm" onClick={toggleEdit}>
           {isEditing ? (
             <>Hủy</>
           ) : (
             <>
-              <Pencil className="w-4 h-4 mr-2" />
+              <Pencil className="mr-2 w-4 h-4" />
               Sửa tài liệu
             </>
           )}
@@ -247,7 +247,7 @@ export const DocumentForm = ({
                         }
                       />
                     ) : (
-                      <p className={cn("text-sm mt-2 text-slate-500 italic")}>
+                      <p className={cn("mt-2 text-sm italic text-slate-500")}>
                         {form.getValues("accessUrl") ?? "Chưa có tài liệu"}
                       </p>
                     )}
@@ -282,7 +282,7 @@ export const DocumentForm = ({
                     ) : (
                       <p
                         className={cn(
-                          "text-sm mt-2 text-slate-500 italic truncate"
+                          "mt-2 text-sm italic truncate text-slate-500"
                         )}
                       >
                         {form.getValues("backgroundUrl") ? (
@@ -313,7 +313,7 @@ export const DocumentForm = ({
             />
           </div>
           {isEditing && (
-            <div className="flex items-center gap-x-2">
+            <div className="flex gap-x-2 items-center">
               <Button type="submit" disabled={!isValid || isSubmitting}>
                 Lưu thay đổi
               </Button>

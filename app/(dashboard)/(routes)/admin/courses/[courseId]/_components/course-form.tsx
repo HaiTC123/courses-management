@@ -62,7 +62,7 @@ const formSchema = z.object({
   category: z.string().min(1, {
     message: "Category is required",
   }),
-  isMandatory: z.boolean(),
+  isMandatory: z.boolean().optional(),
   price: z.number().min(0, {
     message: "Price is required",
   }),
@@ -120,15 +120,15 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
   };
 
   return (
-    <div className="p-4 mt-6 border rounded-md   ">
-      <div className="flex items-center justify-between font-medium">
+    <div className="p-4 mt-6 rounded-md border">
+      <div className="flex justify-between items-center font-medium">
         Thông tin chung của khóa học
         <Button type="button" variant="ghost" size="sm" onClick={toggleEdit}>
           {isEditing ? (
             <>Hủy</>
           ) : (
             <>
-              <Pencil className="w-4 h-4 mr-2" />
+              <Pencil className="mr-2 w-4 h-4" />
               Sửa khóa học
             </>
           )}
@@ -205,7 +205,7 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
                     ) : (
                       <p
                         className={cn(
-                          "text-sm mt-2 text-slate-500 italic truncate"
+                          "mt-2 text-sm italic truncate text-slate-500"
                         )}
                       >
                         {"Chưa có ảnh nền"}
@@ -282,14 +282,14 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
               disabled={isSubmitting || !isEditing}
             />
 
-            <FormField
+            {/* <FormField
               control={form.control}
               name="isMandatory"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-base">Mandatory</FormLabel>
                   <FormControl>
-                    <div className="flex items-center justify-start w-full">
+                    <div className="flex justify-start items-center w-full">
                       <Checkbox
                         checked={field.value}
                         onCheckedChange={field.onChange}
@@ -304,7 +304,7 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
                 </FormItem>
               )}
               disabled={isSubmitting || !isEditing}
-            />
+            /> */}
 
             <FormField
               control={form.control}
@@ -333,7 +333,7 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <div className="flex items-center justify-start w-full">
+                    <div className="flex justify-start items-center w-full">
                       <Checkbox
                         checked={field.value}
                         onCheckedChange={(checked) => {
@@ -381,7 +381,7 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
             />
           </div>
           {isEditing && (
-            <div className="flex items-center gap-x-2">
+            <div className="flex gap-x-2 items-center">
               <Button type="submit" disabled={!isValid || isSubmitting}>
                 Lưu thay đổi
               </Button>

@@ -56,7 +56,7 @@ export function DataTable<TData, TValue>({
     <div>
       <div className="flex items-center justify-between py-4">
         <Input
-          placeholder="Lọc loại tài liệu..."
+          placeholder="Lọc tài liệu..."
           value={
             (table.getColumn("documentName")?.getFilterValue() as string) ?? ""
           }
@@ -68,7 +68,7 @@ export function DataTable<TData, TValue>({
         <Link href="/instructor/documents/create">
           <Button>
             <PlusCircle className="w-4 h-4 mr-2" />
-            Tạo loại tài liệu
+            Tạo tài liệu
           </Button>
         </Link>
       </div>

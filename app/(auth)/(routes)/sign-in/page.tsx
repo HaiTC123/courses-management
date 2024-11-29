@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/store/use-auth-store";
 import toast from "react-hot-toast";
+import { UserRole } from "@/enum/user-role";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -45,10 +46,20 @@ const SignIn = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await signIn(values);
+      const response = await signIn(values);
       await getCurrentUser();
-      router.push("/");
-      toast.success("Đăng nhập thành công");
+      if (response) {
+        toast.success("Đăng nhập thành công");
+        if (response?.data?.role === UserRole.ADMIN) {
+          router.push("/admin");
+          return;
+        }
+        if (response?.data?.role === UserRole.INSTRUCTOR) {
+          router.push("/instructor");
+          return;
+        }
+        router.push("/");
+      }
     } catch (error) {
       console.log(error);
       toast.error("Đăng nhập thất bại. Vui lòng kiểm tra thông tin đăng nhập.");
@@ -56,8 +67,8 @@ const SignIn = () => {
   };
 
   return (
-    <div className="flex items-center justify-center w-full h-full px-4 py-12 rounded-md sm:px-6 lg:px-8">
-      <div className="w-full max-w-md space-y-8">
+    <div className="flex justify-center items-center px-4 py-12 w-full h-full rounded-md sm:px-6 lg:px-8">
+      <div className="space-y-8 w-full max-w-md">
         <div>
           <h2 className="mt-6 text-3xl font-extrabold text-center">
             Đăng nhập
@@ -102,7 +113,7 @@ const SignIn = () => {
                   </FormItem>
                 )}
               />
-              <div className="flex items-center justify-between">
+              <div className="flex justify-between items-center">
                 <div className="text-sm">
                   <Link
                     href="/forgot-password"

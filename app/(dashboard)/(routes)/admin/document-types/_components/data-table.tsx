@@ -54,7 +54,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-center justify-between py-4">
+      <div className="flex justify-between items-center py-4">
         <Input
           placeholder="Lọc loại tài liệu..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
@@ -63,14 +63,14 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
-        <Link href="/instructor/document-types/create">
+        <Link href="/admin/document-types/create">
           <Button>
-            <PlusCircle className="w-4 h-4 mr-2" />
+            <PlusCircle className="mr-2 w-4 h-4" />
             Tạo loại tài liệu
           </Button>
         </Link>
       </div>
-      <div className="border rounded-md">
+      <div className="rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -120,7 +120,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end py-4 space-x-2">
+      <div className="flex justify-end items-center py-4 space-x-2">
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length
             ? `${table.getFilteredSelectedRowModel().rows.length} of{" "}`
