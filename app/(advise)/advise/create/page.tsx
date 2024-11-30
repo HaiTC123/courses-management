@@ -87,11 +87,8 @@ const AdviseCreatePage = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      // Add your API call here to submit the form
-      console.log(values);
       const body = {
         ...values,
-        advisorId: 1,
       };
       const response = await userSendToAdvisorService(body);
       if (response.success) {
@@ -106,7 +103,7 @@ const AdviseCreatePage = () => {
   };
 
   return (
-    <div className="max-w-2xl p-6 mx-auto">
+    <div className="p-6 mx-auto max-w-2xl">
       <div className="mb-6">
         <h1 className="text-2xl font-bold">Tạo phiên hướng dẫn</h1>
       </div>

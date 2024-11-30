@@ -2,20 +2,16 @@
 
 import { ChatContainer } from "@/components/chat-container";
 import { LoadingSpinner } from "@/components/loading-spinner";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { getPaginatedAdvisesService } from "@/services/advise.service";
 import { useAuthStore } from "@/store/use-auth-store";
 import { Ban, CheckCircle2, XCircle } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import SidebarAdvise from "../_components/sidebar-advise";
 import { MobileSidebarAdvise } from "../_components/sidebar-advise-mobile";
 
 const AdvisePage = () => {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const adviseId = searchParams.get("adviseId");
   const { user, role } = useAuthStore.getState();
@@ -91,7 +87,7 @@ const AdvisePage = () => {
               );
             case "Cancelled":
               return (
-                <div className="flex flex-col items-center justify-center w-full gap-4 p-8 border rounded-lg">
+                <div className="flex flex-col gap-4 justify-center items-center p-8 w-full rounded-lg border">
                   <XCircle className="w-16 h-16 text-red-500" />
                   <h2 className="text-2xl font-semibold text-center">
                     Tư vấn đã bị hủy
@@ -100,7 +96,7 @@ const AdvisePage = () => {
               );
             case "Scheduled":
               return (
-                <div className="flex flex-col items-center justify-center w-full gap-4 p-8 border rounded-lg">
+                <div className="flex flex-col gap-4 justify-center items-center p-8 w-full rounded-lg border">
                   <h2 className="text-2xl font-semibold text-center">
                     Yêu cầu của bạn đã được gửi đi. Vui lòng chờ phê duyệt.
                   </h2>
@@ -108,7 +104,7 @@ const AdvisePage = () => {
               );
             case "Completed":
               return (
-                <div className="flex flex-col items-center justify-center w-full gap-4 p-8 border rounded-lg">
+                <div className="flex flex-col gap-4 justify-center items-center p-8 w-full rounded-lg border">
                   <CheckCircle2 className="w-16 h-16 text-green-500" />
                   <h2 className="text-2xl font-semibold text-center">
                     Tư vấn đã hoàn thành
@@ -117,7 +113,7 @@ const AdvisePage = () => {
               );
             default:
               return (
-                <div className="flex flex-col items-center justify-center w-full gap-4 p-8 border rounded-lg">
+                <div className="flex flex-col gap-4 justify-center items-center p-8 w-full rounded-lg border">
                   <Ban className="w-16 h-16 text-red-500" />
                   <h2 className="text-2xl font-semibold text-center">
                     Trạng thái không hợp lệ
@@ -133,7 +129,7 @@ const AdvisePage = () => {
       ) : (
         <div className="flex flex-col flex-1">
           <Card className="flex-1 p-4 mb-4">
-            <div className="flex flex-col items-center justify-center w-full h-full gap-4 p-8">
+            <div className="flex flex-col gap-4 justify-center items-center p-8 w-full h-full">
               <h2 className="text-2xl font-semibold text-center">
                 Chọn tư vấn để bắt đầu chat
               </h2>

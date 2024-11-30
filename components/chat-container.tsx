@@ -20,7 +20,7 @@ interface Message {
   message: string;
   senderId: number;
   fullName: string;
-  profilePictureURL?: string;
+  profileURL?: string;
   timestamp?: Date | null;
 }
 
@@ -60,7 +60,7 @@ export const ChatContainer = ({
             message: input,
             senderId: user.id,
             fullName: user.fullName,
-            profilePictureURL: user.profilePictureURL,
+            profileURL: user.profilePictureURL,
             timestamp: null,
           },
         ]);
@@ -70,35 +70,6 @@ export const ChatContainer = ({
       toast.error("Gửi tin nhắn thất bại");
     }
   };
-
-  // const getChatPaging = useCallback(async () => {
-  //   const response = await getChatPagingService({
-  //     pageSize: 1000,
-  //     pageNumber: 1,
-  //     conditions: [
-  //       {
-  //         key: "advisingId",
-  //         condition: "equal",
-  //         value: advise.id,
-  //       },
-  //     ],
-  //     sortOrder: "createdAt desc",
-  //     searchKey: "",
-  //     searchFields: [],
-  //     includeReferences: {
-  //       sender: true,
-  //     },
-  //   });
-  //   setMessages(
-  //     response.data.data.reverse().map((item: any) => ({
-  //       message: item.message,
-  //       senderId: item.sender.id,
-  //       fullName: item.sender.fullName,
-  //       profilePictureURL: item.sender.profilePictureURL,
-  //       timestamp: null,
-  //     }))
-  //   );
-  // }, [advise.id]);
 
   useEffect(() => {
     const fetchChatPaging = async () => {
@@ -124,7 +95,7 @@ export const ChatContainer = ({
           message: item.message,
           senderId: item.sender.id,
           fullName: item.sender.fullName,
-          profilePictureURL: item.sender.profilePictureURL,
+          profileURL: item.sender.profilePictureURL,
           timestamp: null,
         }))
       );
@@ -139,14 +110,14 @@ export const ChatContainer = ({
       SocketInstance.socket?.on("message", (message: any) => {
         console.log("[CHAT] chatting message", message);
         const rawData = JSON.parse(message.rawData);
+        console.log(rawData);
         setMessages((prev) => [
           ...prev,
           {
             message: rawData.message,
             senderId: message.senderId,
             fullName: message.senderName,
-            profilePictureURL:
-              message.senderProfilePictureURL ?? DEFAULT_AVATAR,
+            profileURL: rawData.profileURL ?? DEFAULT_AVATAR,
             timestamp: null,
           },
         ]);
@@ -165,7 +136,7 @@ export const ChatContainer = ({
 
   return (
     <div className="flex flex-col flex-1 h-full">
-      <Card className="flex-1 p-4 mb-4 overflow-auto">
+      <Card className="overflow-auto flex-1 p-4 mb-4">
         <ScrollArea className="h-full">
           <div className="space-y-4">
             {messages.map((message, idx) => (
@@ -184,9 +155,7 @@ export const ChatContainer = ({
                   }`}
                 >
                   <Avatar className="w-8 h-8">
-                    <AvatarImage
-                      src={message.profilePictureURL ?? DEFAULT_AVATAR}
-                    />
+                    <AvatarImage src={message.profileURL ?? DEFAULT_AVATAR} />
                     <AvatarFallback>
                       {message.fullName?.slice(0, 2).toUpperCase() || "U"}
                     </AvatarFallback>

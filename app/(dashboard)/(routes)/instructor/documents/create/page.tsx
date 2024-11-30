@@ -7,6 +7,7 @@ import * as z from "zod";
 
 import Editor from "@/components/editor";
 import { Button } from "@/components/ui/button";
+import { Combobox } from "@/components/ui/combobox";
 import {
   Form,
   FormControl,
@@ -16,20 +17,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  addDocumentTypeService,
-  getPaginatedDocumentTypesService,
-} from "@/services/document-type.service";
-import Link from "next/link";
-import toast from "react-hot-toast";
+import { DEFAULT_IMAGE } from "@/constants/default-image";
 import { FILE_TYPES } from "@/constants/file-type-data";
-import { Combobox } from "@/components/ui/combobox";
-import { uploadFileService } from "@/services/file.service";
-import { useEffect, useState } from "react";
+import { getPaginatedDocumentTypesService } from "@/services/document-type.service";
 import { addDocumentService } from "@/services/document.service";
+import { uploadFileService } from "@/services/file.service";
 import { omit } from "lodash";
 import Image from "next/image";
-import { DEFAULT_IMAGE } from "@/constants/default-image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const CreateDocumentPage = () => {
   const router = useRouter();
@@ -41,8 +38,12 @@ const CreateDocumentPage = () => {
     description: z.string().min(1, {
       message: "Mô tả là bắt buộc",
     }),
-    fileType: z.string(),
-    categoryId: z.number(),
+    fileType: z.string().min(1, {
+      message: "Loại tài liệu là bắt buộc",
+    }),
+    categoryId: z.number().min(1, {
+      message: "Danh mục là bắt buộc",
+    }),
     accessUrl: z.string(),
     backgroundUrl: z.string(),
     backgroundUrlFile: z.string().optional(),
@@ -116,7 +117,7 @@ const CreateDocumentPage = () => {
   return (
     <div className="p-6 mx-auto">
       <div>
-        <h1 className="text-2xl">Tạo loại tài liệu</h1>
+        <h1 className="text-2xl">Tạo tài liệu</h1>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -128,7 +129,7 @@ const CreateDocumentPage = () => {
                 name="documentName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tên loại tài liệu</FormLabel>
+                    <FormLabel>Tên tài liệu</FormLabel>
                     <FormControl>
                       <Input
                         disabled={isSubmitting}
@@ -160,7 +161,7 @@ const CreateDocumentPage = () => {
                 name="categoryId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Danh mục</FormLabel>
+                    <FormLabel>Loại tài liệu</FormLabel>
                     <FormControl>
                       <Combobox
                         options={documentTypes}
@@ -257,7 +258,7 @@ const CreateDocumentPage = () => {
                 </div>
               )}
             </div>
-            <div className="flex items-center gap-x-2">
+            <div className="flex gap-x-2 items-center">
               <Link href="/">
                 <Button type="button" variant="ghost">
                   Hủy

@@ -1,6 +1,7 @@
 export const mapNotificationType = (message: any) => {
   let title = "Thông báo";
   let link = "";
+  let profileURL = "";
   if (message.type === "Instructor_Send_Course_To_Admin_Approve") {
     const data = JSON.parse(message.rawData);
     title = "Có khóa học mới gửi đến cần duyệt";
@@ -25,10 +26,12 @@ export const mapNotificationType = (message: any) => {
     const data = JSON.parse(message.rawData);
     title = "Có tin nhắn mới từ giáo viên";
     link = `/advise?adviseId=${data.academicAdvisingID}`;
+    profileURL = data.profileURL;
   } else if (message.type === "Student_Chat_Advising_To_Advisor") {
     const data = JSON.parse(message.rawData);
     title = "Có tin nhắn mới từ sinh viên";
     link = `/instructor/advise?adviseId=${data.academicAdvisingID}`;
+    profileURL = data.profileURL;
   } else if (message.type === "Advisor_Approve_Advising") {
     const data = JSON.parse(message.rawData);
     title = "Tư vấn đã được duyệt";
@@ -54,5 +57,5 @@ export const mapNotificationType = (message: any) => {
     title = `Đã đến thời gian học khóa '${data.courseName}'`;
     link = `/learning/${data.courseId}`;
   }
-  return { title, link };
+  return { title, link, profileURL };
 };

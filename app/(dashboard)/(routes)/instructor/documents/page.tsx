@@ -30,7 +30,6 @@ const DocumentPage = () => {
           const listDocuments = response.data.data.map((document: any) => ({
             ...document,
           }));
-          console.log(listDocuments);
           setDocuments(listDocuments);
         }
       })
