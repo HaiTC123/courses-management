@@ -5,6 +5,7 @@ import { BaseService } from 'src/base/base.service';
 import { CoreService } from 'src/core/core.service';
 import { UserDetail, UserDto } from 'src/model/dto/user.dto';
 import { UserEntity } from 'src/model/entity/user.entity';
+import { Condition, PageRequest } from 'src/model/request/page.request';
 import { ServiceResponse } from 'src/model/response/service.response';
 import { PrismaService } from 'src/repo/prisma.service';
 import { generateRandomPassword, isEnvDevelopment } from 'src/utils/common.utils';
@@ -88,6 +89,9 @@ export class UsersService extends BaseService<UserEntity, Prisma.UserCreateInput
 
     }
 
+    async getNotification(param: PageRequest) {
+        return this.prismaService.notificationRepo.getPaging(param, false);
+    }
     
 
 }

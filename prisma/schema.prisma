@@ -49,6 +49,7 @@ enum AdvisingStatus {
   Completed
   Cancelled
   Rejected
+  Approved
 }
 
 enum ProgressStatus {
@@ -87,6 +88,7 @@ model User {
   admin             Admin?         @relation("UserAdmin")
   Notification      Notification[]
   coin              Coin?          @relation("UserCoin")
+  AdvisingChat      AdvisingChat[]
 }
 
 model OtpRequest {
@@ -431,13 +433,15 @@ model AcademicAdvising {
   advisingDate DateTime       @default(now()) // Ngày và thời gian của buổi tư vấn
   topic        String         @db.VarChar(255) // Chủ đề chính của buổi tư vấn
   notes        String?        @db.Text // Ghi chú hoặc chi tiết về cuộc tư vấn
-  followUpDate DateTime? // Ngày theo dõi tiếp theo (nếu có)
   status       AdvisingStatus @default(Scheduled) // Trạng thái của buổi tư vấn
   createdAt    DateTime       @default(now()) // Thời gian tạo bản ghi
   updatedAt    DateTime       @updatedAt // Thời gian cập nhật bản ghi
 
-  student Student    @relation(fields: [studentId], references: [id]) // Quan hệ với Student
-  advisor Instructor @relation(fields: [advisorId], references: [id]) // Quan hệ với Instructor
+  student      Student        @relation(fields: [studentId], references: [id]) // Quan hệ với Student
+  advisor      Instructor     @relation(fields: [advisorId], references: [id]) // Quan hệ với Instructor
+  AdvisingChat AdvisingChat[]
+  createdBy    String?
+  updatedBy    String?
 
   @@index([studentId])
   @@index([advisorId])
@@ -473,15 +477,16 @@ model Transaction {
 }
 
 model TransactionHistory {
-  id            Int     @id @default(autoincrement()) // ID tự động tăng
+  id            Int      @id @default(autoincrement()) // ID tự động tăng
   orderId       Int // ID của đơn hàng
   description   String? // Mô tả giao dịch
   userId        Int // ID của người dùng
   object        String? // Đối tượng liên quan (có thể null)
   paymentMethod Int // Phương thức thanh toán
-
-  createdAt DateTime @default(now()) // Thời gian tạo
-  updatedAt DateTime @updatedAt // Thời gian cập nhật
+  createdBy     String?
+  updatedBy     String?
+  createdAt     DateTime @default(now()) // Thời gian tạo
+  updatedAt     DateTime @updatedAt // Thời gian cập nhật
 }
 
 model Progress {
@@ -495,6 +500,25 @@ model Progress {
   enrollment     Enrollment     @relation(fields: [enrollmentId], references: [id])
   lesson         CourseLesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
   courseId       Int            @default(0)
+  createdBy      String?
+  updatedBy      String?
 
   @@index([enrollmentId, lessonId], name: "enrollment_lesson_unique")
+}
+
+model AdvisingChat {
+  id         Int      @id @default(autoincrement()) // Khóa chính tự động tăng
+  advisingId Int // Liên kết với bảng AcademicAdvising
+  senderId   Int // Người gửi tin nhắn (có thể là sinh viên hoặc giảng viên)
+  message    String   @db.Text // Nội dung tin nhắn
+  createdAt  DateTime @default(now()) // Thời gian gửi tin nhắn
+  updatedAt  DateTime @updatedAt // Thời gian cập nhật bản ghi
+
+  advising  AcademicAdvising @relation(fields: [advisingId], references: [id]) // Quan hệ với AcademicAdvising
+  sender    User             @relation(fields: [senderId], references: [id]) // Quan hệ với bảng User để xác định ai gửi
+  createdBy String?
+  updatedBy String?
+
+  @@index([advisingId])
+  @@index([senderId])
 }

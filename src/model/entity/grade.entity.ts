@@ -63,7 +63,21 @@ export class AcademicAdvisingEntity extends BaseEntity{
     @AutoMap()
     notes?: string;
     @AutoMap()
-    followUpDate?: Date;
-    @AutoMap()
     status: string;
+}
+
+
+export class AdvisingChatEntity extends BaseEntity {
+  @AutoMap()
+  id: number;
+
+  @AutoMap()
+  advisingId: number;
+
+  @AutoMap()
+  senderId: number;
+
+  @AutoMap()
+  message: string;
+
 }

@@ -287,6 +287,16 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
         });
         await this.progressService.addLessonProgressForStudent(enrollment1.id, courseId);
 
+        // Send notification to instructor
+        await this.pushNotification(instructor.userId, NotificationType.Student_Buy_Course,
+            JSON.stringify({
+                courseId,
+                courseName: course.courseName
+            }),
+            this._authService.getFullname(), this._authService.getUserID()
+
+        )
+
         return ServiceResponse.onSuccess(enrollment1, "Bạn đã đăng ký khóa học thành công");
     }
 
@@ -370,7 +380,7 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
         await this.update(courseId, { status });
         let type = NotificationType.Admin_Reject_Course
         if (status == CourseStatus.APPROVED) {
-            type = NotificationType.Admin_Reject_Course;
+            type = NotificationType.Admin_Approved_Course;
         }
 
         var instructor = await this.prismaService.instructor.findUnique({

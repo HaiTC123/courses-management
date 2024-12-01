@@ -9,6 +9,8 @@ import { CoreService } from 'src/core/core.service';
 import { EntityType, ModelType } from 'src/common/reflect.metadata';
 import { AuthGuard } from 'src/core/auth.guard';
 import { Roles } from 'src/utils/roles.decorator';
+import { ServiceResponse } from 'src/model/response/service.response';
+import { PageRequest } from 'src/model/request/page.request';
 
 
 @ApiTags('User')
@@ -33,6 +35,11 @@ export class UsersController extends BaseController<UserEntity, Prisma.UserCreat
     @Get("currentUser")
     async getCurrentUser(){
         return this.usersService.getCurrentUser();
+    }
+
+    @Post("notification")
+    async getNotification(@Body() param: PageRequest){
+        return ServiceResponse.onSuccess(await this.usersService.getNotification(param));
     }
 
 }

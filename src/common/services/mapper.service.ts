@@ -27,8 +27,8 @@ import { LearningPathCourseEntity, LearningPathEntity } from 'src/model/entity/l
 import { LearningPathCourseDto, LearningPathDto } from 'src/model/dto/learn.dto';
 import { NotificationDto } from 'src/model/dto/notification.dto';
 import { Notification } from 'src/model/entity/notification.entity';
-import { AcademicAdvisingDto, FailedCourseDto, GoalDto, GradeDto } from 'src/model/dto/grade.dto';
-import { AcademicAdvisingEntity, FailedCourseEntity, GoalEntity, GradeEntity } from 'src/model/entity/grade.entity';
+import { AcademicAdvisingDto, AdvisingChatDto, FailedCourseDto, GoalDto, GradeDto } from 'src/model/dto/grade.dto';
+import { AcademicAdvisingEntity, AdvisingChatEntity, FailedCourseEntity, GoalEntity, GradeEntity } from 'src/model/entity/grade.entity';
 import { CoinEntity } from 'src/model/entity/coin.entity';
 import { CoinDto } from 'src/model/dto/coin.dto';
 import { TransactionHistoryDto } from 'src/model/dto/transactionHistory.dto';
@@ -376,6 +376,8 @@ export class MapperService {
     createMap(this.mapper, TransactionHistoryEntity, TransactionHistoryDto);
     createMap(this.mapper, ProgressDto, ProgressEntity);
     createMap(this.mapper, ProgressEntity, ProgressDto);
+    createMap(this.mapper, AdvisingChatDto, AdvisingChatEntity);
+    createMap(this.mapper, AdvisingChatEntity, AdvisingChatDto );
   }
 
   mapData<S, D>(source: S, sourceClass: new (...args: unknown[]) => S, destinationClass: new (...args: unknown[]) => D): D {

@@ -14,7 +14,7 @@ import { OTPEntity } from 'src/model/entity/otp.enity';
 import { Prisma, Role, User } from '@prisma/client';
 
 @Injectable()
-export class AuthService extends BaseService<User, Prisma.UserCreateInput > {
+export class AuthService extends BaseService<User, Prisma.UserCreateInput> {
     private readonly tokenBlacklist: Set<string> = new Set(); // Set để lưu token bị blacklist
     constructor(
         coreService: CoreService,
@@ -93,15 +93,18 @@ export class AuthService extends BaseService<User, Prisma.UserCreateInput > {
         }
         // ingore generate
         user.passwordHash = "";
-        return ServiceResponse.onSuccess({
+        const userInfo = {
             email: user.email,
             fullName: user.fullName,
             role: user.role,
             id: user.id,
             studentId: user.student?.id,
             adminId: user.admin?.id,
-            instructorId: user.instructor?.id,
-            token: generateToken(user)
+            instructorId: user.instructor?.id
+        }
+        return ServiceResponse.onSuccess({
+            ...userInfo,
+            token: generateToken(userInfo)
         })
 
     };
@@ -125,7 +128,7 @@ export class AuthService extends BaseService<User, Prisma.UserCreateInput > {
         var otpRequest = await this.prismaService.otpRepo.findOneWithCondition({
             email: param.email
         })
-        if (otpRequest){
+        if (otpRequest) {
             await this.prismaService.otpRepo.delete(otpRequest.id);
         }
         await this.prismaService.otpRepo.create(data);

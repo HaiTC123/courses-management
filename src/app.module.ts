@@ -28,6 +28,7 @@ import { VNPayModule } from './common/services/vnpay/VNPay.module';
 import { CoinsModule } from './controllers/coin/coin.module';
 import { TransactionHistoryModule } from './controllers/transactionHistory/transactionHistory.module';
 import { ProgressModule } from './controllers/progress/prerequistite.module';
+import { AdvisingChatModule } from './controllers/advisingChat/academicAdvising.module';
 
 @Module({
   imports: [
@@ -55,7 +56,8 @@ import { ProgressModule } from './controllers/progress/prerequistite.module';
     VNPayModule,
     CoinsModule,
     TransactionHistoryModule,
-    ProgressModule
+    ProgressModule,
+    AdvisingChatModule
   ],
   controllers: [AppController],
   providers: [AppService,

@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Decimal } from '@prisma/client/runtime/library';
 import { BaseDto } from './base.dto';
 import { AutoMap } from '@automapper/classes';
+import { IsInt, IsString } from 'class-validator';
 
 
 export class GradeDto extends BaseDto {
@@ -115,13 +116,14 @@ export class GoalDto extends BaseDto{
 }
 
 export class AcademicAdvisingDto extends BaseDto{
-    @ApiProperty()
-    @AutoMap()
-    id: number;
 
     @ApiProperty()
     @AutoMap()
-    studentId: number;
+    id?: number;
+
+    @ApiProperty()
+    @AutoMap()
+    studentId?: number;
 
     @ApiProperty()
     @AutoMap()
@@ -139,11 +141,22 @@ export class AcademicAdvisingDto extends BaseDto{
     @AutoMap()
     notes?: string;
 
-    @ApiProperty({ required: false })
-    @AutoMap()
-    followUpDate?: Date;
-
     @ApiProperty()
     @AutoMap()
-    status: string;
+    status?: string;
 }
+
+
+export class AdvisingChatDto extends BaseDto {
+    @AutoMap()
+    @ApiProperty()
+    @IsInt()
+    advisingId: number;
+  
+    @AutoMap()
+    @ApiProperty()
+    @IsString()
+    message: string;
+  
+  }
+  

@@ -6,6 +6,7 @@ import { BaseRepository } from './base.repo';
 import { CourseRepository } from './course.repo';
 import { PrerequisiteEntity } from 'src/model/entity/prere.entity';
 import { CourseCompletionEntity } from 'src/model/entity/course-complete.entity';
+import { Notification } from 'src/model/entity/notification.entity';
 
 
 
@@ -16,6 +17,7 @@ export class PrismaService extends PrismaClient implements OnModuleDestroy {
   public courseRepo: CourseRepository;
   public prereRepo: BaseRepository<PrerequisiteEntity, Prisma.PrerequisiteCreateInput>;
   public courseCompleteRepo: BaseRepository<CourseCompletionEntity, Prisma.CourseCompletionCreateInput>;
+  public notificationRepo: BaseRepository<Notification, Prisma.NotificationCreateInput>;
 
   constructor() {
     super();
@@ -24,6 +26,7 @@ export class PrismaService extends PrismaClient implements OnModuleDestroy {
     this.courseRepo = new CourseRepository(this);
     this.prereRepo = new BaseRepository<PrerequisiteEntity, Prisma.PrerequisiteCreateInput>(this, this.prerequisite);
     this.courseCompleteRepo = new BaseRepository<CourseCompletionEntity, Prisma.CourseCompletionCreateInput>(this, this.courseCompletion);
+    this.notificationRepo = new BaseRepository<Notification, Prisma.NotificationCreateInput>(this, this.notification);
   }
 
   // Đóng kết nối Prisma khi module bị hủy
@@ -97,6 +100,10 @@ export class PrismaService extends PrismaClient implements OnModuleDestroy {
         return this.transactionHistory;
       case "progress":
         return this.progress;
+      case "notification":
+        return this.notification;
+      case "advisingChat":
+        return this.advisingChat;
     }
     return null;
   }

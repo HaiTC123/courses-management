@@ -112,3 +112,6 @@ INSERT INTO Semester (name, startDate, endDate, isCurrent, createdAt, updatedAt,
 VALUES 
   ('Spring 2024', '2024-01-15', '2024-05-15', false, NOW(), NOW(), 'Admin', 'Admin'),
   ('Fall 2024', '2024-08-15', '2024-12-15', true, NOW(), NOW(), 'Admin', 'Admin');
+
+
+@Roles(Role.Instructor)
