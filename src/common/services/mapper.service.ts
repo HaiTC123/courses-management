@@ -35,6 +35,10 @@ import { TransactionHistoryDto } from 'src/model/dto/transactionHistory.dto';
 import { TransactionHistoryEntity } from 'src/model/entity/transactionHistory.entity';
 import { ProgressDto } from 'src/model/dto/progress.dto';
 import { ProgressEntity } from 'src/model/entity/progress.entity';
+import { CategoryDocumentDto } from 'src/model/dto/categoryDocument.dto';
+import { CategoryDocumentEntity } from 'src/model/entity/categoryDocument.entity';
+import { DocumentEntity } from 'src/model/entity/document.entity';
+import { DocumentDto } from 'src/model/dto/document.dto';
 
 @Injectable()
 export class MapperService {
@@ -377,7 +381,13 @@ export class MapperService {
     createMap(this.mapper, ProgressDto, ProgressEntity);
     createMap(this.mapper, ProgressEntity, ProgressDto);
     createMap(this.mapper, AdvisingChatDto, AdvisingChatEntity);
-    createMap(this.mapper, AdvisingChatEntity, AdvisingChatDto );
+    createMap(this.mapper, AdvisingChatEntity, AdvisingChatDto);
+    createMap(this.mapper, CategoryDocumentDto, CategoryDocumentEntity);
+    createMap(this.mapper, CategoryDocumentEntity, CategoryDocumentDto);
+    createMap(this.mapper, DocumentEntity, DocumentDto,
+      forMember((dest) => dest.category, mapFrom((src) => src.category))
+    );
+    createMap(this.mapper, DocumentDto, DocumentEntity);
   }
 
   mapData<S, D>(source: S, sourceClass: new (...args: unknown[]) => S, destinationClass: new (...args: unknown[]) => D): D {

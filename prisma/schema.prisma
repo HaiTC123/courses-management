@@ -181,6 +181,7 @@ model Course {
   Grade                 Grade[]
   FailedCourse          FailedCourse[]
   Goal                  Goal[]
+  Document              Document[]
 }
 
 model CourseChapter {
@@ -521,4 +522,37 @@ model AdvisingChat {
 
   @@index([advisingId])
   @@index([senderId])
+}
+
+model CategoryDocument {
+  id          Int        @id @default(autoincrement()) // Khóa chính tự động tăng
+  name        String     @db.VarChar(100) // Tên danh mục
+  description String?    @db.Text // Mô tả danh mục (nếu cần)
+  createdAt   DateTime   @default(now()) // Thời gian tạo danh mục
+  updatedAt   DateTime   @updatedAt // Thời gian cập nhật
+  createdBy   String?
+  updatedBy   String?
+  Document    Document[]
+}
+
+model Document {
+  id            Int     @id @default(autoincrement()) // Khóa chính tự động tăng
+  courseId      Int? // Khóa ngoại liên kết với bảng Courses (nếu tài liệu liên quan đến khóa học)
+  categoryId    Int // Khóa ngoại liên kết với bảng CategoryDocuments
+  documentName  String  @db.VarChar(255) // Tên tài liệu
+  description   String? @db.Text // Mô tả tài liệu
+  accessUrl     String  @db.VarChar(255) // Đường dẫn truy cập tài liệu
+  fileType      String  @db.VarChar(255) // Loại tệp tài liệu
+  backgroundUrl String  @db.VarChar(255)
+
+  createdAt DateTime @default(now()) // Thời gian tạo tài liệu
+  updatedAt DateTime @updatedAt // Thời gian cập nhật
+
+  course    Course?          @relation(fields: [courseId], references: [id]) // Quan hệ với bảng Courses
+  category  CategoryDocument @relation(fields: [categoryId], references: [id]) // Quan hệ với bảng CategoryDocuments
+  createdBy String?
+  updatedBy String?
+
+  @@index([courseId])
+  @@index([categoryId])
 }
