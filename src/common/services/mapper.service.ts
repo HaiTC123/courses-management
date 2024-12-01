@@ -39,6 +39,8 @@ import { CategoryDocumentDto } from 'src/model/dto/categoryDocument.dto';
 import { CategoryDocumentEntity } from 'src/model/entity/categoryDocument.entity';
 import { DocumentEntity } from 'src/model/entity/document.entity';
 import { DocumentDto } from 'src/model/dto/document.dto';
+import { JobConfigEntity } from 'src/model/entity/jobconfig.entity';
+import { JobConfigDto } from 'src/model/dto/jobconfig.dto';
 
 @Injectable()
 export class MapperService {
@@ -388,6 +390,8 @@ export class MapperService {
       forMember((dest) => dest.category, mapFrom((src) => src.category))
     );
     createMap(this.mapper, DocumentDto, DocumentEntity);
+    createMap(this.mapper, JobConfigEntity, JobConfigDto);
+    createMap(this.mapper, JobConfigDto, JobConfigEntity);
   }
 
   mapData<S, D>(source: S, sourceClass: new (...args: unknown[]) => S, destinationClass: new (...args: unknown[]) => D): D {

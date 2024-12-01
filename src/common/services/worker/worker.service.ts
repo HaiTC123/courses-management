@@ -1,17 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { JobConfigStatus, TypeJob } from 'src/model/enum/jobconfig.enum';
 import { PrismaService } from 'src/repo/prisma.service';
-
-export enum TypeJob {
-    OnlyOnce = 'OnlyOnce',
-    Loop = 'Loop',
-}
-
-export enum JobConfigStatus {
-    New = 'New',
-    WaitExcute = 'WaitExcute',
-    Done = 'Done',
-}
 
 @Injectable()
 export class WorkerService {
