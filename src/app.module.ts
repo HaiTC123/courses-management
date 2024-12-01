@@ -27,6 +27,7 @@ import { WorkerModule } from './common/services/worker/worker.module';
 import { VNPayModule } from './common/services/vnpay/VNPay.module';
 import { CoinsModule } from './controllers/coin/coin.module';
 import { TransactionHistoryModule } from './controllers/transactionHistory/transactionHistory.module';
+import { ProgressModule } from './controllers/progress/prerequistite.module';
 
 @Module({
   imports: [
@@ -53,7 +54,8 @@ import { TransactionHistoryModule } from './controllers/transactionHistory/trans
     WorkerModule,
     VNPayModule,
     CoinsModule,
-    TransactionHistoryModule
+    TransactionHistoryModule,
+    ProgressModule
   ],
   controllers: [AppController],
   providers: [AppService,

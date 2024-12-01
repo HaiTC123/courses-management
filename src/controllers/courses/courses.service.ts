@@ -8,13 +8,15 @@ import { EnrollmentEntity } from 'src/model/entity/enrollment.entity';
 import { PaymentMethod } from 'src/model/enum/payment.enum';
 import { ServiceResponse } from 'src/model/response/service.response';
 import { PrismaService } from 'src/repo/prisma.service';
+import { ProgressService } from '../progress/progress.service';
 
 
 @Injectable()
 export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreateInput> {
     constructor(
         coreService: CoreService,
-        protected readonly prismaService: PrismaService) {
+        protected readonly prismaService: PrismaService,
+        protected readonly progressService: ProgressService) {
         super(prismaService, coreService)
 
     }
@@ -121,6 +123,7 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
         const enrollment1 = await this.prismaService.enrollment.create({
             data: enrollment
         });
+        await this.progressService.addLessonProgressForStudent(enrollment1.id, courseId);
 
         return ServiceResponse.onSuccess(enrollment1, "Bạn đã đăng ký khóa học thành công");
     }
@@ -282,6 +285,7 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
         const enrollment1 = await this.prismaService.enrollment.create({
             data: enrollment
         });
+        await this.progressService.addLessonProgressForStudent(enrollment1.id, courseId);
 
         return ServiceResponse.onSuccess(enrollment1, "Bạn đã đăng ký khóa học thành công");
     }

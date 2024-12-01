@@ -33,6 +33,8 @@ import { CoinEntity } from 'src/model/entity/coin.entity';
 import { CoinDto } from 'src/model/dto/coin.dto';
 import { TransactionHistoryDto } from 'src/model/dto/transactionHistory.dto';
 import { TransactionHistoryEntity } from 'src/model/entity/transactionHistory.entity';
+import { ProgressDto } from 'src/model/dto/progress.dto';
+import { ProgressEntity } from 'src/model/entity/progress.entity';
 
 @Injectable()
 export class MapperService {
@@ -372,6 +374,8 @@ export class MapperService {
     );
     createMap(this.mapper, TransactionHistoryDto, TransactionHistoryEntity);
     createMap(this.mapper, TransactionHistoryEntity, TransactionHistoryDto);
+    createMap(this.mapper, ProgressDto, ProgressEntity);
+    createMap(this.mapper, ProgressEntity, ProgressDto);
   }
 
   mapData<S, D>(source: S, sourceClass: new (...args: unknown[]) => S, destinationClass: new (...args: unknown[]) => D): D {

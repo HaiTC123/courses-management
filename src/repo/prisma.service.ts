@@ -95,6 +95,8 @@ export class PrismaService extends PrismaClient implements OnModuleDestroy {
         return this.transaction;
       case "transactionHistory":
         return this.transactionHistory;
+      case "progress":
+        return this.progress;
     }
     return null;
   }
