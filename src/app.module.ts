@@ -31,6 +31,7 @@ import { ProgressModule } from './controllers/progress/prerequistite.module';
 import { AdvisingChatModule } from './controllers/advisingChat/academicAdvising.module';
 import { CategoryDocumentModule } from './controllers/categoryDocument/categoryDocument.module';
 import { DocumentModule } from './controllers/document/document.module';
+import { JobConfigModule } from './controllers/scheduled/jobConfig.module';
 
 @Module({
   imports: [
@@ -61,7 +62,8 @@ import { DocumentModule } from './controllers/document/document.module';
     ProgressModule,
     AdvisingChatModule,
     CategoryDocumentModule,
-    DocumentModule
+    DocumentModule,
+    JobConfigModule
   ],
   controllers: [AppController],
   providers: [AppService,

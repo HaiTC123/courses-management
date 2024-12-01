@@ -450,16 +450,21 @@ model AcademicAdvising {
 
 model JobConfig {
   id           Int       @id @default(autoincrement())
-  status       String
+  status       String // trạng thái
   startTime    DateTime?
   endTime      DateTime?
-  cronJob      String?
-  typeJob      String
+  cronJob      String? // biểu thức
+  typeJob      String // once daily weekly monthly
   rawData      String?
+  jobDetail    String? // lưu cấu hình
   key          String    @unique
   typeBusiness String
   createdAt    DateTime  @default(now()) // Thời gian tạo bản ghi
   updatedAt    DateTime  @updatedAt // Thời gian cập nhật bản ghi
+  relatedId    Int? // ID liên kết có thể là CourseId hoặc các ID khác
+  relatedType  String? // Loại liên kết để xác định loại liên kết (ví dụ: "Course", "Student", etc.)
+  createdBy    String?
+  updatedBy    String?
 }
 
 model Coin {
