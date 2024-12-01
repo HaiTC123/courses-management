@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { Prisma, Role } from '@prisma/client';
 import { BaseController } from 'src/base/base.controller';
@@ -40,6 +40,11 @@ export class UsersController extends BaseController<UserEntity, Prisma.UserCreat
     @Post("notification")
     async getNotification(@Body() param: PageRequest){
         return ServiceResponse.onSuccess(await this.usersService.getNotification(param));
+    }
+
+    @Put("notification/:id")
+    async updateViewNotification(@Param('id')id: number){
+        return ServiceResponse.onSuccess(await this.usersService.updateViewNotification(id));
     }
 
 }

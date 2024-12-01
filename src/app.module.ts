@@ -29,6 +29,8 @@ import { CoinsModule } from './controllers/coin/coin.module';
 import { TransactionHistoryModule } from './controllers/transactionHistory/transactionHistory.module';
 import { ProgressModule } from './controllers/progress/prerequistite.module';
 import { AdvisingChatModule } from './controllers/advisingChat/academicAdvising.module';
+import { CategoryDocumentModule } from './controllers/categoryDocument/categoryDocument.module';
+import { DocumentModule } from './controllers/document/document.module';
 
 @Module({
   imports: [
@@ -57,7 +59,9 @@ import { AdvisingChatModule } from './controllers/advisingChat/academicAdvising.
     CoinsModule,
     TransactionHistoryModule,
     ProgressModule,
-    AdvisingChatModule
+    AdvisingChatModule,
+    CategoryDocumentModule,
+    DocumentModule
   ],
   controllers: [AppController],
   providers: [AppService,
