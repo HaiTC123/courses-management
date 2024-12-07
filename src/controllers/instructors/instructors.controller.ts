@@ -14,7 +14,7 @@ import { InstructorDto } from 'src/model/dto/instructor.dto';
 @ApiTags('Instructor')
 @Controller('api/instructor')
 @UseGuards(AuthGuard, RolesGuard)
-@Roles(Role.Admin, Role.Instructor)
+@Roles(Role.Admin, Role.Instructor, Role.Student)
 export class InstructorsController extends BaseController<InstructorEntity, Prisma.InstructorCreateInput> {
     @EntityType(InstructorEntity)
     entity: InstructorEntity;

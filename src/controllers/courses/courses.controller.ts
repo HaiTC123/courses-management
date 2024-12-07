@@ -79,5 +79,10 @@ export class CoursesController extends BaseController<CourseEntity, Prisma.Cours
         return ServiceResponse.onSuccess(eligibleCourses);
     }
 
+    @Get('student/:studentId')
+    async getCourseByStudentId(@Param('studentId') studentId: number){
+        return ServiceResponse.onSuccess(await this.service.getCourseByStudentId(studentId));
+    }
+
 
 }

@@ -18,10 +18,10 @@ export class CourseLessonsService extends BaseService<CourseLessonEntity, Prisma
 
     async add(entity: CourseLessonEntity): Promise<number> {
         let id = await super.add(entity);
-        const course = await this.getCourseByLessonId(id);
-        if (course && course.status == CourseStatus.APPROVED) {
-            await this.progressService.addProgressWhenAddLessonForStudents(course.id, id);
-        }
+        // const course = await this.getCourseByLessonId(id);
+        // if (course && course.status == CourseStatus.APPROVED) {
+        //     await this.progressService.addProgressWhenAddLessonForStudents(course.id, id);
+        // }
         return id;
     }
     async remove(id: number): Promise<void> {
@@ -30,22 +30,22 @@ export class CourseLessonsService extends BaseService<CourseLessonEntity, Prisma
 
     }
 
-    async getCourseByLessonId(lessonId: number) {
-        const course = await this.prismaService.courseLesson.findUnique({
-            where: {
-                id: lessonId, // tìm kiếm theo lessonId
-            },
-            select: {
-                chapter: {
-                    select: {
-                        course: true // lấy courseId từ chapter
-                    },
-                },
-            },
-        });
+    // async getCourseByLessonId(lessonId: number) {
+    //     const course = await this.prismaService.courseLesson.findUnique({
+    //         where: {
+    //             id: lessonId, // tìm kiếm theo lessonId
+    //         },
+    //         select: {
+    //             chapter: {
+    //                 select: {
+    //                     course: true // lấy courseId từ chapter
+    //                 },
+    //             },
+    //         },
+    //     });
 
-        return course?.chapter?.course;;
-    }
+    //     return course?.chapter?.course;;
+    // }
 
     // Xóa Danh sách Entity theo IDs
     async removeIDs(ids: number[]): Promise<void> {

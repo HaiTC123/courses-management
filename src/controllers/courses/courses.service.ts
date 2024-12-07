@@ -123,7 +123,7 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
         const enrollment1 = await this.prismaService.enrollment.create({
             data: enrollment
         });
-        await this.progressService.addLessonProgressForStudent(enrollment1.id, courseId);
+        await this.progressService.addMaterialProgressForStudent(enrollment1.id, courseId);
 
         return ServiceResponse.onSuccess(enrollment1, "Bạn đã đăng ký khóa học thành công");
     }
@@ -285,7 +285,7 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
         const enrollment1 = await this.prismaService.enrollment.create({
             data: enrollment
         });
-        await this.progressService.addLessonProgressForStudent(enrollment1.id, courseId);
+        await this.progressService.addMaterialProgressForStudent(enrollment1.id, courseId);
 
         // Send notification to instructor
         await this.pushNotification(instructor.userId, NotificationType.Student_Buy_Course,
@@ -396,6 +396,18 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
 
         )
         return ServiceResponse.onSuccess(null, 'Course status updated successfully');
+    }
+
+    async getCourseByStudentId(studentId: number){
+        const enrollments = await this.prismaService.enrollment.findMany({
+            where: { studentId }
+        });
+      
+        return await this.prismaService.courseRepo.findOneWithCondition({
+            id: {
+                in: enrollments.map(x => x.courseId)
+            }
+        })
     }
 
 }

@@ -8,9 +8,10 @@ import { UserEntity } from 'src/model/entity/user.entity';
 import { CoreService } from 'src/core/core.service';
 import { EntityType, ModelType } from 'src/common/reflect.metadata';
 import { AuthGuard } from 'src/core/auth.guard';
-import { Roles } from 'src/utils/roles.decorator';
+import { hash, compare } from 'bcrypt'
 import { ServiceResponse } from 'src/model/response/service.response';
 import { PageRequest } from 'src/model/request/page.request';
+import { Public } from 'src/utils/public.decorator';
 
 
 @ApiTags('User')
@@ -46,5 +47,12 @@ export class UsersController extends BaseController<UserEntity, Prisma.UserCreat
     async updateViewNotification(@Param('id')id: number){
         return ServiceResponse.onSuccess(await this.usersService.updateViewNotification(id));
     }
+
+    @Public()
+    @Get("test/getHashpass/:password")
+    async getHashPass(@Param('password')password: string){
+        return ServiceResponse.onSuccess(await hash(password, 10));
+    }
+
 
 }

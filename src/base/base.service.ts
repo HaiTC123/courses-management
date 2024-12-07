@@ -151,11 +151,12 @@ export class BaseService<T extends { id: number }, K> {
     this.beforePushNotification(notification);
     const path = this.getPathPushNotification(notification);
 
-    await this.prismaService.notification.create({
+    const notificationData = await this.prismaService.notification.create({
       data: {
         ...notification
       }
     });
+    notification.id = notificationData.id;
     await this._notificationService.pushNotification(notification, path);
 
     this.afterPushNotification(notification);
