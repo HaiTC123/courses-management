@@ -1,9 +1,9 @@
 
 import { BaseEntity } from './base.entity';
 import { AutoMap } from '@automapper/classes';
-import { ProgressStatus } from '@prisma/client';
+import { CourseMaterial, ProgressStatus } from '@prisma/client';
 import { EnrollmentEntity } from './enrollment.entity';
-import { CourseLessonEntity } from './course.entity';
+import { CourseLessonEntity, CourseMaterialEntity } from './course.entity';
 
 export class ProgressEntity extends BaseEntity {
     @AutoMap()
@@ -11,13 +11,16 @@ export class ProgressEntity extends BaseEntity {
     @AutoMap()
     enrollmentId: number;
     @AutoMap()
-    lessonId: number;
+    materialId: number;
     @AutoMap()
     status: ProgressStatus;
     @AutoMap()
     completionDate?: Date;
 
+    @AutoMap()
+    courseId: number;
+
     enrollment: EnrollmentEntity;
-    lesson: CourseLessonEntity;
+    material: CourseMaterialEntity;
 }
 

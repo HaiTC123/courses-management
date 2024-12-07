@@ -1,6 +1,9 @@
 import { AutoMap } from '@automapper/classes';
 import { BaseEntity } from './base.entity';
 import { GradeEntity } from './grade.entity';
+import { Student } from '@prisma/client';
+import { CourseEntity } from './course.entity';
+import { StudentEntity } from './student.entity';
 
 export class EnrollmentEntity extends BaseEntity {
     @AutoMap()
@@ -25,4 +28,10 @@ export class EnrollmentEntity extends BaseEntity {
     completionDate?: Date; // Ngày hoàn thành khóa học (nếu có)
 
     gradeDetail?: GradeEntity;
+    
+}
+
+export class EnrollmentDetail extends EnrollmentEntity {
+    student: StudentEntity;
+    course: CourseEntity;
 }

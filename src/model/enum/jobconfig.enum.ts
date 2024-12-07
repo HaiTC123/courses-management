@@ -1,6 +1,7 @@
 export enum TypeJob {
-    OnlyOnce = 'OnlyOnce',
-    Loop = 'Loop',
+    Once = 'once',
+    Daily = 'daily',
+    Weekly = 'weekly'
 }
 
 export enum JobConfigStatus {

@@ -38,4 +38,7 @@ export class JobConfigEntity extends BaseEntity {
   @AutoMap()
   jobDetail: string;
 
+  @AutoMap()
+  description: string;
+
 }

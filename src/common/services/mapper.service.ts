@@ -19,8 +19,8 @@ import { PrerequisiteEntity } from 'src/model/entity/prere.entity';
 import { PrerequisiteDto } from 'src/model/dto/prere.dto';
 import { SemesterEntity } from 'src/model/entity/semester.entity';
 import { SemesterDto } from 'src/model/dto/semester.dto';
-import { EnrollmentDto } from 'src/model/dto/errollment.dto';
-import { EnrollmentEntity } from 'src/model/entity/enrollment.entity';
+import { EnrollmentDto, EnrollmentDetailDto } from 'src/model/dto/errollment.dto';
+import { EnrollmentDetail, EnrollmentEntity } from 'src/model/entity/enrollment.entity';
 import { CourseCompletionEntity } from 'src/model/entity/course-complete.entity';
 import { CourseCompletionDto } from 'src/model/dto/course-complete.dto';
 import { LearningPathCourseEntity, LearningPathEntity } from 'src/model/entity/learn.entity';
@@ -250,6 +250,33 @@ export class MapperService {
         mapFrom((source) => source.semesterId)
       )
     );
+
+    createMap(this.mapper, EnrollmentDetail, EnrollmentDetailDto,
+      forMember(
+        (destination) => destination.id,
+        mapFrom((source) => source.id)
+      ),
+      forMember(
+        (destination) => destination.studentId,
+        mapFrom((source) => source.studentId)
+      ),
+      forMember(
+        (destination) => destination.courseId,
+        mapFrom((source) => source.courseId)
+      ),
+      forMember(
+        (destination) => destination.semesterId,
+        mapFrom((source) => source.semesterId)
+      ),
+      forMember(
+        (destination) => destination.course,
+        mapFrom((source) => source.course)
+      ),
+      forMember(
+        (destination) => destination.student,
+        mapFrom((source) => source.student)
+      )
+    );
     createMap(
       this.mapper,
       CourseCompletionEntity,
@@ -381,9 +408,15 @@ export class MapperService {
     createMap(this.mapper, TransactionHistoryDto, TransactionHistoryEntity);
     createMap(this.mapper, TransactionHistoryEntity, TransactionHistoryDto);
     createMap(this.mapper, ProgressDto, ProgressEntity);
-    createMap(this.mapper, ProgressEntity, ProgressDto);
+    createMap(this.mapper, ProgressEntity, ProgressDto,
+      forMember((dest) => dest.enrollment, mapFrom((src) => src.enrollment)),
+      forMember((dest) => dest.material, mapFrom((src) => src.material)),
+      forMember((dest) => dest.status, mapFrom((src) => src.status))
+    );
     createMap(this.mapper, AdvisingChatDto, AdvisingChatEntity);
-    createMap(this.mapper, AdvisingChatEntity, AdvisingChatDto);
+    createMap(this.mapper, AdvisingChatEntity, AdvisingChatDto,
+      forMember((dest) => dest.sender, mapFrom((src) => src.sender))
+    );
     createMap(this.mapper, CategoryDocumentDto, CategoryDocumentEntity);
     createMap(this.mapper, CategoryDocumentEntity, CategoryDocumentDto);
     createMap(this.mapper, DocumentEntity, DocumentDto,

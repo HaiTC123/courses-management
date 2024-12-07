@@ -1,6 +1,7 @@
 import { Decimal } from "@prisma/client/runtime/library";
 import { BaseEntity } from "./base.entity";
 import { AutoMap } from "@automapper/classes";
+import { UserEntity } from "./user.entity";
 
 
 export class GradeEntity extends BaseEntity {
@@ -79,5 +80,7 @@ export class AdvisingChatEntity extends BaseEntity {
 
   @AutoMap()
   message: string;
+
+  sender: UserEntity;
 
 }
