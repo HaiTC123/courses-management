@@ -108,6 +108,8 @@ export class PrismaService extends PrismaClient implements OnModuleDestroy {
         return this.categoryDocument;
       case "document":
         return this.document;
+      case "jobconfig":
+        return this.jobConfig;
     }
     return null;
   }

@@ -211,7 +211,6 @@ model CourseLesson {
   updatedBy         String?
   chapter           CourseChapter    @relation(fields: [chapterId], references: [id]) // Liên kết với bảng CourseChapters
   materials         CourseMaterial[] // Một bài học có nhiều tài liệu học tập
-  progress          Progress[]
 }
 
 model CourseMaterial {
@@ -228,6 +227,7 @@ model CourseMaterial {
   createdBy           String?
   updatedBy           String?
   lesson              CourseLesson @relation(fields: [lessonId], references: [id]) // Liên kết với bảng CourseLessons
+  progress            Progress[]
 }
 
 model File {
@@ -498,18 +498,18 @@ model TransactionHistory {
 model Progress {
   id             Int            @id @default(autoincrement()) // Khóa chính tự động tăng
   enrollmentId   Int // Liên kết với bảng Enrollments
-  lessonId       Int // Liên kết với bảng CourseLessons
+  materialId     Int // Liên kết với bảng CourseLessons
   status         ProgressStatus @default(NotStarted) // Trạng thái tiến trình (Not Started, In Progress, Completed)
   completionDate DateTime? // Ngày hoàn thành bài học (nếu có)
   createdAt      DateTime       @default(now()) // Thời gian tạo bản ghi
   updatedAt      DateTime       @updatedAt // Thời gian cập nhật bản ghi
   enrollment     Enrollment     @relation(fields: [enrollmentId], references: [id])
-  lesson         CourseLesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  material       CourseMaterial @relation(fields: [materialId], references: [id], onDelete: Cascade)
   courseId       Int            @default(0)
   createdBy      String?
   updatedBy      String?
 
-  @@index([enrollmentId, lessonId], name: "enrollment_lesson_unique")
+  @@index([enrollmentId, materialId], name: "enrollment_lesson_unique")
 }
 
 model AdvisingChat {
