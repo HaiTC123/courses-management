@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, HttpVersionNotSupportedException, Injectable } from '@nestjs/common';
-import { CourseStatus, Prisma, Role } from '@prisma/client';
+import { CourseStatus, Prisma, ProgressStatus, Role } from '@prisma/client';
 import { BaseService } from 'src/base/base.service';
 import { NotificationType } from 'src/common/const/notification.type';
 import { CoreService } from 'src/core/core.service';
@@ -398,16 +398,117 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
         return ServiceResponse.onSuccess(null, 'Course status updated successfully');
     }
 
-    async getCourseByStudentId(studentId: number){
+    async getCoursesByStudentId(studentId: number) {
         const enrollments = await this.prismaService.enrollment.findMany({
             where: { studentId }
         });
-      
-        return await this.prismaService.courseRepo.findOneWithCondition({
+
+        return await this.prismaService.courseRepo.findManyWithCondition({
             id: {
                 in: enrollments.map(x => x.courseId)
             }
         })
+    }
+
+    async handleScheduleCourse(rawData) {
+        var data = JSON.parse(rawData);
+        var course = await this.prismaService.courseRepo.getById(data.courseId);
+        if (!course) return;
+        await this.pushNotification(data.userId, NotificationType.System_Scheduled_Course,
+            JSON.stringify({
+                courseId: course.id,
+                courseName: course.courseName
+            }),
+            "Hệ thống", -1
+        )
+    }
+
+    async getStudentPerformance(courseId: number) {
+        // Bước 1: Lấy danh sách sinh viên đã đăng ký khóa học
+        const enrollments = await this.prismaService.enrollment.findMany({
+            where: { courseId },
+            include: {
+                student: {
+                    select: {
+                        id: true,
+                        user: {
+                            select: {
+                                fullName: true,
+                                email: true,
+                            },
+                        },
+                    },
+                },
+                Progress: {
+                    select: {
+                        status: true,
+                    },
+                },
+            },
+        });
+
+        // Bước 2: Tính toán hiệu suất của từng sinh viên
+        const studentPerformance = enrollments.map(enrollment => {
+            const totalMaterials = enrollment.Progress.length;
+            const completedMaterials = enrollment.Progress.filter(
+                p => p.status === ProgressStatus.Completed,
+            ).length;
+            const completionRate = totalMaterials > 0 ? (completedMaterials / totalMaterials) * 100 : 0;
+
+            return {
+                studentId: enrollment.student.id,
+                studentName: enrollment.student.user.fullName,
+                email: enrollment.student.user.email,
+                completionRate: completionRate.toFixed(2),
+            };
+        });
+
+        return studentPerformance;
+    }
+
+    async getPaidCoursesRevenue(instructorId: number, courseId: number) {
+
+        // Bước 1: Lấy danh sách các khóa học có phí
+        const where = {isFree: false};
+        if (instructorId > 0){
+            where["instructorId"] = instructorId;
+        }
+        if (courseId > 0){
+            where["id"] = courseId;
+        }
+        const paidCourses = await this.prismaService.course.findMany({
+            where: where,
+            select: {
+                id: true,
+                courseName: true,
+                price: true,
+                enrollment: {
+                    select: {
+                        id: true,
+                    },
+                },
+            },
+        });
+
+        // Bước 2: Tính toán doanh thu của từng khóa học
+        const courseRevenue = paidCourses.map(course => {
+            const enrollmentCount = course.enrollment.length;
+            const revenue = enrollmentCount * course.price;
+            return {
+                courseId: course.id,
+                courseName: course.courseName,
+                enrollmentCount,
+                revenue,
+            };
+        });
+
+        // Bước 3: Tính tổng doanh thu
+        const totalRevenue = courseRevenue.reduce((sum, course) => sum + course.revenue, 0);
+
+        return {
+            totalRevenue,
+            courseRevenue,
+        };
     }
 
 }

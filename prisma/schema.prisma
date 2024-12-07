@@ -465,6 +465,7 @@ model JobConfig {
   relatedType  String? // Loại liên kết để xác định loại liên kết (ví dụ: "Course", "Student", etc.)
   createdBy    String?
   updatedBy    String?
+  description  String?
 }
 
 model Coin {

@@ -3,23 +3,6 @@
 npx prisma migrate deploy
 
 
-### Migration data
-
-npx prisma migrate dev --name your_migration_name
-
-
-
-### Nest js
-1. Tạo module
-nest g module <module-name>
-
-2. Tạo controller
-nest g controller <controller-name>
-
-3. Tạo service
-nest g service <service-name>
-
-
 ### Insert dữ liệu ban đầu
 ``` sql
 
@@ -41,3 +24,8 @@ VALUES
 
 
 ```
+
+
+### Migration data
+
+npx prisma migrate dev --name your_migration_name

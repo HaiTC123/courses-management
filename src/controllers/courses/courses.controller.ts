@@ -81,8 +81,17 @@ export class CoursesController extends BaseController<CourseEntity, Prisma.Cours
 
     @Get('student/:studentId')
     async getCourseByStudentId(@Param('studentId') studentId: number){
-        return ServiceResponse.onSuccess(await this.service.getCourseByStudentId(studentId));
+        return ServiceResponse.onSuccess(await this.service.getCoursesByStudentId(studentId));
     }
 
+    @Get('student/performance/:courseId')
+    async getPerformanceStudent(@Param('courseId') courseId: number){
+        return ServiceResponse.onSuccess(await this.service.getStudentPerformance(courseId));
+    }
+
+    @Get('instructor/revenue/:instructorId/:courseId')
+    async getReviewnue(@Param('instructorId')instructorId: number, @Param('courseId') courseId: number){
+        return ServiceResponse.onSuccess(await this.service.getPaidCoursesRevenue(instructorId,courseId));
+    }
 
 }
