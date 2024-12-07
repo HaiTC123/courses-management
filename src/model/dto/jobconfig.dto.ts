@@ -50,4 +50,6 @@ export class JobConfigDto extends BaseDto {
     @AutoMap()
     jobDetail: string;
 
+    @AutoMap()
+    description: string;
 }

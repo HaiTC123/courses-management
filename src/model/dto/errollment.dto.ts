@@ -2,8 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import { AutoMap } from '@automapper/classes';
 import { BaseDto } from './base.dto';
 import { GradeDto } from './grade.dto';
+import { StudentDto } from './student.dto';
+import { CourseDto } from './course.dto';
 
-export class EnrollmentDto extends BaseDto{
+export class EnrollmentDto extends BaseDto {
   @ApiProperty()
   @AutoMap()
   id: number; // Khóa chính tự động tăng
@@ -33,4 +35,9 @@ export class EnrollmentDto extends BaseDto{
   completionDate?: Date; // Ngày hoàn thành khóa học (nếu có)
 
   gradeDetail?: GradeDto;
+}
+
+export class EnrollmentDetailDto extends EnrollmentDto {
+  student: StudentDto;
+  course: CourseDto;
 }

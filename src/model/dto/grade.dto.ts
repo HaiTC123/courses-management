@@ -3,6 +3,7 @@ import { Decimal } from '@prisma/client/runtime/library';
 import { BaseDto } from './base.dto';
 import { AutoMap } from '@automapper/classes';
 import { IsInt, IsString } from 'class-validator';
+import { UserDto } from './user.dto';
 
 
 export class GradeDto extends BaseDto {
@@ -158,5 +159,6 @@ export class AdvisingChatDto extends BaseDto {
     @IsString()
     message: string;
   
+    sender: UserDto;
   }
   
