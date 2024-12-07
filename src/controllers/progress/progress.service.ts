@@ -14,26 +14,37 @@ export class ProgressService extends BaseService<ProgressEntity, Prisma.Progress
         super(prismaService, coreService)
     }
 
-    async addLessonProgressForStudent(enrollmentId: number, courseId: number) {
+    async addMaterialProgressForStudent(enrollmentId: number, courseId: number) {
         // courseId là tham số đầu vào
-        const courseLessons = await this.prismaService.courseLesson.findMany({
+        const courseMaterials = await this.prismaService.courseMaterial.findMany({
             where: {
-                chapter: {
-                    courseId: courseId, // liên kết thông qua CourseChapter
+                lesson: {
+                    chapter: {
+                        courseId: courseId, // Khóa học có ID là courseId
+                    },
                 },
             },
-            select: {
-                id: true,
+            include: {
+                lesson: {
+                    select: {
+                        chapter: {
+                            select: {
+                                courseId: true,
+                            },
+                        },
+                    },
+                },
             },
         });
 
-        const lessonIds = courseLessons.map(lesson => lesson.id);
 
-        for (const lessonId of lessonIds) {
+        const materialIds = courseMaterials.map(x => x.id);
+
+        for (const materialId of materialIds) {
             await this.prismaService.progress.create({
                 data: {
                     enrollmentId: enrollmentId,
-                    lessonId,
+                    materialId,
                     status: ProgressStatus.NotStarted,
                     courseId
                 },
@@ -41,7 +52,7 @@ export class ProgressService extends BaseService<ProgressEntity, Prisma.Progress
         }
     }
 
-    async addProgressWhenAddLessonForStudents(courseId: number, lessonId: number) {
+    async addProgressWhenAddMaterialForStudents(courseId: number, materialId: number) {
         const enrollments = await this.prismaService.enrollment.findMany({
             where: {
                 courseId,
@@ -53,7 +64,7 @@ export class ProgressService extends BaseService<ProgressEntity, Prisma.Progress
             await this.prismaService.progress.create({
                 data: {
                     enrollmentId: enroll.id,
-                    lessonId,
+                    materialId,
                     status: ProgressStatus.NotStarted,
                     courseId
                 },
@@ -61,24 +72,34 @@ export class ProgressService extends BaseService<ProgressEntity, Prisma.Progress
         }
     }
 
-    async doneProgress(lessonId: number) {
-        const course = await this.prismaService.courseLesson.findUnique({
-            where: {
-                id: lessonId, // tìm kiếm theo lessonId
-            },
-            select: {
-                chapter: {
-                    select: {
-                        courseId: true, // lấy courseId từ chapter
+    async getCourseByMaterialId(materialId: number) {
+        const course = await this.prismaService.course.findFirst({
+          where: {
+            chapters: {
+              some: {
+                lessons: {
+                  some: {
+                    materials: {
+                      some: {
+                        id: materialId,
+                      },
                     },
+                  },
                 },
+              },
             },
+          },
         });
-
-        const courseId = course?.chapter?.courseId;
-        if (!courseId) {
+      
+        return course;
+      }
+      
+    async doneProgress(materialId: number) {
+        const course = await this.getCourseByMaterialId(materialId);
+        if (!course) {
             return false;
         }
+        const courseId = course.id;
 
         const enrollment = await this.prismaService.enrollment.findFirst({
             where: {
@@ -96,60 +117,56 @@ export class ProgressService extends BaseService<ProgressEntity, Prisma.Progress
         await this.prismaService.progress.updateMany({
             where: {
                 enrollmentId: enrollmentId,
-                lessonId: lessonId
+                materialId: materialId
             },
             data: {
-                status: ProgressStatus.Completed,
-                completionDate: new Date()
+                completionDate: new Date(),
+                status: ProgressStatus.Completed
             }
         })
         return true;
 
     }
 
-    // async updateLessonProgressForStudents(courseId: number, lessonId: number) {
-    //     // Code to update progress for each student's lesson, if needed
-    // }
-
-
-    async removeLessonProgressForStudents(lessonId: number) {
+    async removeMaterialProgressForStudents(materialId: number) {
         await this.prismaService.progress.deleteMany({
-            where: { lessonId },
+            where: { materialId },
         });
     }
 
-    async removeLessonProgressForStudentsMany(lessonIds: number[]) {
+    async removeMaterialProgressForStudentsMany(materialIds: number[]) {
         await this.prismaService.progress.deleteMany({
             where: {
-                lessonId: {
-                    in: lessonIds
+                materialId: {
+                    in: materialIds
                 }
             }
         });
     }
 
     async getCourseProgress(courseId: number) {
-        // Bước 1: Lấy tổng số bài học trong khóa học
-        const totalLessons = await this.prismaService.courseLesson.count({
-          where: { chapter: { courseId } },
+        // Bước 1: Lấy tổng số tài liệu trong khóa học
+        const totalMaterials = await this.prismaService.courseMaterial.count({
+            where: { lesson: { chapter: { courseId } } },
         });
     
-        // Bước 2: Lấy số bài học đã hoàn thành của người dùng trong khóa học
-        const completedLessons = await this.prismaService.progress.count({
+        // Bước 2: Lấy số tài liệu đã hoàn thành của người dùng trong khóa học
+        const completedMaterials = await this.prismaService.progress.count({
             where: {
-                enrollment: { 
-                    studentId: this._authService.getStudentID(), 
-                    courseId ,
-                    semesterId: 2 // to-do
+                enrollment: {
+                    studentId: this._authService.getStudentID(),
+                    courseId,
+                    semesterId: 2 // to-do: xử lý logic semester nếu cần
                 },
                 status: ProgressStatus.Completed,
-              },
+            },
         });
     
-        // Bước 3: Trả về tiến trình dưới dạng số bài đã học / tổng số bài học
+        // Bước 3: Trả về tiến trình dưới dạng số tài liệu đã học / tổng số tài liệu
         return {
-          completed: completedLessons,
-          total: totalLessons,
+            completed: completedMaterials,
+            total: totalMaterials,
         };
-      }
+    }
+    
 }

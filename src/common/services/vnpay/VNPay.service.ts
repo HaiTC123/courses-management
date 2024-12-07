@@ -35,7 +35,7 @@ export class VNPayService {
         const orderInfo = OrderInfo.DepositCoin;
         return this.doPayment({
             txnRef: id,
-            amount: (request.numberCoin * 100),
+            amount: (request.numberCoin),
             lang: request.lang,
             bankCode: request.bankCode,
             orderInfo
@@ -67,7 +67,7 @@ export class VNPayService {
         }
 
         const transactionID = vnPayLib.getResponseData('vnp_TxnRef');
-        const amount = parseInt(vnPayLib.getResponseData('vnp_Amount')) / 100;
+        const amount = parseInt(vnPayLib.getResponseData('vnp_Amount'));
         const responseCode = vnPayLib.getResponseData('vnp_ResponseCode');
         const transactionStatus = vnPayLib.getResponseData('vnp_TransactionStatus');
         const orderInfo = vnPayLib.getResponseData('vnp_OrderInfo');

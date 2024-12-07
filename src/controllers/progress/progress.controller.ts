@@ -26,9 +26,9 @@ export class ProgressController extends BaseController<ProgressEntity, Prisma.Pr
     }
 
     @Roles(Role.Student)
-    @Put("done/:lessonId")
-    async doneProgress(@Param("lessonId")lessonId: number): Promise<ServiceResponse> {
-        return ServiceResponse.onSuccess(await this.service.doneProgress(lessonId));
+    @Put("done/:materialId")
+    async doneProgress(@Param("materialId")materialId: number): Promise<ServiceResponse> {
+        return ServiceResponse.onSuccess(await this.service.doneProgress(materialId));
     }
 
     @Get(':courseId/progress')

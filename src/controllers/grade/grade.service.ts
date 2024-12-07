@@ -24,6 +24,7 @@ export class GradesService extends BaseService<GradeEntity, Prisma.GradeCreateIn
         if (grade){
             throw new HttpException({ message: 'Điểm của sinh viên đã tồn tại. Vui lòng chỉnh sửa' }, HttpStatus.BAD_REQUEST)
         }
+        entity.gradeDate = new Date();
         var result = await this.repository.create(entity, {
             select: {
                 id: true

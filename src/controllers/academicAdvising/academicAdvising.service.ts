@@ -39,9 +39,9 @@ export class AcademicAdvisingsService extends BaseService<AcademicAdvisingEntity
         return id;
     }
 
-    async advisorUpdateStatus(id: number, status: AdvisingStatus){
+    async advisorUpdateStatus(id: number, status: AdvisingStatus) {
         var data = await super.getById(id);
-        if (!data){
+        if (!data) {
             throw new HttpException({ message: 'Thông tin buổi tư vấn không tồn tại' }, HttpStatus.BAD_REQUEST)
         }
         data.status = status;
@@ -52,39 +52,54 @@ export class AcademicAdvisingsService extends BaseService<AcademicAdvisingEntity
                 id: data.studentId
             }
         })
+        let notificationType = NotificationType.Advisor_Approve_Advising;
+        switch (status) {
+            case AdvisingStatus.Completed:
+                notificationType = NotificationType.Advisor_Done_Advising;
+                break;
+            case AdvisingStatus.Cancelled:
+                notificationType = NotificationType.Advisor_Cancel_Advising;
+                break;
+            case AdvisingStatus.Rejected:
+                notificationType = NotificationType.Advisor_Reject_Advising;
+                break;
+            case AdvisingStatus.Approved:
+                notificationType = NotificationType.Advisor_Approve_Advising;
+                break;
+        }
         if (student) {
-            await this.pushNotification(student?.userId, status,
+            await this.pushNotification(student?.userId, notificationType,
                 JSON.stringify({
                     academicAdvisingID: id,
                     topic: data.topic
                 }),
                 this._authService.getFullname(), this._authService.getUserID()
-    
+
             )
         }
 
         return true;
     }
 
-    async studentUpdateStatus(id: number, status: AdvisingStatus){
+    async studentUpdateStatus(id: number, status: AdvisingStatus) {
         var data = await super.getById(id);
-        if (!data){
+        if (!data) {
             throw new HttpException({ message: 'Thông tin buổi tư vấn không tồn tại' }, HttpStatus.BAD_REQUEST)
         }
-       
+
         const instructor = await this.prismaService.instructor.findUnique({
             where: {
                 id: data.advisorId
             }
         })
         if (instructor && data.status == AdvisingStatus.Approved && status == AdvisingStatus.Cancelled) {
-            await this.pushNotification(instructor?.userId, status,
+            await this.pushNotification(instructor?.userId, NotificationType.Student_Cancel_Advising,
                 JSON.stringify({
                     academicAdvisingID: id,
                     topic: data.topic
                 }),
                 this._authService.getFullname(), this._authService.getUserID()
-    
+
             )
         }
         data.status = status;
