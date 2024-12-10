@@ -16,6 +16,9 @@ export class CourseDto extends BaseDto{
   courseCode: string; // Mã khóa học
 
   @AutoMap()
+  score: number; // Điểm để pass
+  
+  @AutoMap()
   @ApiProperty()
   courseName: string; // Tên khóa học
 

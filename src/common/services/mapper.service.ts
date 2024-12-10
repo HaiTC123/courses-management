@@ -41,6 +41,12 @@ import { DocumentEntity } from 'src/model/entity/document.entity';
 import { DocumentDto } from 'src/model/dto/document.dto';
 import { JobConfigEntity } from 'src/model/entity/jobconfig.entity';
 import { JobConfigDto } from 'src/model/dto/jobconfig.dto';
+import { QuestionDto, QuestionStudentDto } from 'src/model/dto/question.dto';
+import { QuestionEntity } from 'src/model/entity/question.entity';
+import { ExamDto } from 'src/model/dto/exam.dto';
+import { ExamEntity } from 'src/model/entity/exam.entity';
+import { ExamResultEntity } from 'src/model/entity/examResult.entity';
+import { ExamResultDto } from 'src/model/dto/examResult.dto';
 
 @Injectable()
 export class MapperService {
@@ -160,6 +166,10 @@ export class MapperService {
       forMember(
         (destination) => destination.prerequisiteCourse,
         mapFrom((source) => source.prerequisiteCourse)
+      ),
+      forMember(
+        (destination) => destination.course,
+        mapFrom((source) => source.course)
       )
     )
     createMap(this.mapper, PrerequisiteDto, PrerequisiteEntity,
@@ -425,6 +435,15 @@ export class MapperService {
     createMap(this.mapper, DocumentDto, DocumentEntity);
     createMap(this.mapper, JobConfigEntity, JobConfigDto);
     createMap(this.mapper, JobConfigDto, JobConfigEntity);
+    createMap(this.mapper, QuestionDto, QuestionEntity);
+    createMap(this.mapper, QuestionEntity, QuestionDto);
+    createMap(this.mapper, QuestionEntity, QuestionStudentDto);
+    createMap(this.mapper, ExamDto, ExamEntity);
+    createMap(this.mapper, ExamEntity, ExamDto,
+      forMember((dest) => dest.status, mapFrom((src) => src.status))
+    );
+    createMap(this.mapper, ExamResultEntity, ExamResultDto);
+    createMap(this.mapper, ExamResultDto, ExamResultEntity);
   }
 
   mapData<S, D>(source: S, sourceClass: new (...args: unknown[]) => S, destinationClass: new (...args: unknown[]) => D): D {
@@ -439,4 +458,5 @@ export class MapperService {
   }
 
 }
+
 

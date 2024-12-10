@@ -1,26 +1,30 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { AutoMap } from '@automapper/classes';
+import { ApiProperty } from '@nestjs/swagger';
 import { BaseDto } from './base.dto';
 
 export class SemesterDto extends BaseDto {
     @ApiProperty()
     @AutoMap()
-    id: number; // Khóa chính tự động tăng
+    id: number;
 
     @ApiProperty()
     @AutoMap()
-    name: string; // Tên học kỳ
+    name: string;
 
     @ApiProperty()
     @AutoMap()
-    startDate: Date; // Ngày bắt đầu học kỳ
+    startDate: Date;
 
     @ApiProperty()
     @AutoMap()
-    endDate: Date; // Ngày kết thúc học kỳ
+    endDate: Date;
 
     @ApiProperty()
     @AutoMap()
-    isCurrent: boolean; // Xác định nếu học kỳ hiện tại
+    isCurrent: boolean;
+
+    @ApiProperty()
+    @AutoMap()
+    isDone: boolean;
 
 }

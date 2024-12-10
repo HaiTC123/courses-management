@@ -2,19 +2,21 @@ import { AutoMap } from '@automapper/classes';
 import { BaseEntity } from '../entity/base.entity';
 
 export class SemesterEntity extends BaseEntity {
-  @AutoMap()
-  id: number; // Khóa chính tự động tăng
+    @AutoMap()
+    id: number;
 
-  @AutoMap()
-  name: string; // Tên học kỳ
+    @AutoMap()
+    name: string;
 
-  @AutoMap()
-  startDate: Date; // Ngày bắt đầu học kỳ
+    @AutoMap()
+    startDate: Date;
 
-  @AutoMap()
-  endDate: Date; // Ngày kết thúc học kỳ
+    @AutoMap()
+    endDate: Date;
 
-  @AutoMap()
-  isCurrent: boolean; // Xác định nếu học kỳ hiện tại
+    @AutoMap()
+    isCurrent: boolean;
 
+    @AutoMap()
+    isDone: boolean;
 }

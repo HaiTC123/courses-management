@@ -31,6 +31,9 @@ export class CourseEntity extends BaseEntity{
   durationWeeks: number; // Thời lượng khóa học (tuần)
 
   @AutoMap()
+  score: number; // Điểm để pass
+
+  @AutoMap()
   category?: string; // Phân loại khóa học
 
   @AutoMap()

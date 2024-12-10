@@ -31,7 +31,7 @@ export class HttpContextService {
     return HttpContextService.request?.user?.role;
   }
 
-  getStudentID(): any {
+  getStudentID(): number {
     return HttpContextService.request?.user?.studentId;
   }
 

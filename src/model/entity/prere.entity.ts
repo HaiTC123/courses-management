@@ -16,4 +16,5 @@ export class PrerequisiteEntity extends BaseEntity {
   
   prerequisiteCourse: CourseEntity;
 
+  course: CourseEntity;
 }

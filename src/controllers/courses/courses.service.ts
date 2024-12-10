@@ -406,7 +406,8 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
         return await this.prismaService.courseRepo.findManyWithCondition({
             id: {
                 in: enrollments.map(x => x.courseId)
-            }
+            },
+            
         })
     }
 
@@ -509,6 +510,74 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
             totalRevenue,
             courseRevenue,
         };
+    }
+
+    async processFinalResults(courseId: number, semesterId: number) {
+        // Lấy danh sách tất cả các sinh viên đã đăng ký khóa học
+        const enrollments = await this.prismaService.enrollment.findMany({
+            where: { courseId, semesterId },
+            include: { student: true , course: true},
+        });
+
+        for (const enrollment of enrollments) {
+            const studentId = enrollment.studentId;
+
+            // Lấy tất cả các bài thi của khóa học
+            const exams = await this.prismaService.exam.findMany({
+                where: { courseId },
+                include: {
+                    examResults: {
+                        where: { studentId },
+                    },
+                },
+            });
+
+            // Tính tổng điểm dựa trên hệ số
+            let totalScore = 0;
+            let totalCoefficient = 0;
+
+            for (const exam of exams) {
+                const highestResult = exam.examResults.reduce((max, result) =>
+                    result.score > max ? result.score : max, 0);
+
+                totalScore += highestResult * exam.coefficient;
+                totalCoefficient += exam.coefficient;
+            }
+
+            // Tính điểm trung bình cuối cùng
+            const finalGrade = totalCoefficient > 0 ? totalScore / totalCoefficient : 0;
+
+            if (finalGrade >= enrollment.course.score) {
+                // Sinh viên đỗ -> Thêm vào bảng CourseCompletion
+                await this.prismaService.courseCompletion.create({
+                    data: {
+                        studentId,
+                        courseId,
+                        semesterId,
+                        enrollmentId: enrollment.id,
+                        finalGrade,
+                        createdBy: 'system',
+                        updatedBy: 'system',
+                    },
+                });
+            } else {
+                // Sinh viên không đỗ -> Thêm vào bảng FailedCourse
+                await this.prismaService.failedCourse.create({
+                    data: {
+                        studentId,
+                        courseId,
+                        semesterId,
+                        enrollmentId: enrollment.id,
+                        failureReason: 'Không vượt qua kỳ thi',
+                        failedDate: new Date(),
+                        createdBy: 'system',
+                        updatedBy: 'system',
+                    },
+                });
+            }
+        }
+
+        return { message: 'Final results processed successfully' };
     }
 
 }

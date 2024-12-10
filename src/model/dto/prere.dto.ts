@@ -19,4 +19,7 @@ export class PrerequisiteDto {
 
   @ApiProperty()
   prerequisiteCourse: CourseDto;
+
+  @ApiProperty()
+  course: CourseDto;
 }

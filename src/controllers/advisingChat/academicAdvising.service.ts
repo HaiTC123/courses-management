@@ -36,6 +36,13 @@ export class AdvisingChatService extends BaseService<AdvisingChatEntity, Prisma.
         const instructor = await this.prismaService.instructor.findUnique({
             where: {
                 id: data.advisorId
+            },
+            include: {
+                user: {
+                    select: {
+                        profilePictureURL: true
+                    }
+                }
             }
         })
         if (instructor) {
@@ -44,7 +51,8 @@ export class AdvisingChatService extends BaseService<AdvisingChatEntity, Prisma.
                 JSON.stringify({
                     academicAdvisingID: id,
                     topic: data.topic,
-                    message: param.message
+                    message: param.message,
+                    profileURL: instructor?.user.profilePictureURL
                 }),
                 this._authService.getFullname(), this._authService.getUserID()
 
@@ -74,6 +82,13 @@ export class AdvisingChatService extends BaseService<AdvisingChatEntity, Prisma.
         const student = await this.prismaService.student.findUnique({
             where: {
                 id: data.studentId
+            },
+            include: {
+                user: {
+                    select: {
+                        profilePictureURL: true
+                    }
+                }
             }
         })
         if (student) {
@@ -82,7 +97,8 @@ export class AdvisingChatService extends BaseService<AdvisingChatEntity, Prisma.
                 JSON.stringify({
                     academicAdvisingID: id,
                     topic: data.topic,
-                    message: param.message
+                    message: param.message,
+                    profileURL: student.user.profilePictureURL
                 }),
                 this._authService.getFullname(), this._authService.getUserID()
 

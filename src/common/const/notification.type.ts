@@ -12,4 +12,5 @@ export class NotificationType {
     static readonly Student_Chat_Advising_To_Advisor = "Student_Chat_Advising_To_Advisor";
     static readonly Advisor_Chat_Advising_To_Student = "Advisor_Chat_Advising_To_Student";
     static readonly System_Scheduled_Course = "System_Scheduled_Course";
+    static readonly Instructor_Publish_Exam = "Instructor_Publish_Exam";
 }

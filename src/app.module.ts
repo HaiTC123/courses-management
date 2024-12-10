@@ -32,6 +32,10 @@ import { AdvisingChatModule } from './controllers/advisingChat/academicAdvising.
 import { CategoryDocumentModule } from './controllers/categoryDocument/categoryDocument.module';
 import { DocumentModule } from './controllers/document/document.module';
 import { JobConfigModule } from './controllers/scheduled/jobConfig.module';
+import { ExamModule } from './controllers/exam/exam.module';
+import { ExamResultModule } from './controllers/examResult/examResult.module';
+import { QuestionModule } from './controllers/question/question.module';
+import { SemesterModule } from './controllers/semeter/semester.module';
 
 @Module({
   imports: [
@@ -63,7 +67,11 @@ import { JobConfigModule } from './controllers/scheduled/jobConfig.module';
     AdvisingChatModule,
     CategoryDocumentModule,
     DocumentModule,
-    JobConfigModule
+    JobConfigModule,
+    ExamModule,
+    ExamResultModule,
+    QuestionModule,
+    SemesterModule
   ],
   controllers: [AppController],
   providers: [AppService,

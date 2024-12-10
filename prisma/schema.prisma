@@ -57,6 +57,12 @@ enum ProgressStatus {
   Completed
 }
 
+enum ExamStatus {
+  DRAFT // Bài thi đang ở trạng thái nháp
+  PUBLISHED // Bài thi đã được công khai
+  CLOSED // Bài thi đã đóng (hết hạn hoặc hoàn thành)
+}
+
 model User {
   id                Int            @id @default(autoincrement()) // Khóa chính, tự động tăng
   fullName          String         @db.VarChar(255) // Họ và tên đầy đủ
@@ -133,6 +139,7 @@ model Student {
   FailedCourse     FailedCourse[]
   Goal             Goal[]
   AcademicAdvising AcademicAdvising[]
+  ExamResult       ExamResult[]
 
   @@index([userId]) // Tạo chỉ mục cho trường userId
 }
@@ -171,6 +178,7 @@ model Course {
   backgroundUrl         String?
   createdBy             String? // Người tạo khóa học
   updatedBy             String? // Người cập nhật khóa học
+  score                 Int? // điểm số pass thang 100
   status                CourseStatus         @default(DRAFT) // Trạng thái khóa học (enum)
   instructor            Instructor?          @relation(fields: [instructorId], references: [id])
   chapters              CourseChapter[] // Một khóa học có nhiều chương
@@ -182,6 +190,8 @@ model Course {
   FailedCourse          FailedCourse[]
   Goal                  Goal[]
   Document              Document[]
+  prerequisitesFor      Prerequisite[]       @relation("CourseRelation")
+  Exam                  Exam[]
 }
 
 model CourseChapter {
@@ -257,6 +267,7 @@ model Prerequisite {
   updatedBy            String?
   // Liên kết với khóa học chính và khóa học tiên quyết
   prerequisiteCourse   Course   @relation(fields: [prerequisiteCourseId], references: [id], onDelete: Cascade)
+  course               Course   @relation("CourseRelation", fields: [courseId], references: [id], onDelete: Cascade)
 }
 
 model Semester {
@@ -269,6 +280,7 @@ model Semester {
   updatedAt        DateTime           @updatedAt // Thời gian cập nhật bản ghi
   createdBy        String?
   updatedBy        String?
+  isDone           Boolean            @default(false)
   Enrollment       Enrollment[]
   CourseCompletion CourseCompletion[]
   FailedCourse     FailedCourse[]
@@ -561,4 +573,62 @@ model Document {
 
   @@index([courseId])
   @@index([categoryId])
+}
+
+model Exam {
+  id           Int          @id @default(autoincrement())
+  courseId     Int
+  title        String       @db.VarChar(255)
+  description  String?      @db.Text
+  passingScore Int
+  maxAttempts  Int?         @default(3)
+  status       ExamStatus   @default(DRAFT) // Trạng thái bài thi (DRAFT, PUBLISHED)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  createdBy    String?
+  updatedBy    String?
+  endTime      DateTime
+  coefficient  Int          @default(1) // Hệ số
+  course       Course       @relation(fields: [courseId], references: [id])
+  questions    Question[]
+  examResults  ExamResult[]
+
+  @@index([courseId])
+}
+
+model Question {
+  id            Int      @id @default(autoincrement())
+  examId        Int
+  content       String   @db.Text // Nội dung câu hỏi
+  correctAnswer String   @db.VarChar(255) // Đáp án Đúng
+  options       Json // Danh sách đáp án lưu dưới dạng json
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  createdBy     String?
+  updatedBy     String?
+  orderNo       Int
+  exam          Exam     @relation(fields: [examId], references: [id])
+
+  @@index([examId])
+}
+
+model ExamResult {
+  id               Int      @id @default(autoincrement())
+  examId           Int
+  studentId        Int
+  score            Int
+  correctAnswers   Int
+  incorrectAnswers Int
+  attemptNumber    Int
+  isPassed         Boolean
+  completedAt      DateTime
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  createdBy        String?
+  updatedBy        String?
+  result           Json
+  exam             Exam     @relation(fields: [examId], references: [id])
+  student          Student  @relation(fields: [studentId], references: [id])
+
+  @@index([examId, studentId])
 }
