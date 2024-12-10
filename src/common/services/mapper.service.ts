@@ -437,10 +437,14 @@ export class MapperService {
     createMap(this.mapper, JobConfigDto, JobConfigEntity);
     createMap(this.mapper, QuestionDto, QuestionEntity);
     createMap(this.mapper, QuestionEntity, QuestionDto);
-    createMap(this.mapper, QuestionEntity, QuestionStudentDto);
+    createMap(this.mapper, QuestionEntity, QuestionStudentDto,
+      forMember((dest) => dest.options, mapFrom((src) => src.options))
+
+    );
     createMap(this.mapper, ExamDto, ExamEntity);
     createMap(this.mapper, ExamEntity, ExamDto,
-      forMember((dest) => dest.status, mapFrom((src) => src.status))
+      forMember((dest) => dest.status, mapFrom((src) => src.status)),
+      forMember((dest) => dest.questions, mapFrom((src) => src.questions))
     );
     createMap(this.mapper, ExamResultEntity, ExamResultDto);
     createMap(this.mapper, ExamResultDto, ExamResultEntity);

@@ -32,5 +32,8 @@ export class ExamResultDto extends BaseDto {
     @AutoMap()
     options: string[];
 
+    @AutoMap()
+    result: string[];
+
 
 }

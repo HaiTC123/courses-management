@@ -33,4 +33,6 @@ export class ExamResultEntity extends BaseEntity {
     @AutoMap()
     options: string[];
 
+    @AutoMap()
+    result: string[];
 }

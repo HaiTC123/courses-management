@@ -101,11 +101,22 @@ export class ExamService extends BaseService<ExamEntity, Prisma.ExamCreateInput>
         const totalQuestions = exam.questions.length;
         let correctAnswers = 0;
 
-        for (const question of exam.questions) {
-            if (answers[question.id] === question.correctAnswer) {
+        const result = exam.questions.map((question) => {
+            const userAnswer = answers[question.id];
+            const isCorrect = userAnswer === question.correctAnswer;
+            if (isCorrect) {
                 correctAnswers++;
             }
-        }
+            return {
+                questionId: question.id,
+                userAnswer,
+                correctAnswer: question.correctAnswer,
+                isCorrect,
+                content: question.content,
+                options: question.options,
+                orderNo: question.orderNo
+            };
+        });
 
         const score = (correctAnswers / totalQuestions) * 100;
         const isPassed = score >= exam.passingScore;
@@ -120,7 +131,7 @@ export class ExamService extends BaseService<ExamEntity, Prisma.ExamCreateInput>
                 attemptNumber: attempts + 1,
                 isPassed,
                 completedAt: now,
-                result: ''
+                result: result
             },
         });
 

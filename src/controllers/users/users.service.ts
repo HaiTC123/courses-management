@@ -24,9 +24,9 @@ export class UsersService extends BaseService<UserEntity, Prisma.UserCreateInput
             throw new HttpException({ message: 'This email has been used' }, HttpStatus.BAD_REQUEST)
         }
         let passWord = generateRandomPassword(10);
-        if (isEnvDevelopment()) {
-            passWord = "12345678";
-        }
+        //if (isEnvDevelopment()) {
+        passWord = "12345678";
+        //}
         entity.passwordHash = await hash(passWord, 10);
         //entity.role = Role.Student;
         entity.inActive = false;

@@ -470,7 +470,7 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
     async getPaidCoursesRevenue(instructorId: number, courseId: number) {
 
         // Bước 1: Lấy danh sách các khóa học có phí
-        const where = {isFree: false};
+        const where = {};
         if (instructorId > 0){
             where["instructorId"] = instructorId;
         }
