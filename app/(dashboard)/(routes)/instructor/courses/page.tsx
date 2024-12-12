@@ -69,9 +69,13 @@ const CoursesPage = () => {
 
   const handleSendToAdmin = async (id: string) => {
     try {
-      await sendToAdminApproveService(Number(id));
-      toast.success("Gửi tới ADMIN thành công");
-      fetchCourses();
+      const response = await sendToAdminApproveService(Number(id));
+      if (response.success) {
+        toast.success("Gửi tới ADMIN thành công");
+        fetchCourses();
+      } else {
+        toast.error(response.message);
+      }
     } catch (error) {
       toast.error("Gửi tới ADMIN thất bại");
     }

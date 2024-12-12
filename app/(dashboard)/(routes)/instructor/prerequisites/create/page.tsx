@@ -49,16 +49,22 @@ const CreatePrerequisitePage = () => {
     getPaginatedCoursesService({
       pageSize: 1000,
       pageNumber: 1,
-      conditions: [],
+      conditions: [
+        {
+          key: "status",
+          condition: "equal",
+          value: "APPROVED",
+        },
+      ],
       sortOrder: "",
       searchKey: "",
       searchFields: [],
-      includeReferences: [],
+      includeReferences: {},
     }).then((response) => {
       if (response.data.data) {
         setCourses(
           response.data.data.map((item: any) => ({
-            label: item.courseName,
+            label: `${item.courseName} - ${item.courseCode}`,
             value: item.id,
           }))
         );
@@ -82,7 +88,7 @@ const CreatePrerequisitePage = () => {
   return (
     <div className="p-6 mx-auto">
       <div>
-        <h1 className="text-2xl">Tạo loại tài liệu</h1>
+        <h1 className="text-2xl">Tạo điều kiện tiên quyết</h1>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -124,7 +130,7 @@ const CreatePrerequisitePage = () => {
               )}
             />
 
-            <div className="flex items-center gap-x-2">
+            <div className="flex gap-x-2 items-center">
               <Link href="/">
                 <Button type="button" variant="ghost">
                   Hủy

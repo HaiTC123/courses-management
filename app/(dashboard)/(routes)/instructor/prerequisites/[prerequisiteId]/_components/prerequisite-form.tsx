@@ -59,7 +59,13 @@ export const PrerequisiteForm = ({
     getPaginatedCoursesService({
       pageSize: 1000,
       pageNumber: 1,
-      conditions: [],
+      conditions: [
+        {
+          key: "status",
+          condition: "equal",
+          value: "APPROVED",
+        },
+      ],
       sortOrder: "",
       searchKey: "",
       searchFields: [],
@@ -68,7 +74,7 @@ export const PrerequisiteForm = ({
       if (response.data.data) {
         setCourses(
           response.data.data.map((item: any) => ({
-            label: item.courseName,
+            label: `${item.courseName} - ${item.courseCode}`,
             value: item.id,
           }))
         );
@@ -95,15 +101,15 @@ export const PrerequisiteForm = ({
   };
 
   return (
-    <div className="p-4 mt-6 border rounded-md   ">
-      <div className="flex items-center justify-between font-medium">
-        Thông tin chung của điều kiện tiên quyết
+    <div className="p-4 mt-6 rounded-md border">
+      <div className="flex justify-between items-center font-medium">
+        Thông tin của điều kiện tiên quyết
         <Button type="button" variant="ghost" size="sm" onClick={toggleEdit}>
           {isEditing ? (
             <>Hủy</>
           ) : (
             <>
-              <Pencil className="w-4 h-4 mr-2" />
+              <Pencil className="mr-2 w-4 h-4" />
               Sửa điều kiện tiên quyết
             </>
           )}
@@ -151,7 +157,7 @@ export const PrerequisiteForm = ({
             />
           </div>
           {isEditing && (
-            <div className="flex items-center gap-x-2">
+            <div className="flex gap-x-2 items-center">
               <Button type="submit" disabled={!isValid || isSubmitting}>
                 Lưu thay đổi
               </Button>

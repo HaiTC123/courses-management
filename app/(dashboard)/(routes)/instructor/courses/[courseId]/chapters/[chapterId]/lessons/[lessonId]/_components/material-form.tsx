@@ -131,7 +131,7 @@ export const MaterialForm = ({
         </div>
       )}
       <div className="flex items-center justify-between font-medium">
-        Các tài liệu
+        Các video
         <Button
           type="button"
           variant="ghost"
@@ -143,7 +143,7 @@ export const MaterialForm = ({
           ) : (
             <>
               <Pencil className="w-4 h-4 mr-2" />
-              Tạo tài liệu
+              Tạo video
             </>
           )}
         </Button>
@@ -225,7 +225,7 @@ export const MaterialForm = ({
         </div>
       )}
       {!isCreating && (
-        <p className="mt-4 text-xs text-muted-foreground">Sắp xếp tài liệu</p>
+        <p className="mt-4 text-xs text-muted-foreground">Sắp xếp video</p>
       )}
     </div>
   );

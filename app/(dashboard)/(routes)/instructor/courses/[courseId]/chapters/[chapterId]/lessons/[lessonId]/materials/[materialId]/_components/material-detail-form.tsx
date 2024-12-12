@@ -116,16 +116,16 @@ export const MaterialDetailForm = ({
   };
 
   return (
-    <div className="p-4 mt-6 border rounded-md ">
-      <div className="flex items-center justify-between font-medium">
-        Thông tin tài liệu
+    <div className="p-4 mt-6 rounded-md border">
+      <div className="flex justify-between items-center font-medium">
+        Thông tin video
         <Button type="button" variant="ghost" size="sm" onClick={toggleEdit}>
           {isEditing ? (
             <>Hủy</>
           ) : (
             <>
-              <Pencil className="w-4 h-4 mr-2" />
-              Sửa thông tin tài liệu
+              <Pencil className="mr-2 w-4 h-4" />
+              Sửa Thông tin video
             </>
           )}
         </Button>
@@ -147,7 +147,7 @@ export const MaterialDetailForm = ({
             name="materialTitle"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Tên tài liệu</FormLabel>
+                <FormLabel>Tên video</FormLabel>
                 <FormControl>
                   <Input {...field} placeholder="e.g. 'Tài liệu 1'" />
                 </FormControl>
@@ -161,7 +161,7 @@ export const MaterialDetailForm = ({
             name="materialDescription"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Mô tả tài liệu</FormLabel>
+                <FormLabel>Mô tả video</FormLabel>
                 <FormControl>
                   {isEditing ? (
                     <Editor {...field} />
@@ -184,7 +184,7 @@ export const MaterialDetailForm = ({
             name="linkVideo"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Tài liệu</FormLabel>
+                <FormLabel>Link</FormLabel>
                 <FormControl>
                   {isEditing ? (
                     <Input
@@ -197,7 +197,7 @@ export const MaterialDetailForm = ({
                       }}
                     />
                   ) : (
-                    <p className={cn("text-sm mt-2 text-slate-500 italic")}>
+                    <p className={cn("mt-2 text-sm italic text-slate-500")}>
                       {form.getValues("materialURL") ? (
                         <iframe
                           src={form.getValues("materialURL")}
@@ -216,7 +216,7 @@ export const MaterialDetailForm = ({
           />
 
           {isEditing && (
-            <div className="flex items-center gap-x-2">
+            <div className="flex gap-x-2 items-center">
               <Button type="submit" disabled={isSubmitting || !isValid}>
                 Lưu
               </Button>

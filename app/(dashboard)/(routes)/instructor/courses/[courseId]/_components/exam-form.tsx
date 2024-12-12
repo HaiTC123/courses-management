@@ -144,14 +144,14 @@ export const ExamForm = ({
   };
 
   return (
-    <div className="relative p-4 mt-6 border rounded-md ">
+    <div className="relative p-4 mt-6 rounded-md border">
       {isUpdating && (
-        <div className="absolute top-0 right-0 flex items-center justify-center w-full h-full rounded-md">
+        <div className="flex absolute top-0 right-0 justify-center items-center w-full h-full rounded-md">
           <Loader2 className="w-6 h-6 text-sky-700 animate-spin" />
         </div>
       )}
-      <div className="flex items-center justify-between font-medium">
-        Các bài kiểm tra
+      <div className="flex justify-between items-center font-medium">
+        Tạo bài kiểm tra
         {exams?.length === 0 && (
           <Button
             type="button"
@@ -163,7 +163,7 @@ export const ExamForm = ({
               <>Hủy</>
             ) : (
               <>
-                <Pencil className="w-4 h-4 mr-2" />
+                <Pencil className="mr-2 w-4 h-4" />
                 Tạo bài kiểm tra
               </>
             )}
@@ -187,7 +187,7 @@ export const ExamForm = ({
                       disabled={isSubmitting}
                       placeholder="e.g. 'Bài kiểm tra 1'"
                       {...field}
-                      className="w-full mt-2"
+                      className="mt-2 w-full"
                     />
                   </FormControl>
                   <FormMessage />
@@ -218,7 +218,7 @@ export const ExamForm = ({
                       type="number"
                       disabled={isSubmitting}
                       placeholder="e.g. 70"
-                      className="w-full mt-2"
+                      className="mt-2 w-full"
                       value={field.value}
                       onChange={(e) => field.onChange(Number(e.target.value))}
                     />

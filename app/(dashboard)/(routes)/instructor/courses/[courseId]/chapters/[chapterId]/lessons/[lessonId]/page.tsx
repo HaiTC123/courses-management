@@ -90,7 +90,7 @@ const LessonIdPage = ({
               <div>
                 <div className="flex items-center gap-x-2">
                   <IconBadge icon={ListChecks} />
-                  <h2 className="text-xl">Tùy chỉnh tài liệu</h2>
+                  <h2 className="text-xl">Tùy chỉnh video</h2>
                 </div>
                 <MaterialForm
                   initialData={lesson}

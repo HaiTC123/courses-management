@@ -29,6 +29,7 @@ import { uploadFileService } from "@/services/file.service";
 import Image from "next/image";
 import { DEFAULT_IMAGE } from "@/constants/default-image";
 import { omit } from "lodash";
+import { generateRandomText } from "@/utils/generate-random-text";
 
 const CreatePage = () => {
   const router = useRouter();
@@ -86,6 +87,7 @@ const CreatePage = () => {
     try {
       const body = {
         ...omit(values, ["backgroundUrlTmp"]),
+        courseCode: `ID-${generateRandomText(10)}`,
         instructorId: user?.instructor?.id,
       };
       const response = await addCourseService(body);

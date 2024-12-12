@@ -44,6 +44,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  getExamResultService,
+  getPaginatedExamsService,
+} from "@/services/exam.service";
 
 const CourseIdPage = () => {
   const router = useRouter();
@@ -120,6 +124,60 @@ const CourseIdPage = () => {
     }
   }, [courseId, fetchPrerequisites]);
 
+  const [exam, setExam] = useState<any>(null);
+  const [results, setResults] = useState<any>([]);
+
+  const fetchExam = useCallback(async () => {
+    try {
+      const response = await getPaginatedExamsService({
+        pageSize: 1000,
+        pageNumber: 1,
+        conditions: [
+          {
+            key: "courseId",
+            condition: "equal",
+            value: Number(courseId),
+          },
+        ],
+        sortOrder: "",
+        searchKey: "",
+        searchFields: [],
+        includeReferences: {},
+      });
+      if (response?.data?.data?.length > 0) {
+        setExam(response.data.data[0]);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [courseId]);
+
+  useEffect(() => {
+    if (courseId) {
+      fetchExam();
+    }
+  }, [courseId, fetchExam]);
+
+  const getExamResult = useCallback(async () => {
+    try {
+      const response = await getExamResultService(
+        Number(exam.id),
+        Number(user?.student?.id)
+      );
+      if (response) {
+        setResults(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [exam, user]);
+
+  useEffect(() => {
+    if (exam?.id) {
+      getExamResult();
+    }
+  }, [exam, getExamResult]);
+
   const handleRegister = async () => {
     if (course.isFree) {
       try {
@@ -182,14 +240,14 @@ const CourseIdPage = () => {
             <CollapsibleTrigger asChild>
               <div className="flex items-center cursor-pointer">
                 {isOpen ? (
-                  <MinusCircle className="w-4 h-4 mr-2" />
+                  <MinusCircle className="mr-2 w-4 h-4" />
                 ) : (
-                  <PlusCircle className="w-4 h-4 mr-2" />
+                  <PlusCircle className="mr-2 w-4 h-4" />
                 )}
                 <h2 className="text-xl font-bold">Các chương học</h2>
               </div>
             </CollapsibleTrigger>
-            <CollapsibleContent className="max-h-full ml-10">
+            <CollapsibleContent className="ml-10 max-h-full">
               {course?.chapters?.map((chapter: any, index: number) => (
                 <ChapterDetail
                   key={chapter.id}
@@ -243,7 +301,7 @@ const CourseIdPage = () => {
                     Bạn đã đăng ký khóa học này
                   </h3>
                   <Button
-                    className="w-full mt-4"
+                    className="mt-4 w-full"
                     onClick={handleContinueLearning}
                   >
                     Tiếp tục học
@@ -255,13 +313,19 @@ const CourseIdPage = () => {
                   <h3 className="p-4 text-xl font-bold text-center">
                     Bạn đã hoàn thành khóa học này
                   </h3>
+                  <Button
+                    className="mt-4 w-full"
+                    onClick={handleContinueLearning}
+                  >
+                    Xem lại khóa học
+                  </Button>
+                </>
+              )}
+              {results.length > 0 &&
+                results.some((result: any) => result.isPassed) && (
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button
-                        className="w-full mt-4"
-                      >
-                        Xem chứng chỉ
-                      </Button>
+                      <Button className="mt-4 w-full">Xem chứng chỉ</Button>
                     </DialogTrigger>
                     <DialogContent className="max-w-fit">
                       <DialogHeader>
@@ -289,17 +353,16 @@ const CourseIdPage = () => {
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>
-                </>
-              )}
+                )}
             </>
           ) : course.isFree ? (
-            <Button className="w-full mt-4" onClick={handleRegister}>
+            <Button className="mt-4 w-full" onClick={handleRegister}>
               Đăng ký học
             </Button>
           ) : (
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button className="w-full mt-4">Mua và đăng ký khóa học</Button>
+                <Button className="mt-4 w-full">Mua và đăng ký khóa học</Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
