@@ -134,12 +134,10 @@ export const createColumns = (
                 Gửi tới ADMIN
               </DropdownMenuItem>
             )}
-            <Link href={`/instructor/courses/${id}`}>
-              <DropdownMenuItem>
-                <Trash className="mr-2 w-4 h-4" />
-                Xóa
-              </DropdownMenuItem>
-            </Link>
+            <DropdownMenuItem onClick={() => onDelete(id)}>
+              <Trash className="mr-2 w-4 h-4" />
+              Xóa
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

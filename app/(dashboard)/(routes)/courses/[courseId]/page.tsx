@@ -1,40 +1,23 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Certificate } from "@/components/certificate";
 import {
-  buyCourseService,
-  getCourseByIdService,
-  registerCourseService,
-} from "@/services/course.service";
-import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
-import toast from "react-hot-toast";
-import { ChapterDetail } from "./_components/chapter-detail";
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Expand, MinusCircle, PlusCircle } from "lucide-react";
-import { formatPrice } from "@/lib/format";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogTrigger,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogFooter,
-} from "@/components/ui/alert-dialog";
-import { useAuthStore } from "@/store/use-auth-store";
-import { DEFAULT_IMAGE } from "@/constants/default-image";
-import { getPaginatedPrerequisitesService } from "@/services/prerequisite.service";
-import Link from "next/link";
-import { getProgressByCourseId } from "@/services/progress.service";
-import { Certificate } from "@/components/certificate";
 import {
   Dialog,
   DialogContent,
@@ -44,10 +27,27 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { DEFAULT_IMAGE } from "@/constants/default-image";
+import { formatPrice } from "@/lib/format";
+import {
+  buyCourseService,
+  getCourseByIdService,
+  registerCourseService,
+} from "@/services/course.service";
 import {
   getExamResultService,
   getPaginatedExamsService,
 } from "@/services/exam.service";
+import { getPaginatedPrerequisitesService } from "@/services/prerequisite.service";
+import { getProgressByCourseId } from "@/services/progress.service";
+import { useAuthStore } from "@/store/use-auth-store";
+import { MinusCircle, PlusCircle } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
+import { ChapterDetail } from "./_components/chapter-detail";
 
 const CourseIdPage = () => {
   const router = useRouter();

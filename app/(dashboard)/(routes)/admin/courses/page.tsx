@@ -1,17 +1,16 @@
 "use client";
 
-import { redirect } from "next/navigation";
-import { createColumns } from "./_components/column";
-import { DataTable } from "./_components/data-table";
-import { useCallback, useEffect, useState } from "react";
+import { CourseStatus } from "@/enum/course-status";
 import {
   checkCourseService,
+  deleteCourseService,
   getPaginatedCoursesService,
   IGetPaginatedCoursesParams,
-  sendToAdminApproveService,
 } from "@/services/course.service";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { CourseStatus } from "@/enum/course-status";
+import { createColumns } from "./_components/column";
+import { DataTable } from "./_components/data-table";
 
 const AdminCoursesPage = () => {
   const [courses, setCourses] = useState<any[]>([]);
@@ -52,15 +51,13 @@ const AdminCoursesPage = () => {
   }, [fetchCourses]);
 
   const handleDelete = async (id: string) => {
-    // try {
-    //   await deleteStudentService(id);
-    //   await deleteUserService(userId);
-    //   toast.success("Student deleted successfully");
-    //   fetchStudents(); // Refresh the table data
-    // } catch (error) {
-    //   console.error("Error deleting student:", error);
-    //   toast.error("Failed to delete student");
-    // }
+    try {
+      await deleteCourseService(Number(id));
+      toast.success("Xóa khóa học thành công");
+      fetchCourses(); // Refresh the table data
+    } catch (error) {
+      toast.error("Xóa khóa học thất bại");
+    }
   };
 
   const handleCheckCourse = async (id: string, status: string) => {

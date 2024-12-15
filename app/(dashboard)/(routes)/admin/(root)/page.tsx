@@ -82,7 +82,7 @@ export default function AdminDashboard() {
     });
     if (response.data.data) {
       const listCourses = response.data.data.map((course: any) => ({
-        label: course.courseName,
+        label: `${course.courseName} - ${course.id}`,
         value: course.id,
       }));
       setCourses(listCourses);

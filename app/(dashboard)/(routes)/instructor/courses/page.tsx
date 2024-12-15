@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  deleteCourseService,
   getPaginatedCoursesService,
   sendToAdminApproveService,
 } from "@/services/course.service";
@@ -56,15 +57,13 @@ const CoursesPage = () => {
   }, [user, fetchCourses]);
 
   const handleDelete = async (id: string) => {
-    // try {
-    //   await deleteStudentService(id);
-    //   await deleteUserService(userId);
-    //   toast.success("Student deleted successfully");
-    //   fetchStudents(); // Refresh the table data
-    // } catch (error) {
-    //   console.error("Error deleting student:", error);
-    //   toast.error("Failed to delete student");
-    // }
+    try {
+      await deleteCourseService(Number(id));
+      toast.success("Xóa khóa học thành công");
+      fetchCourses(); // Refresh the table data
+    } catch (error) {
+      toast.error("Xóa khóa học thất bại");
+    }
   };
 
   const handleSendToAdmin = async (id: string) => {

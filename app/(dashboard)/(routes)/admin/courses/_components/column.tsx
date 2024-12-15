@@ -141,12 +141,10 @@ export const createColumns = (
               <X className="w-4 h-4 mr-2" />
               Từ chối
             </DropdownMenuItem>
-            {/* <Link href={`/instructor/courses/${id}`}>
-              <DropdownMenuItem>
-                <Trash className="w-4 h-4 mr-2" />
-                Xóa
-              </DropdownMenuItem>
-            </Link> */}
+            <DropdownMenuItem onClick={() => onDelete(id)}>
+              <Trash className="w-4 h-4 mr-2" />
+              Xóa
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

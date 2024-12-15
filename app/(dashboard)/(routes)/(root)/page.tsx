@@ -1,6 +1,7 @@
 "use client";
 
 import { CourseList } from "@/components/course-list";
+import { DocumentList } from "@/components/document-list";
 import { carouselData } from "@/constants/carousel-data";
 import { CATEGORIES } from "@/constants/category-data";
 import { CourseStatus } from "@/enum/course-status";
@@ -14,7 +15,6 @@ import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { CarouselCourse } from "./_components/carousel-course";
 import { Categories } from "./_components/categories";
-import { DocumentList } from "@/components/document-list";
 
 let listSelectedCategories: string[] = [];
 

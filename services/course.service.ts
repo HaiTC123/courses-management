@@ -34,6 +34,11 @@ export const updateCourseService = async (courseId: number, data: any) => {
   return response.data;
 };
 
+export const deleteCourseService = async (courseId: number) => {
+  const response = await axiosInstance.delete(`/api/course/${courseId}`);
+  return response.data;
+};
+
 export const getCourseByIdService = async (courseId: number) => {
   const response = await axiosInstance.get(`/api/course/detail/${courseId}`);
   return response.data;
