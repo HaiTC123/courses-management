@@ -17,8 +17,6 @@ import { CourseChapterEntity, CourseEntity, CourseLessonEntity, CourseMaterialEn
 import { CourseChapterDto, CourseDto, CourseLessonDto, CourseMaterialDto } from 'src/model/dto/course.dto';
 import { PrerequisiteEntity } from 'src/model/entity/prere.entity';
 import { PrerequisiteDto } from 'src/model/dto/prere.dto';
-import { SemesterEntity } from 'src/model/entity/semester.entity';
-import { SemesterDto } from 'src/model/dto/semester.dto';
 import { EnrollmentDto, EnrollmentDetailDto } from 'src/model/dto/errollment.dto';
 import { EnrollmentDetail, EnrollmentEntity } from 'src/model/entity/enrollment.entity';
 import { CourseCompletionEntity } from 'src/model/entity/course-complete.entity';
@@ -82,14 +80,10 @@ export class MapperService {
     createMap(this.mapper, UserDto, UserEntity);
     createMap(this.mapper, StudentDto, StudentEntity,
       forMember((dest) => dest.id, mapFrom((src) => src.id)),
-      forMember((dest) => dest.yearOfStudy, mapFrom((src) => src.yearOfStudy)),
-      forMember((dest) => dest.gpa, mapFrom((src) => src.gpa)),
       forMember((dest) => dest.userId, mapFrom((src) => src.userId))
     );
     createMap(this.mapper, StudentEntity, StudentDto,
       forMember((dest) => dest.id, mapFrom((src) => src.id)),
-      forMember((dest) => dest.yearOfStudy, mapFrom((src) => src.yearOfStudy)),
-      forMember((dest) => dest.gpa, mapFrom((src) => src.gpa)),
       forMember((dest) => dest.userId, mapFrom((src) => src.userId))
 
     );
@@ -187,37 +181,6 @@ export class MapperService {
       )
     )
 
-    createMap(this.mapper, SemesterEntity, SemesterDto,
-      forMember(
-        (destination) => destination.id,
-        mapFrom((source) => source.id)
-      ),
-      forMember(
-        (destination) => destination.startDate,
-        mapFrom((source) => source.startDate)
-      ),
-      forMember(
-        (destination) => destination.endDate,
-        mapFrom((source) => source.endDate)
-      )
-    )
-
-    // Mapping từ DTO sang Entity
-    createMap(this.mapper, SemesterDto, SemesterEntity,
-      forMember(
-        (destination) => destination.id,
-        mapFrom((source) => source.id)
-      ),
-      forMember(
-        (destination) => destination.startDate,
-        mapFrom((source) => source.startDate)
-      ),
-      forMember(
-        (destination) => destination.endDate,
-        mapFrom((source) => source.endDate)
-      )
-    )
-
     createMap(this.mapper, EnrollmentEntity, EnrollmentDto,
       forMember(
         (destination) => destination.id,
@@ -230,10 +193,6 @@ export class MapperService {
       forMember(
         (destination) => destination.courseId,
         mapFrom((source) => source.courseId)
-      ),
-      forMember(
-        (destination) => destination.semesterId,
-        mapFrom((source) => source.semesterId)
       ),
       forMember(
         (destination) => destination.gradeDetail,
@@ -254,10 +213,6 @@ export class MapperService {
       forMember(
         (destination) => destination.courseId,
         mapFrom((source) => source.courseId)
-      ),
-      forMember(
-        (destination) => destination.semesterId,
-        mapFrom((source) => source.semesterId)
       )
     );
 
@@ -273,10 +228,6 @@ export class MapperService {
       forMember(
         (destination) => destination.courseId,
         mapFrom((source) => source.courseId)
-      ),
-      forMember(
-        (destination) => destination.semesterId,
-        mapFrom((source) => source.semesterId)
       ),
       forMember(
         (destination) => destination.course,
@@ -308,10 +259,6 @@ export class MapperService {
         mapFrom((src) => src.enrollmentId)
       ),
       forMember(
-        (dest) => dest.semesterId,
-        mapFrom((src) => src.semesterId)
-      ),
-      forMember(
         (dest) => dest.finalGrade,
         mapFrom((src) => src.finalGrade)
       )
@@ -338,10 +285,6 @@ export class MapperService {
       forMember(
         (dest) => dest.enrollmentId,
         mapFrom((src) => src.enrollmentId)
-      ),
-      forMember(
-        (dest) => dest.semesterId,
-        mapFrom((src) => src.semesterId)
       ),
       forMember(
         (dest) => dest.finalGrade,

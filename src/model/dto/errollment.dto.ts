@@ -20,10 +20,6 @@ export class EnrollmentDto extends BaseDto {
 
   @ApiProperty()
   @AutoMap()
-  semesterId: number; // Liên kết với học kỳ trong bảng Semesters
-
-  @ApiProperty()
-  @AutoMap()
   enrollmentStatus: string; // Trạng thái đăng ký
 
   @ApiProperty()

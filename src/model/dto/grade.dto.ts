@@ -47,10 +47,6 @@ export class FailedCourseDto extends BaseDto {
 
     @ApiProperty()
     @AutoMap()
-    semesterId: number;
-
-    @ApiProperty()
-    @AutoMap()
     enrollmentId: number;
 
     @ApiProperty()
@@ -79,10 +75,6 @@ export class CourseCompletionDto extends BaseDto {
     @ApiProperty()
     @AutoMap()
     enrollmentId: number;
-
-    @ApiProperty()
-    @AutoMap()
-    semesterId: number;
 
     @ApiProperty()
     @AutoMap()

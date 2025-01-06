@@ -40,9 +40,6 @@ export class CourseEntity extends BaseEntity{
   isMandatory: boolean; // Khóa học bắt buộc hay tự chọn
 
   @AutoMap()
-  semesterOffered?: string; // Khóa học mở vào học kỳ nào
-
-  @AutoMap()
   price: number; // Giá khóa học
 
   @AutoMap()

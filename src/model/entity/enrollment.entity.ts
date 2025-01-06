@@ -16,9 +16,6 @@ export class EnrollmentEntity extends BaseEntity {
     courseId: number; // Liên kết với khóa học trong bảng Courses
 
     @AutoMap()
-    semesterId: number; // Liên kết với học kỳ trong bảng Semesters
-
-    @AutoMap()
     enrollmentStatus: string; // Trạng thái đăng ký
 
     @AutoMap()

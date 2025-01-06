@@ -9,18 +9,6 @@ export class StudentEntity extends BaseEntity {
   
   @AutoMap()
   userId: number; // Liên kết với bảng User
-  
-  @AutoMap()
-  major: string; // Chuyên ngành của sinh viên
-  
-  @AutoMap()
-  yearOfStudy: number; // Năm học của sinh viên
-  
-  @AutoMap()
-  gpa: Decimal; // Điểm trung bình tích lũy (GPA)
-  
-  @AutoMap()
-  graduationStatus: string; // Trạng thái tốt nghiệp
 
   @AutoMap()
   user: UserEntity; // Tham chiếu tới UserEntity

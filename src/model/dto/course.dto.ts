@@ -48,10 +48,6 @@ export class CourseDto extends BaseDto{
 
   @AutoMap()
   @ApiProperty()
-  semesterOffered?: string; // Học kỳ được mở
-
-  @AutoMap()
-  @ApiProperty()
   price: number; // Giá khóa học
 
   @AutoMap()

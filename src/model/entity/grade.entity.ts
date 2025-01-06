@@ -27,8 +27,6 @@ export class FailedCourseEntity extends BaseEntity {
     @AutoMap()
     courseId: number;
     @AutoMap()
-    semesterId: number;
-    @AutoMap()
     enrollmentId: number;
     @AutoMap()
     failureReason: string;
