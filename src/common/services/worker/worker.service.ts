@@ -176,47 +176,4 @@ export class WorkerService {
             return false; // Trả về false nếu có lỗi trong quá trình thực thi
         }
     }
-
-    //#region  Học kỳ
-    // @Cron(CronExpression.EVERY_10_SECONDS)
-    // async handleCronDoneSemester() {
-    //     console.log('Cập nhật trạng thái khi hết học kỳ. Thông tin khóa học hoàn thành, khóa học false')
-    //     await this.checkSemesterStatus()
-
-    // }
-    // async checkSemesterStatus() {
-    //     const currentDate = new Date();
-
-    //     // 1. Kiểm tra học kỳ hiện tại
-    //     const nearestPendingSemester = await this.prismaService.semester.findFirst({
-    //         where: {
-    //             isCurrent: true,
-    //             isDone: false,
-    //             endDate: { lt: currentDate }, // Học kỳ đã kết thúc
-    //         },
-    //         orderBy: { endDate: 'desc' }
-    //     });
-    //     if (!nearestPendingSemester) {
-    //         return ;
-    //     }
-
-    //     // Bước 2: Cập nhật trạng thái học kỳ thành `done`
-    //     await this.prismaService.semester.update({
-    //         where: { id: nearestPendingSemester.id },
-    //         data: { isDone: true },
-    //     });
-
-    //     // Bước 3: Lấy danh sách `courseId` từ bảng `Enrollment` theo `semesterId`
-    //     const distinctCourses = await this.prismaService.enrollment.findMany({
-    //         where: { semesterId: nearestPendingSemester.id },
-    //         select: { courseId: true },
-    //         distinct: ['courseId'], // Lấy các giá trị `courseId` duy nhất
-    //     });
-
-    //     for (let i = 0;i < distinctCourses.length;i ++){
-    //         await this.courseService.processFinalResults(distinctCourses[i].courseId, nearestPendingSemester.id);
-    //     }
-    //     return null;
-    // }
-    //#endregion
 }

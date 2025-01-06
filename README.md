@@ -19,13 +19,6 @@ INSERT INTO Admin (userId, role, accessLevel, createdAt, updatedAt, lastActivity
   VALUES (4, 'Admin', 0, NOW(), NOW(), NOW(), '', '');
 
 
--- insert học kỳ
-INSERT INTO Semester ( name, startDate, endDate, isCurrent, createdAt, updatedAt, createdBy, updatedBy)
-VALUES
-  ('Spring 2024', '2024-01-15', '2024-05-15', false, NOW(), NOW(), 'Admin', 'Admin'),
-  ('Fall 2024', '2024-08-15', '2024-12-29', true, NOW(), NOW(), 'Admin', 'Admin');
-
-
 ```
 
 

@@ -35,7 +35,6 @@ import { JobConfigModule } from './controllers/scheduled/jobConfig.module';
 import { ExamModule } from './controllers/exam/exam.module';
 import { ExamResultModule } from './controllers/examResult/examResult.module';
 import { QuestionModule } from './controllers/question/question.module';
-import { SemesterModule } from './controllers/semeter/semester.module';
 
 @Module({
   imports: [
@@ -70,8 +69,7 @@ import { SemesterModule } from './controllers/semeter/semester.module';
     JobConfigModule,
     ExamModule,
     ExamResultModule,
-    QuestionModule,
-    SemesterModule
+    QuestionModule
   ],
   controllers: [AppController],
   providers: [AppService,
