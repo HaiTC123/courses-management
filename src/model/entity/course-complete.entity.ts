@@ -15,9 +15,6 @@ export class CourseCompletionEntity extends BaseEntity{
   enrollmentId: number; // Liên kết với bảng Enrollments
 
   @AutoMap()
-  semesterId: number; // Liên kết với bảng Semesters
-
-  @AutoMap()
   completionDate: Date; // Ngày hoàn thành khóa học
 
   @AutoMap()

@@ -56,7 +56,6 @@ export class ProgressService extends BaseService<ProgressEntity, Prisma.Progress
         const enrollments = await this.prismaService.enrollment.findMany({
             where: {
                 courseId,
-                semesterId: 2 // to-do
             }
         });
 
@@ -105,7 +104,6 @@ export class ProgressService extends BaseService<ProgressEntity, Prisma.Progress
             where: {
                 courseId: courseId,       // ID của khóa học
                 studentId: this._authService.getStudentID(),     // ID của sinh viên
-                semesterId: 2    // ID của học kỳ to-do
             },
             select: {
                 id: true,                 // Chỉ lấy ra `id` của bảng Enrollment
@@ -156,7 +154,6 @@ export class ProgressService extends BaseService<ProgressEntity, Prisma.Progress
                 enrollment: {
                     studentId: this._authService.getStudentID(),
                     courseId,
-                    semesterId: 2 // to-do: xử lý logic semester nếu cần
                 },
                 status: ProgressStatus.Completed,
             },

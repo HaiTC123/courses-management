@@ -6,9 +6,6 @@ export class RegisterCourse {
     @IsInt()
     courseId: number;
   
-    @ApiProperty()
-    @IsInt()
-    semeterId: number;
 }
 
 
@@ -17,7 +14,4 @@ export class BuyCourse {
     @IsInt()
     courseId: number;
   
-    @ApiProperty()
-    @IsInt()
-    semeterId: number;
 }

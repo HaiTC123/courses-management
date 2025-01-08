@@ -65,7 +65,7 @@ export class ExamService extends BaseService<ExamEntity, Prisma.ExamCreateInput>
         const studentId = this._authService.getStudentID();
         // Kiểm tra sinh viên đã đăng ký khóa học hay chưa
         await this.checkStudentEnrollment(studentId, exam.courseId);
-       
+
         if (exam.questions) {
             exam.questions = this._mapperService.mapListData(exam.questions, QuestionEntity, QuestionStudentDto)
         }
@@ -136,13 +136,11 @@ export class ExamService extends BaseService<ExamEntity, Prisma.ExamCreateInput>
         });
 
         if (isPassed) {
-            // to-do fix học kỳ
-            await this.processFinalResults(exam.course.id, 2);
+            await this.processFinalResults(exam.course.id);
             const enrollment = await this.prismaService.enrollment.findFirst({
                 where: {
                     studentId,
                     courseId: exam.courseId,
-                    semesterId: 2
                 },
             });
             await this.prismaService.enrollment.update({
@@ -182,8 +180,7 @@ export class ExamService extends BaseService<ExamEntity, Prisma.ExamCreateInput>
         const enrollment = await this.prismaService.enrollment.findFirst({
             where: {
                 studentId,
-                courseId,
-                semesterId: 2
+                courseId
             },
         });
 
@@ -192,11 +189,13 @@ export class ExamService extends BaseService<ExamEntity, Prisma.ExamCreateInput>
         }
     }
 
-    async processFinalResults(courseId: number, semesterId: number) {
+    async processFinalResults(courseId: number) {
         // Lấy danh sách tất cả các sinh viên đã đăng ký khóa học
         const enrollments = await this.prismaService.enrollment.findMany({
-            where: { courseId, semesterId },
-            include: { student: true , course: true},
+            where: { 
+                courseId
+            },
+            include: { student: true, course: true },
         });
 
         for (const enrollment of enrollments) {
@@ -233,7 +232,6 @@ export class ExamService extends BaseService<ExamEntity, Prisma.ExamCreateInput>
                     data: {
                         studentId,
                         courseId,
-                        semesterId,
                         enrollmentId: enrollment.id,
                         finalGrade,
                         createdBy: 'system',
@@ -246,7 +244,6 @@ export class ExamService extends BaseService<ExamEntity, Prisma.ExamCreateInput>
                     data: {
                         studentId,
                         courseId,
-                        semesterId,
                         enrollmentId: enrollment.id,
                         failureReason: 'Không vượt qua kỳ thi',
                         failedDate: new Date(),

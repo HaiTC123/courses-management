@@ -21,10 +21,6 @@ export class CourseCompletionDto extends BaseDto{
 
   @AutoMap()
   @ApiProperty()
-  semesterId: number;
-
-  @AutoMap()
-  @ApiProperty()
   completionDate: Date;
 
   @AutoMap()

@@ -60,14 +60,14 @@ export class CoursesController extends BaseController<CourseEntity, Prisma.Cours
     @Post("register")
     @ApiBody({ type: RegisterCourse })
     async registerCourse(@Body() param: RegisterCourse): Promise<ServiceResponse> {
-        return await this.service.registerCourseFree(param.courseId, param.semeterId);
+        return await this.service.registerCourseFree(param.courseId);
     }
 
     @Roles(Role.Student)
     @Post("buyCourse")
     @ApiBody({ type: BuyCourse })
     async buyCourse(@Body() param: BuyCourse): Promise<ServiceResponse> {
-        return await this.service.buyCourse(param.courseId, param.semeterId);
+        return await this.service.buyCourse(param.courseId);
     }
 
     @Get('eligible-courses')

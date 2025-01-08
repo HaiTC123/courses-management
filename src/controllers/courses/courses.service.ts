@@ -51,7 +51,7 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
         return course;
     }
 
-    async registerCourseFree(courseId: number, semesterId: number): Promise<ServiceResponse> {
+    async registerCourseFree(courseId: number): Promise<ServiceResponse> {
         // check couse exist
         var course = await super.getOne({
             id: courseId
@@ -64,15 +64,6 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
             return ServiceResponse.onBadRequest(null, "Khóa học trả phí vui lòng thanh toán trước khi đăng ký");
         }
 
-        // Kiểm tra học kỳ hiện tại có hợp lệ
-        const semester = await this.prismaService.semester.findUnique({
-            where: { id: semesterId }
-        });
-
-        const today = new Date();
-        if (!semester || today < semester.startDate || today > semester.endDate) {
-            return ServiceResponse.onBadRequest(null, "Thời gian đăng ký đã hết.")
-        }
         var studentInfo = await this.prismaService.userRepo.getStudentByUserId(this._authService.getUserID());
         if (!studentInfo) {
             throw new HttpException('Thông tin học sinh không tồn tại.', HttpStatus.BAD_REQUEST);
@@ -93,7 +84,7 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
             });
             if (!completion) {
                 throw new HttpException(
-                    `Chưa hoàn thành khóa học tiên quyết: ${prerequisite.prerequisiteCourseId}`,
+                    `Cần phải hoàn thành điều kiện tiên quyết: ${prerequisite.prerequisiteCourseId}`,
                     HttpStatus.BAD_REQUEST
                 );
             }
@@ -103,7 +94,6 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
             where: {
                 studentId: studentInfo.id,
                 courseId: courseId,
-                semesterId: semesterId
             }
         });
         if (existingEnrollment) {
@@ -112,9 +102,8 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
         var enrollment = {
             studentId: studentInfo.id,
             courseId: courseId,
-            semesterId: semesterId,
             enrollmentStatus: 'In Progress',
-            completionDate: today,
+            completionDate: new Date(),
             createdAt: new Date(),
             updatedAt: new Date(),
         };
@@ -128,7 +117,7 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
         return ServiceResponse.onSuccess(enrollment1, "Bạn đã đăng ký khóa học thành công");
     }
 
-    async buyCourse(courseId: number, semesterId: number): Promise<ServiceResponse> {
+    async buyCourse(courseId: number): Promise<ServiceResponse> {
         // check couse exist
         var course = await super.getOne({
             id: courseId
@@ -142,15 +131,6 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
         }
 
         const userId = this._authService.getUserID();
-        // Kiểm tra học kỳ hiện tại có hợp lệ
-        const semester = await this.prismaService.semester.findUnique({
-            where: { id: semesterId }
-        });
-
-        const today = new Date();
-        if (!semester || today < semester.startDate || today > semester.endDate) {
-            return ServiceResponse.onBadRequest(null, "Thời gian đăng ký đã hết.")
-        }
         var studentInfo = await this.prismaService.userRepo.getStudentByUserId(this._authService.getUserID());
         if (!studentInfo) {
             throw new HttpException('Thông tin học sinh không tồn tại.', HttpStatus.BAD_REQUEST);
@@ -171,7 +151,7 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
             });
             if (!completion) {
                 throw new HttpException(
-                    `Chưa hoàn thành khóa học tiên quyết: ${prerequisite.prerequisiteCourseId}`,
+                    `Cần phải hoàn thành điều kiện tiên quyết: ${prerequisite.prerequisiteCourseId}`,
                     HttpStatus.BAD_REQUEST
                 );
             }
@@ -181,7 +161,6 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
             where: {
                 studentId: studentInfo.id,
                 courseId: courseId,
-                semesterId: semesterId
             }
         });
         if (existingEnrollment) {
@@ -274,9 +253,8 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
         var enrollment = {
             studentId: studentInfo.id,
             courseId: courseId,
-            semesterId: semesterId,
             enrollmentStatus: 'In Progress',
-            completionDate: today,
+            completionDate: new Date(),
             createdAt: new Date(),
             updatedAt: new Date(),
         };
@@ -512,10 +490,12 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
         };
     }
 
-    async processFinalResults(courseId: number, semesterId: number) {
+    async processFinalResults(courseId: number) {
         // Lấy danh sách tất cả các sinh viên đã đăng ký khóa học
         const enrollments = await this.prismaService.enrollment.findMany({
-            where: { courseId, semesterId },
+            where: { 
+                courseId, 
+            },
             include: { student: true , course: true},
         });
 
@@ -553,7 +533,6 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
                     data: {
                         studentId,
                         courseId,
-                        semesterId,
                         enrollmentId: enrollment.id,
                         finalGrade,
                         createdBy: 'system',
@@ -566,7 +545,6 @@ export class CoursesService extends BaseService<CourseEntity, Prisma.CourseCreat
                     data: {
                         studentId,
                         courseId,
-                        semesterId,
                         enrollmentId: enrollment.id,
                         failureReason: 'Không vượt qua kỳ thi',
                         failedDate: new Date(),
