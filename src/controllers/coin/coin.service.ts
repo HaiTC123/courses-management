@@ -2,10 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { Prisma, Role } from '@prisma/client';
 import { query } from 'express';
 import { BaseService } from 'src/base/base.service';
-import { VNPayService } from 'src/common/services/vnpay/VNPay.service';
+// import { VNPayService } from 'src/common/services/vnpay/VNPay.service';
+import { PayOSService } from 'src/common/services/payos/PayOS.service' ;
 import { CoreService } from 'src/core/core.service';
 import { CoinDto } from 'src/model/dto/coin.dto';
 import { CoinEntity } from 'src/model/entity/coin.entity';
+import { OrderInfo } from 'src/model/enum/order.enum';
 import { DepositCoinRequest } from 'src/model/request/depositCoint.request';
 import { PrismaService } from 'src/repo/prisma.service';
 
@@ -15,7 +17,7 @@ export class CoinsService extends BaseService<CoinEntity, Prisma.CoinCreateInput
     constructor(
         coreService: CoreService,
         protected readonly prismaService: PrismaService,
-        protected readonly vnpayService: VNPayService
+         protected readonly payosService: PayOSService 
     ) {
         super(prismaService, coreService)
     }
@@ -49,10 +51,18 @@ export class CoinsService extends BaseService<CoinEntity, Prisma.CoinCreateInput
     async depositCoin(request: DepositCoinRequest): Promise<string> {
         const userId = this._authService.getUserID();
         let coin = await this.upsertCoin(userId);
-        return this.vnpayService.paymentForCoin(request, coin)
+        return this.payosService.paymentForCoin(request, coin)
     }
 
     async processCallback(request: any){
-        return this.vnpayService.processCallback(request);
+        return this.payosService.processReturnURL(request, OrderInfo.DepositCoin);
+    }
+
+    async processCancelURL(request: any){
+        return this.payosService.processReturnURL(request, OrderInfo.DepositCoin);
+    }
+
+    async processReturnURL(request: any){
+        return this.payosService.processReturnURL(request, OrderInfo.DepositCoin);
     }
 }

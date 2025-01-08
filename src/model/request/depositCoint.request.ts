@@ -2,7 +2,7 @@ import { IsInt, IsOptional, Min } from 'class-validator';
 
 export class DepositCoinRequest {
   @IsInt()
-  @Min(10000, { message: 'Số lượng coin hợp lệ' })
+  @Min(2000, { message: 'Số lượng coin hợp lệ' })
   numberCoin: number;
 
   @IsOptional()

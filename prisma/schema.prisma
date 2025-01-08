@@ -459,7 +459,7 @@ model Coin {
 }
 
 model Transaction {
-  id        String   @id @default(uuid()) // TransactionID sử dụng UUID
+  id     Int  @id @default(autoincrement()) // Khóa chính tự động tăng
   infor     String? // Thông tin chi tiết về giao dịch
   orderId   Int // ID của đơn hàng liên kết
   createdAt DateTime @default(now()) // Ngày tạo

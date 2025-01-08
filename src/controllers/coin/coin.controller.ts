@@ -44,13 +44,22 @@ export class CoinsController extends BaseController<CoinEntity, Prisma.CoinCreat
     }
 
     @Public()
-    @Get("callback")
-    async callBack(@Query() query: any, @Res()res: Response){
+    @Get("cancelurl")
+    async cancelurl(@Query() query: any, @Res()res: Response){
         let link = '';
         if (Object.keys(query).length){
-            link = await this.service.processCallback(query);
+            link = await this.service.processCancelURL(query);
         }
         return res.redirect(link);
     }
 
+    @Public()
+    @Get("returnurl")
+    async return(@Query() query: any, @Res()res: Response){
+        let link = '';
+        if (Object.keys(query).length){
+            link = await this.service.processReturnURL(query);
+        }
+        return res.redirect(link);
+    }
 }
