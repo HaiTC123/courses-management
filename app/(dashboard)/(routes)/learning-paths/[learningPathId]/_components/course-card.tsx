@@ -131,10 +131,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({ id, isEnrolled }) => {
             )}
           </div>
         )}
-        <div className="flex gap-x-2 items-center">
-          <span>Thời gian học dự kiến:</span>
-          <span>{course.durationWeeks} tuần</span>
-        </div>
+
         <div className="flex gap-x-2 items-center">
           <Button variant="outline" size="sm">
             <Link href={`/courses/${id}`}>Xem khóa học</Link>

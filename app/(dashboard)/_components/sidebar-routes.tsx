@@ -13,7 +13,7 @@ import { SidebarItem } from "./sidebar-item";
 
 export const SidebarRoutes = () => {
   const pathname = usePathname();
-  const { role } = useAuthStore.getState();
+  const { role, authenticated } = useAuthStore.getState();
 
   const isInstructorPage = pathname?.startsWith("/instructor");
   const isAdminPage = pathname?.startsWith("/admin");
@@ -23,9 +23,11 @@ export const SidebarRoutes = () => {
     : isAdminPage
     ? adminRoutes
     : role === UserRole.INSTRUCTOR || role === UserRole.ADMIN
-    ? studentRoutes.filter((route) => route.href !== "/courses")
+    ? studentRoutes.filter((route) => route.href !== "/courses" && route.href !== "/certificate")
     : studentRoutes;
-
+  if (!authenticated){
+    routes = routes.filter(x => !x.auth);
+  }
   return (
     <div className="flex flex-col w-full">
       {routes.map((route) => (

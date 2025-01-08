@@ -18,11 +18,11 @@ const ExamPage = () => {
   const [studentId, setStudentId] = useState<number | null>(null);
   const { user } = useAuthStore.getState();
   const getExamResult = useCallback(
-    async (examId: number, studentId: number) => {
+    async (examId: number | null, studentId: number | null) => {
       try {
         const response = await getExamResultService(
-          Number(examId),
-          Number(studentId)
+          examId,
+          studentId
         );
         if (response) {
           setResults(response.data);
@@ -35,9 +35,7 @@ const ExamPage = () => {
   );
 
   useEffect(() => {
-    if (examId && studentId) {
-      getExamResult(examId, studentId);
-    }
+    getExamResult(examId || -1, studentId || -1);
   }, [examId, studentId, getExamResult]);
 
   const [exams, setExams] = useState<any[]>([]);
@@ -142,9 +140,26 @@ const ExamPage = () => {
 
   return (
     <div className="p-6">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <Combobox options={exams} value={examId} onChange={setExamId} />
-        <Combobox options={users} value={studentId} onChange={setStudentId} />
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2"
+        style={{
+          width: '50%'
+        }}
+      >
+        <div className="flex gap-1 w-200 items-center">
+          <div style={{
+            whiteSpace: 'nowrap',
+            width: "120px"
+          }}>Khóa học</div>
+          <Combobox placeHolder="Chọn khóa học" options={exams} value={examId} onChange={setExamId} />
+        </div>
+        <div className="flex items-center">
+          <div style={{
+            whiteSpace: 'nowrap',
+            width: "120px"
+          }} >Sinh viên</div>
+          <Combobox placeHolder="Chọn sinh viên" options={users} value={studentId} onChange={setStudentId} />
+        </div>
+        
       </div>
 
       <div className="flex flex-col items-center justify-center mt-6">

@@ -56,17 +56,7 @@ const LearningPathPage = () => {
               __html: learningPath?.description ?? "",
             }}
           ></p>
-          <div className="flex items-center gap-x-2">
-            <span>Thời gian học dự kiến:</span>
-            <span>
-              {learningPath?.courses?.reduce(
-                (acc: number, course: any) =>
-                  acc + Number(course.course.durationWeeks),
-                0
-              )}{" "}
-              tuần
-            </span>
-          </div>
+
         </div>
         {learningPath?.backgroundUrl ? (
           <Image

@@ -7,9 +7,8 @@ import { usePathname } from "next/navigation";
 import { Logo } from "./logo";
 import { SidebarItem } from "./sidebar-item";
 import { SidebarRoutes } from "./sidebar-routes";
-
 export const Sidebar = () => {
-  const { user, role } = useAuthStore.getState();
+  const { user, role, authenticated } = useAuthStore.getState();
   const pathname = usePathname();
   const isAdminPage = pathname?.startsWith("/admin");
   const isInstructorPage = pathname?.startsWith("/instructor");
@@ -25,12 +24,15 @@ export const Sidebar = () => {
       </div>
       <div className="flex flex-col w-full h-full">
         <SidebarRoutes />
-        <SidebarItem
-          key={uniqueId("sidebar-item-")}
-          icon={Coins}
-          label={formatPrice(user?.coinAmount ?? 0)}
-          href={"/coins"}
-        />
+        {
+          authenticated && 
+          <SidebarItem
+            key={uniqueId("sidebar-item-")}
+            icon={Coins}
+            label={formatPrice(user?.coinAmount ?? 0)}
+            href={"/coins"}
+          />
+        }
       </div>
     </div>
   );
