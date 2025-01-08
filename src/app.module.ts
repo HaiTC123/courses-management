@@ -24,7 +24,7 @@ import { GoalsModule } from './controllers/goal/goal.module';
 import { AcademicAdvisingsModule } from './controllers/academicAdvising/academicAdvising.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { WorkerModule } from './common/services/worker/worker.module';
-import { VNPayModule } from './common/services/vnpay/VNPay.module';
+// import { VNPayModule } from './common/services/vnpay/VNPay.module';
 import { CoinsModule } from './controllers/coin/coin.module';
 import { TransactionHistoryModule } from './controllers/transactionHistory/transactionHistory.module';
 import { ProgressModule } from './controllers/progress/prerequistite.module';
@@ -35,7 +35,7 @@ import { JobConfigModule } from './controllers/scheduled/jobConfig.module';
 import { ExamModule } from './controllers/exam/exam.module';
 import { ExamResultModule } from './controllers/examResult/examResult.module';
 import { QuestionModule } from './controllers/question/question.module';
-
+import { PayOSModule } from './common/services/payos/PayOS.module';
 @Module({
   imports: [
     ScheduleModule.forRoot(),
@@ -59,7 +59,7 @@ import { QuestionModule } from './controllers/question/question.module';
     GoalsModule,
     AcademicAdvisingsModule,
     WorkerModule,
-    VNPayModule,
+    PayOSModule,
     CoinsModule,
     TransactionHistoryModule,
     ProgressModule,
