@@ -25,20 +25,24 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
+import { Combobox } from "@/components/ui/combobox";
 import Paginator from "@/components/paginator";
-
+import { COURSE_STATUS } from "@/constants/course-status";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  onSearchCourse: any;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  onSearchCourse
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [status, setStatus] = useState("All")
+  const [searchText, setSearchText] = useState("");
 
   const table = useReactTable({
     data,
@@ -52,19 +56,35 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  const onChangeStatus = function(e){
+    setStatus(e);
+    onSearchCourse(searchText, e);
+  }
+  const onChangeSearch = function(){
+    onSearchCourse(searchText, status);
+  }
+
   return (
     <div>
       <div className="flex items-center justify-between py-4">
-        <Input
-          placeholder="Lọc khóa học..."
-          value={
-            (table.getColumn("courseName")?.getFilterValue() as string) ?? ""
-          }
-          onChange={(event) =>
-            table.getColumn("courseName")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+        <div className="flex">
+          <Input
+            placeholder="Tìm kiếm theo tên khóa học"
+            value={searchText}
+            onChange={(event) =>
+              setSearchText(event.target.value)
+            }
+            onEnter={() => onChangeSearch()}
+            className="max-w-sm mr-2 w-250"
+          />
+          <Combobox
+            options={COURSE_STATUS}
+            value={status}
+            onChange={onChangeStatus}
+          />
+
+        </div>
+        
         <Link href="/instructor/create">
           <Button>
             <PlusCircle className="w-4 h-4 mr-2" />
@@ -138,24 +158,6 @@ export function DataTable<TData, TValue>({
           />
         </div>
       </div>
-      {/* <div className="flex items-center justify-end py-4 space-x-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
-      </div> */}
     </div>
   );
 }

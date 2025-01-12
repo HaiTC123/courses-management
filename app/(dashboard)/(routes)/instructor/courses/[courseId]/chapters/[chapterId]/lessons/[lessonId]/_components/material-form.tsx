@@ -169,7 +169,7 @@ export const MaterialForm = ({
               name="materialTitle"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tên bài học</FormLabel>
+                  <FormLabel>Tên video</FormLabel>
                   <FormControl>
                     <Input
                       disabled={isSubmitting}
@@ -187,7 +187,7 @@ export const MaterialForm = ({
               name="materialDescription"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Mô tả bài học</FormLabel>
+                  <FormLabel>Mô tả video</FormLabel>
                   <FormControl>
                     <Editor {...field} />
                   </FormControl>

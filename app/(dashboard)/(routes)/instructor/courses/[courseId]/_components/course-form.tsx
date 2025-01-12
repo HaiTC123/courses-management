@@ -33,7 +33,6 @@ interface CourseFormProps {
   initialData: {
     courseName: string;
     description: string;
-    durationWeeks: number;
     category: string;
     isMandatory: boolean;
     price: number;
@@ -52,9 +51,6 @@ const formSchema = z.object({
   }),
   description: z.string().min(1, {
     message: "Mô tả là bắt buộc",
-  }),
-  durationWeeks: z.number().min(1, {
-    message: "Thời gian là bắt buộc",
   }),
   category: z.string().min(1, {
     message: "Danh mục là bắt buộc",
@@ -213,26 +209,6 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
                   <FormMessage />
                 </FormItem>
               )}
-            />
-
-            <FormField
-              control={form.control}
-              name="durationWeeks"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Thời gian (tuần)</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      disabled={isSubmitting}
-                      {...field}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-              disabled={isSubmitting || !isEditing}
             />
 
             {/* <FormField

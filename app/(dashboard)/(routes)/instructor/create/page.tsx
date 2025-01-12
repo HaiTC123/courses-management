@@ -48,7 +48,7 @@ const CreatePage = () => {
     }),
     // credits: z.number().min(0),
     instructorId: z.number().min(0),
-    durationWeeks: z.number().min(1),
+    // durationWeeks: z.number().min(1),
     category: z.string().min(1, {
       message: "Category is required",
     }),
@@ -64,12 +64,12 @@ const CreatePage = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      courseCode: uuidv4(),
+      courseCode: generateRandomText(10),
       courseName: "",
       description: "",
       // credits: 0,
       instructorId: 1,
-      durationWeeks: 0,
+      // durationWeeks: 0,
       category: "",
       isMandatory: false,
       price: 0,
@@ -87,7 +87,7 @@ const CreatePage = () => {
     try {
       const body = {
         ...omit(values, ["backgroundUrlTmp"]),
-        courseCode: `ID-${generateRandomText(10)}`,
+        courseCode: `${generateRandomText(10)}`,
         instructorId: user?.instructor?.id,
       };
       const response = await addCourseService(body);
@@ -161,7 +161,7 @@ const CreatePage = () => {
                 )}
               />
 
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="durationWeeks"
                 render={({ field }) => (
@@ -178,7 +178,7 @@ const CreatePage = () => {
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
               {/* 
               <FormField
                 control={form.control}

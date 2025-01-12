@@ -35,7 +35,7 @@ export const createColumns = (
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Tiêu đề
+          Tên khóa học
           <ArrowUpDown className="ml-2 w-4 h-4" />
         </Button>
       );

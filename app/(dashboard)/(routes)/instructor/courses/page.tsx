@@ -15,20 +15,14 @@ const CoursesPage = () => {
   const [courses, setCourses] = useState<any[]>([]);
   const { user } = useAuthStore.getState();
 
-  const fetchCourses = useCallback(() => {
+  const fetchCourses = useCallback((conditions, searchKey, searchFields) => {
     getPaginatedCoursesService({
       pageSize: 1000,
       pageNumber: 1,
-      conditions: [
-        {
-          key: "instructorId",
-          condition: "equal",
-          value: user.instructor.id,
-        },
-      ],
-      sortOrder: "",
-      searchKey: "",
-      searchFields: [],
+      conditions: conditions,
+      sortOrder: "" ,
+      searchKey: searchKey,
+      searchFields: searchFields,
       includeReferences: [],
     })
       .then((response) => {
@@ -52,7 +46,13 @@ const CoursesPage = () => {
 
   useEffect(() => {
     if (user?.instructor?.id) {
-      fetchCourses();
+      fetchCourses([
+        {
+          key: "instructorId",
+          condition: "equal",
+          value: user.instructor.id,
+        },
+      ], "", []);
     }
   }, [user, fetchCourses]);
 
@@ -60,7 +60,13 @@ const CoursesPage = () => {
     try {
       await deleteCourseService(Number(id));
       toast.success("Xóa khóa học thành công");
-      fetchCourses(); // Refresh the table data
+      fetchCourses([
+        {
+          key: "instructorId",
+          condition: "equal",
+          value: user.instructor.id,
+        },
+      ], "", []); // Refresh the table data
     } catch (error) {
       toast.error("Xóa khóa học thất bại");
     }
@@ -71,7 +77,13 @@ const CoursesPage = () => {
       const response = await sendToAdminApproveService(Number(id));
       if (response.success) {
         toast.success("Gửi tới ADMIN thành công");
-        fetchCourses();
+        fetchCourses([
+          {
+            key: "instructorId",
+            condition: "equal",
+            value: user.instructor.id,
+          },
+        ], "", []);
       } else {
         toast.error(response.message);
       }
@@ -82,9 +94,27 @@ const CoursesPage = () => {
 
   const columns = createColumns(handleDelete, handleSendToAdmin);
 
+  const onSearchCourse = function(searchText, status){
+    let condition = [
+      {
+        key: "instructorId",
+        condition: "equal",
+        value: user.instructor.id,
+      }
+    ];
+    if (status != "All"){
+      condition.push({
+        key: "status",
+        condition: "equal",
+        value: status,
+      })
+    }
+    console.log(searchText + " " + status);
+    fetchCourses( condition, searchText, ["courseName"] );
+  }
   return (
     <div className="p-6">
-      <DataTable columns={columns} data={courses} />
+      <DataTable onSearchCourse={onSearchCourse} columns={columns} data={courses} />
     </div>
   );
 };
