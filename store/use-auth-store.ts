@@ -9,6 +9,7 @@ import {
   signOutService,
   SignUpParams,
   signUpService,
+  guestSignUpService
 } from "@/services/auth.service";
 // Importing create function from the Zustand library
 import { create } from "zustand";
@@ -36,6 +37,7 @@ interface AuthStoreInterface {
   setRole: (role: UserRole | null) => void;
   signIn: (params: SignInParams) => Promise<any>;
   signUp: (params: SignUpParams) => Promise<any>;
+  guestSignUp: (params: SignUpParams) => Promise<any>;
   signOut: () => Promise<any>;
   getCurrentUser: () => Promise<any>;
 }
@@ -64,6 +66,18 @@ export const useAuthStore = create(
       },
       signUp: async (params: SignUpParams) => {
         const response = await signUpService(params);
+        return response;
+      },
+      guestSignUp: async (params: SignUpParams) => {
+        const response = await guestSignUpService(params);
+        if (response?.success){
+          set({
+            authenticated: true,
+            // user: response.data,
+            token: response.data.token,
+            role: UserRole.STUDENT
+          });
+        }
         return response;
       },
       signOut: async () => {

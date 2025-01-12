@@ -18,8 +18,9 @@ interface CourseCardProps {
   isFree: boolean;
   enrollmentsCount: number;
   isEnrolled: boolean;
+  instructor: any;
 }
-
+import { useAuthStore } from "@/store/use-auth-store";
 export const CourseCard: React.FC<CourseCardProps> = ({
   title,
   imageUrl,
@@ -29,12 +30,13 @@ export const CourseCard: React.FC<CourseCardProps> = ({
   isFree,
   enrollmentsCount,
   isEnrolled,
+  instructor
 }) => {
   const [progress, setProgress] = useState(0);
   const [prerequisiteCourses, setPrerequisiteCourses] = useState<any>(null);
-
+  const { authenticated } = useAuthStore.getState();
   useEffect(() => {
-    if (id) {
+    if (id && authenticated) {
       getProgressByCourseId(Number(id)).then((res: any) => {
         if (res.data) {
           const completed = res.data.completed;
@@ -101,7 +103,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({
             <div className="text-lg font-medium transition-colors duration-300 md:text-base group-hover:text-blue-600">
               {title}
             </div>
-            <p className="text-xs text-muted-foreground">{category}</p>
+            <p className="text-xs text-muted-foreground">{category} | {instructor.fullName}</p> 
           </div>
           <div className="flex items-center my-3 text-sm gap-x-2 md:text-xs">
             <div className="flex items-center gap-x-1">
