@@ -47,7 +47,12 @@ export class CourseRepository extends BaseRepository<CourseEntity, Prisma.Course
         _count: {
           select: { enrollment: true }
         },
-        enrollment: true
+        enrollment: true,
+        instructor: {
+          select: {
+            user: true
+          }
+        }
       }
     });
     this.processCountEnrollments(datas);

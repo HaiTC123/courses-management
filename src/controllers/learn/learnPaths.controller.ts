@@ -10,6 +10,7 @@ import { RolesGuard } from 'src/core/roles.guard';
 import { InstructorDto } from 'src/model/dto/instructor.dto';
 import { LearningPathEntity } from 'src/model/entity/learn.entity';
 import { LearningPathDto } from 'src/model/dto/learn.dto';
+import { Public } from 'src/utils/public.decorator';
 
 @ApiTags('LearnPath')
 @Controller('api/learnpath')
@@ -31,6 +32,7 @@ export class LearnPathsController extends BaseController<LearningPathEntity, Pri
     }
 
     @Get(":id/courses")
+    @Public()
     async getLearnPathWithCourse(@Param('id')id: number){
         return this.service.getLearningPathWithCourses(id);
     }

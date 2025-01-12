@@ -217,6 +217,9 @@ export class BaseRepository<T extends { id: number }, U> {
             case 'lt':
               query.where[cond.key] = { lt: cond.value };
               break;
+            case 'subquery':
+              query.where[cond.key] = cond.value;
+              break;
             // Thêm các điều kiện khác nếu cần
             default:
               break;

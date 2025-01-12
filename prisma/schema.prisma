@@ -63,6 +63,12 @@ enum ExamStatus {
   CLOSED // Bài thi đã đóng (hết hạn hoặc hoàn thành)
 }
 
+enum CertificateStatus {
+  Active // Chứng chỉ đang hoạt động
+  Expired // Chứng chỉ đã hết hạn
+  Revoked // Chứng chỉ đã bị thu hồi
+}
+
 model User {
   id                Int            @id @default(autoincrement()) // Khóa chính, tự động tăng
   fullName          String         @db.VarChar(255) // Họ và tên đầy đủ
@@ -95,6 +101,7 @@ model User {
   Notification      Notification[]
   coin              Coin?          @relation("UserCoin")
   AdvisingChat      AdvisingChat[]
+  Certificate       Certificate[]
 }
 
 model OtpRequest {
@@ -132,7 +139,6 @@ model Student {
   Enrollment       Enrollment[]
   CourseCompletion CourseCompletion[]
   Grade            Grade[]
-  FailedCourse     FailedCourse[]
   Goal             Goal[]
   AcademicAdvising AcademicAdvising[]
   ExamResult       ExamResult[]
@@ -180,11 +186,11 @@ model Course {
   courseCompletion      CourseCompletion[]
   learningPathCourse    LearningPathCourse[]
   Grade                 Grade[]
-  FailedCourse          FailedCourse[]
   Goal                  Goal[]
   Document              Document[]
   prerequisitesFor      Prerequisite[]       @relation("CourseRelation")
   Exam                  Exam[]
+  Certificate           Certificate[]
 }
 
 model CourseChapter {
@@ -263,7 +269,6 @@ model Prerequisite {
   course               Course   @relation("CourseRelation", fields: [courseId], references: [id], onDelete: Cascade)
 }
 
-
 model Enrollment {
   id               Int                @id @default(autoincrement()) // Khóa chính tự động tăng
   studentId        Int // Liên kết với sinh viên trong bảng Students
@@ -280,7 +285,6 @@ model Enrollment {
   course           Course             @relation(fields: [courseId], references: [id])
   CourseCompletion CourseCompletion[]
   gradeDetail      Grade?
-  FailedCourse     FailedCourse[]
   Progress         Progress[]
 }
 
@@ -313,7 +317,8 @@ model LearningPath {
   createdBy     String?
   updatedBy     String?
 
-  courses LearningPathCourse[] // Liên kết với LearningPathCourses
+  courses     LearningPathCourse[] // Liên kết với LearningPathCourses
+  Certificate Certificate[]
 }
 
 model LearningPathCourse {
@@ -372,26 +377,6 @@ model Grade {
   @@index([enrollmentId])
   @@index([courseId])
   @@index([studentId])
-}
-
-model FailedCourse {
-  id            Int      @id @default(autoincrement()) // Khóa chính tự động tăng
-  studentId     Int // Liên kết với bảng Students
-  courseId      Int // Liên kết với bảng Courses
-  enrollmentId  Int // Liên kết với bảng Enrollments
-  failureReason String? // Lý do rớt môn
-  failedDate    DateTime @default(now()) // Ngày sinh viên bị rớt môn
-  createdAt     DateTime @default(now()) // Thời gian tạo bản ghi
-  updatedAt     DateTime @updatedAt // Thời gian cập nhật bản ghi
-  createdBy     String?
-  updatedBy     String?
-
-  student    Student    @relation(fields: [studentId], references: [id]) // Quan hệ với Student
-  course     Course     @relation(fields: [courseId], references: [id]) // Quan hệ với Course
-  enrollment Enrollment @relation(fields: [enrollmentId], references: [id]) // Quan hệ với Enrollment
-
-  @@index([studentId])
-  @@index([courseId])
 }
 
 model Goal {
@@ -459,7 +444,7 @@ model Coin {
 }
 
 model Transaction {
-  id     Int  @id @default(autoincrement()) // Khóa chính tự động tăng
+  id        Int      @id @default(autoincrement()) // Khóa chính tự động tăng
   infor     String? // Thông tin chi tiết về giao dịch
   orderId   Int // ID của đơn hàng liên kết
   createdAt DateTime @default(now()) // Ngày tạo
@@ -602,4 +587,31 @@ model ExamResult {
   student          Student  @relation(fields: [studentId], references: [id])
 
   @@index([examId, studentId])
+}
+
+model Certificate {
+  id               Int               @id @default(autoincrement()) // Khóa chính, tự động tăng
+  userId           Int // Liên kết với bảng User
+  courseId         Int? // Liên kết tùy chọn với bảng Course
+  learningPathId   Int?
+  issuedDate       DateTime          @default(now()) // Ngày cấp chứng chỉ
+  expiresDate      DateTime? // Ngày hết hạn của chứng chỉ (nếu có)
+  title            String // Tiêu đề chứng chỉ
+  description      String? // Mô tả chi tiết về chứng chỉ
+  status           CertificateStatus @default(Active) // Trạng thái của chứng chỉ (Active, Expired, Revoked)
+  createdBy        String?
+  updatedBy        String?
+  createdAt        DateTime          @default(now()) // Thời gian tạo bản ghi
+  updatedAt        DateTime          @updatedAt // Thời gian cập nhật bản ghi
+  courseName       String?
+  learningPathName String?
+  isCourse         Boolean
+  user             User              @relation(fields: [userId], references: [id]) // Quan hệ với bảng User
+  course           Course?           @relation(fields: [courseId], references: [id]) // Quan hệ tùy chọn với bảng Course
+  learningPath     LearningPath?     @relation(fields: [learningPathId], references: [id]) // Quan hệ tùy chọn với bảng LearnPath
+  fullName         String?
+
+  @@index([userId])
+  @@index([courseId])
+  @@index([learningPathId])
 }

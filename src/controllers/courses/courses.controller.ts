@@ -12,7 +12,7 @@ import { ServiceResponse } from 'src/model/response/service.response';
 import { RolesGuard } from 'src/core/roles.guard';
 import { Roles } from 'src/utils/roles.decorator';
 import { BuyCourse, RegisterCourse } from 'src/model/request/registerCourse.request';
-
+import { Public } from 'src/utils/public.decorator';
 
 @ApiTags('Courses')
 @Controller('api/course')
@@ -34,6 +34,7 @@ export class CoursesController extends BaseController<CourseEntity, Prisma.Cours
     }
 
     @Get("detail/:courseId")
+    @Public()
     async getDetailCourse(@Param('courseId') courseId: number): Promise<ServiceResponse> {
         return ServiceResponse.onSuccess(await this.service.getCourseWithDetails(courseId));
     }

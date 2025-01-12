@@ -21,7 +21,7 @@ export class UsersService extends BaseService<UserEntity, Prisma.UserCreateInput
     async add(entity: UserEntity): Promise<number> {
         const user = await this.prismaService.userRepo.findByEmail(entity.email)
         if (user) {
-            throw new HttpException({ message: 'This email has been used' }, HttpStatus.BAD_REQUEST)
+            throw new HttpException({ message: 'Email đã tồn tại' }, HttpStatus.BAD_REQUEST)
         }
         let passWord = generateRandomPassword(10);
         //if (isEnvDevelopment()) {
@@ -51,7 +51,7 @@ export class UsersService extends BaseService<UserEntity, Prisma.UserCreateInput
             email: model.email
         })
         if (user) {
-            throw new HttpException({ message: 'This email has been used' }, HttpStatus.BAD_REQUEST)
+            throw new HttpException({ message: 'Email đã tồn tại' }, HttpStatus.BAD_REQUEST)
         }
         await this.repository.update(id, model, this.getMoreUpdateData());
         return true;

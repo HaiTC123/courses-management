@@ -11,7 +11,8 @@ import { ServiceResponse } from 'src/model/response/service.response';
 import { ChangePasswordRequest, ForgotPassswordRequest, LoginRequest, ResetPasswordRequest } from 'src/model/request/index';
 import { generateOtp } from 'src/utils/common.utils';
 import { OTPEntity } from 'src/model/entity/otp.enity';
-import { Prisma, Role, User } from '@prisma/client';
+import { AccountStatus, Gender, Prisma, Role, User } from '@prisma/client';
+import { StudentEntity } from 'src/model/entity/student.entity';
 
 @Injectable()
 export class AuthService extends BaseService<User, Prisma.UserCreateInput> {
@@ -25,7 +26,7 @@ export class AuthService extends BaseService<User, Prisma.UserCreateInput> {
     register = async (userData: RegisterDto): Promise<ServiceResponse> => {
         const user = await this.prismaService.userRepo.findByEmail(userData.email)
         if (user) {
-            throw new HttpException({ message: 'This email has been used' }, HttpStatus.BAD_REQUEST)
+            throw new HttpException({ message: 'Email đã tồn tại' }, HttpStatus.BAD_REQUEST)
         }
         const hashPassword = await hash(userData.password, 10);
         const userCreate = this._mapperService.mapData(userData, RegisterDto, UserEntity);
@@ -33,6 +34,7 @@ export class AuthService extends BaseService<User, Prisma.UserCreateInput> {
         userCreate.isBlock = false;
         userCreate.inActive = false;
         userCreate.dateOfBirth = null;
+        userCreate.accountStatus = AccountStatus.Active;
         const result = await this.prismaService.userRepo.create(userCreate, {
             fullName: true,
             email: true,
@@ -42,6 +44,47 @@ export class AuthService extends BaseService<User, Prisma.UserCreateInput> {
         return ServiceResponse.onSuccess({
             ...result,
             token: generateToken(result)
+        })
+    }
+
+    guestRegister = async (userData: RegisterDto): Promise<ServiceResponse> => {
+        const user = await this.prismaService.userRepo.findByEmail(userData.email)
+        if (user) {
+            throw new HttpException({ message: 'Email đã tồn tại' }, HttpStatus.BAD_REQUEST)
+        }
+        const hashPassword = await hash(userData.password, 10);
+        const userCreate = this._mapperService.mapData(userData, RegisterDto, UserEntity);
+        userCreate.passwordHash = hashPassword;
+        userCreate.isBlock = false;
+        userCreate.inActive = false;
+        userCreate.dateOfBirth = null;
+        userCreate.accountStatus = AccountStatus.Active;
+        userCreate.role = Role.Student;
+        userCreate.gender = Gender.Other;
+        const result = await this.prismaService.userRepo.create(userCreate, {
+            fullName: true,
+            email: true,
+            role: true,
+            id: true
+        });
+
+        var student = await this.prismaService.student.create({
+            data: {
+                userId: result.id
+            }
+        });
+        const userInfo = {
+            email: userCreate.email,
+            fullName: userCreate.fullName,
+            role: Role.Student,
+            id: result.id,
+            studentId: student.id,
+            adminId: null,
+            instructorId: null
+        }
+        return ServiceResponse.onSuccess({
+            ...result,
+            token: generateToken(userInfo)
         })
     }
 
@@ -85,6 +128,9 @@ export class AuthService extends BaseService<User, Prisma.UserCreateInput> {
 
         if (!user) {
             throw new HttpException({ message: "Email or password is invalid" }, HttpStatus.UNAUTHORIZED);
+        }
+        if (user.inActive || user.isBlock){
+            throw new HttpException({ message: "Account is locked" }, HttpStatus.UNAUTHORIZED);
         }
 
         const match = await compare(userPayload.password, user.passwordHash);

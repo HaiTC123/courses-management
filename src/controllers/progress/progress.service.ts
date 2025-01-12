@@ -147,7 +147,6 @@ export class ProgressService extends BaseService<ProgressEntity, Prisma.Progress
         const totalMaterials = await this.prismaService.courseMaterial.count({
             where: { lesson: { chapter: { courseId } } },
         });
-    
         // Bước 2: Lấy số tài liệu đã hoàn thành của người dùng trong khóa học
         const completedMaterials = await this.prismaService.progress.count({
             where: {

@@ -21,6 +21,12 @@ export class AuthController {
         return this.authService.register(body);
     }
 
+    @Post('guestRegister')
+    @ApiBody({type: RegisterDto})
+    guestRegister(@Body() body: RegisterDto): Promise<ServiceResponse>{
+        return this.authService.guestRegister(body);
+    }
+
     @Post('login')
     @ApiBody({type: LoginRequest})
     login(@Body() body: LoginRequest): Promise<ServiceResponse>{

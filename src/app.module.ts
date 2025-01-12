@@ -17,7 +17,6 @@ import { PrerequisitesModule } from './controllers/prerequistite/prerequistite.m
 import { ErrollmentsModule } from './controllers/enrollment/enrollment.module';
 import { LearnPathsModule } from './controllers/learn/learnPaths.module';
 import { LearnPathCoursesModule } from './controllers/learnCourse/learnPathCourses.module';
-import { FailedCoursesModule } from './controllers/failedCourse/failedCourse.module';
 import { GradesModule } from './controllers/grade/grade.module';
 import { CompleteCoursesModule } from './controllers/completeCourse/completeCourse.module';
 import { GoalsModule } from './controllers/goal/goal.module';
@@ -36,6 +35,7 @@ import { ExamModule } from './controllers/exam/exam.module';
 import { ExamResultModule } from './controllers/examResult/examResult.module';
 import { QuestionModule } from './controllers/question/question.module';
 import { PayOSModule } from './common/services/payos/PayOS.module';
+import { CertificateModule } from './controllers/certificate/certificate.module';
 @Module({
   imports: [
     ScheduleModule.forRoot(),
@@ -53,7 +53,6 @@ import { PayOSModule } from './common/services/payos/PayOS.module';
     ErrollmentsModule,
     LearnPathsModule,
     LearnPathCoursesModule,
-    FailedCoursesModule,
     GradesModule,
     CompleteCoursesModule,
     GoalsModule,
@@ -69,7 +68,8 @@ import { PayOSModule } from './common/services/payos/PayOS.module';
     JobConfigModule,
     ExamModule,
     ExamResultModule,
-    QuestionModule
+    QuestionModule,
+    CertificateModule
   ],
   controllers: [AppController],
   providers: [AppService,
