@@ -606,6 +606,7 @@ model Certificate {
   courseName       String?
   learningPathName String?
   isCourse         Boolean
+  instructorName   String?
   user             User              @relation(fields: [userId], references: [id]) // Quan hệ với bảng User
   course           Course?           @relation(fields: [courseId], references: [id]) // Quan hệ tùy chọn với bảng Course
   learningPath     LearningPath?     @relation(fields: [learningPathId], references: [id]) // Quan hệ tùy chọn với bảng LearnPath

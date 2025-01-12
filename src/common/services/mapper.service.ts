@@ -76,7 +76,8 @@ export class MapperService {
     );
     createMap(this.mapper, UserEntity, RegisterResponse);
     createMap(this.mapper, UserEntity, UserDto,
-      forMember((dest) => dest.accountStatus, mapFrom((src) => src.accountStatus))
+      forMember((dest) => dest.accountStatus, mapFrom((src) => src.accountStatus)),
+      forMember((dest) => dest.gender, mapFrom((src) => src.gender))
 
     );
     createMap(this.mapper, UserDto, UserEntity);
@@ -108,7 +109,8 @@ export class MapperService {
       forMember(dest => dest.instructorId, mapFrom(src => src.instructorId)),
       forMember(dest => dest.enrollment, mapFrom(src => src.enrollment)),
       forMember(dest => dest.instructor, mapFrom(src => src.instructor)),
-      forMember(dest => dest.status, mapFrom(src => src.status))
+      forMember(dest => dest.status, mapFrom(src => src.status)),
+      
     )
       ;
 
@@ -391,7 +393,11 @@ export class MapperService {
       forMember((dest) => dest.status, mapFrom((src) => src.status)),
       forMember((dest) => dest.questions, mapFrom((src) => src.questions))
     );
-    createMap(this.mapper, ExamResultEntity, ExamResultDto);
+    createMap(this.mapper, ExamResultEntity, ExamResultDto,
+      forMember((dest) => dest.student, mapFrom((src) => src.student)),
+      forMember((dest) => dest.exam, mapFrom((src) => src.exam)),
+      forMember((dest) => dest.createdAt, mapFrom((src) => src.createdAt))
+    );
     createMap(this.mapper, ExamResultDto, ExamResultEntity);
     createMap(this.mapper, CertificateEntity, CertificateDto,
       forMember((dest) => dest.createdAt, mapFrom((src) => src.createdAt))

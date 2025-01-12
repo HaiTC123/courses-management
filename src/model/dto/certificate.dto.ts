@@ -6,31 +6,31 @@ export class CertificateDto extends BaseDto {
   @AutoMap()
   id: number;
 
-  
+
   @AutoMap()
   userId: number;
 
-  
+
   @AutoMap()
   courseId?: number;
 
-  
+
   @AutoMap()
   learningPathId?: number;
 
-  
+
   @AutoMap()
   issuedDate: Date;
 
-  
+
   @AutoMap()
   expiresDate?: Date;
 
-  
+
   @AutoMap()
   title: string;
 
-  
+
   @AutoMap()
   description?: string;
 
@@ -40,15 +40,18 @@ export class CertificateDto extends BaseDto {
   @AutoMap()
   courseName?: string;
 
-  
+
   @AutoMap()
   learningPathName?: string;
 
-  
+
   @AutoMap()
   isCourse: boolean;
 
   @AutoMap()
   fullName?: string;
-  
+
+  @AutoMap()
+  instructorName?: string;
+
 }

@@ -1,5 +1,9 @@
 import { AutoMap } from '@automapper/classes';
 import { BaseDto } from './base.dto';
+import { StudentEntity } from '../entity/student.entity';
+import { StudentDto } from './student.dto';
+import { InstructorDto } from './instructor.dto';
+import { ExamDto } from './exam.dto';
 
 export class ExamResultDto extends BaseDto {
     @AutoMap()
@@ -35,5 +39,9 @@ export class ExamResultDto extends BaseDto {
     @AutoMap()
     result: string[];
 
+    @AutoMap()
+    student: StudentDto;
 
+    @AutoMap()
+    exam: ExamDto;
 }
