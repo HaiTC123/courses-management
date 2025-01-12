@@ -55,14 +55,14 @@ export class CoinsService extends BaseService<CoinEntity, Prisma.CoinCreateInput
     }
 
     async processCallback(request: any){
-        return this.payosService.processReturnURL(request, OrderInfo.DepositCoin);
+        return await this.payosService.processReturnURL(request, OrderInfo.DepositCoin);
     }
 
     async processCancelURL(request: any){
-        return this.payosService.processReturnURL(request, OrderInfo.DepositCoin);
+        return await this.payosService.processReturnURL(request, OrderInfo.DepositCoin);
     }
 
     async processReturnURL(request: any){
-        return this.payosService.processReturnURL(request, OrderInfo.DepositCoin);
+        return await this.payosService.processReturnURL(request, OrderInfo.DepositCoin);
     }
 }

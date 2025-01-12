@@ -57,6 +57,7 @@ export class CoinsController extends BaseController<CoinEntity, Prisma.CoinCreat
     @Get("returnurl")
     async return(@Query() query: any, @Res()res: Response){
         let link = '';
+        console.log("returnurl")
         if (Object.keys(query).length){
             link = await this.service.processReturnURL(query);
         }

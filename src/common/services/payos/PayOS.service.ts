@@ -78,7 +78,9 @@ export class PayOSService {
                 return this.LinkPayFail;
         }
     }
-
+    private formatVND(amount){
+        return amount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+    }
     private async depositCoin(returnRequest: ReturnURLRequest): Promise<string> {
         const transactionID = parseInt(returnRequest.orderCode);
         const transaction = await this.prismaService.transaction.findUnique({
@@ -91,17 +93,26 @@ export class PayOSService {
                 data: {
                     userId: coin.userId,
                     object: "Coin",// type coin
-                    description: `Hủy đơn hàng ${transactionID}: nạp coin với số tiền: ${coin.amount} VNĐ`,
+                    description: `Hủy đơn hàng ${transactionID}: nạp coin với số tiền: ${this.formatVND(coin.amount)}`,
                     paymentMethod: PaymentMethod.BankOnline, //
-                    orderId: -1
+                    orderId: transactionID
                 }
             });
             return this.LinkPayCancel;
         }
         const existingCoin = await this.prismaService.coin.findUnique({ where: { id: coin.id } });
         if (!existingCoin) {
-            await this.logPayFailCoin(coin.userId);
+            await this.logPayFailCoin(coin.userId, transactionID);
             return this.LinkPayFail;
+        }
+        var orderProccessed = await this.prismaService.transactionHistory.findMany({
+            where: {
+                orderId: transactionID
+            }
+        });
+        if (orderProccessed != null && orderProccessed.length > 0){
+            // đơn hàng đã xử lý cộng tiền rồi
+            return this.LinkPayCoinSuccess;
         }
 
         existingCoin.amount += coin.amount;
@@ -110,23 +121,23 @@ export class PayOSService {
             data: {
                 userId: coin.userId,
                 object: "Coin",// type coin
-                description: `Đơn hàng ${transactionID}: nạp coin thành công với số tiền: ${coin.amount} VNĐ`,
+                description: `Đơn hàng ${transactionID}: nạp coin thành công với số tiền: ${this.formatVND(coin.amount)}`,
                 paymentMethod: PaymentMethod.BankOnline, //
-                orderId: -1
+                orderId: transactionID
             }
         });
 
         return this.LinkPayCoinSuccess;
     }
 
-    private async logPayFailCoin(userId: number) {
+    private async logPayFailCoin(userId: number, orderId) {
         await this.prismaService.transactionHistory.create({
             data: {
                 userId,
                 object: "Coin",
                 description: 'Thanh toán nạp coin thất bại',
                 paymentMethod: PaymentMethod.BankOnline,
-                orderId: -1
+                orderId: orderId
             }
 
         });

@@ -13,6 +13,7 @@ import { RolesGuard } from 'src/core/roles.guard';
 import { Roles } from 'src/utils/roles.decorator';
 import { BuyCourse, RegisterCourse } from 'src/model/request/registerCourse.request';
 import { Public } from 'src/utils/public.decorator';
+import { PageRequest } from 'src/model/request/page.request';
 
 @ApiTags('Courses')
 @Controller('api/course')
@@ -95,4 +96,8 @@ export class CoursesController extends BaseController<CourseEntity, Prisma.Cours
         return ServiceResponse.onSuccess(await this.service.getPaidCoursesRevenue(instructorId,courseId));
     }
 
+    // @Post('instructor/exam/paging')
+    // async getExamPaging(@Body() param: PageRequest, @Param('courseId') courseId: number, @Param('studentId') studentId: number): Promise<ServiceResponse> {
+
+    // }
 }
