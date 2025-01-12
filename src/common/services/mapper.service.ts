@@ -45,6 +45,8 @@ import { ExamDto } from 'src/model/dto/exam.dto';
 import { ExamEntity } from 'src/model/entity/exam.entity';
 import { ExamResultEntity } from 'src/model/entity/examResult.entity';
 import { ExamResultDto } from 'src/model/dto/examResult.dto';
+import { CertificateEntity } from 'src/model/entity/certificate.entity';
+import { CertificateDto } from 'src/model/dto/certificate.dto';
 
 @Injectable()
 export class MapperService {
@@ -391,6 +393,10 @@ export class MapperService {
     );
     createMap(this.mapper, ExamResultEntity, ExamResultDto);
     createMap(this.mapper, ExamResultDto, ExamResultEntity);
+    createMap(this.mapper, CertificateEntity, CertificateDto,
+      forMember((dest) => dest.createdAt, mapFrom((src) => src.createdAt))
+    );
+    createMap(this.mapper, CertificateDto, CertificateEntity);
   }
 
   mapData<S, D>(source: S, sourceClass: new (...args: unknown[]) => S, destinationClass: new (...args: unknown[]) => D): D {
@@ -405,5 +411,6 @@ export class MapperService {
   }
 
 }
+
 
 

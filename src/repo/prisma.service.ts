@@ -82,8 +82,6 @@ export class PrismaService extends PrismaClient implements OnModuleDestroy {
         return this.learningPathCourse;
       case "grades":
         return this.grade;
-      case "failedCourses":
-        return this.failedCourse;
       case "goals":
         return this.goal;
       case "academicAdvising":
@@ -114,6 +112,8 @@ export class PrismaService extends PrismaClient implements OnModuleDestroy {
         return this.exam;
       case "examResult":
         return this.examResult;
+      case "certificate":
+        return this.certificate;
     }
     return null;
   }

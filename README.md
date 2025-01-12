@@ -16,7 +16,7 @@ INSERT INTO User ( fullName, email, passwordHash, role, gender, dateOfBirth, pho
   VALUES ( 'admin', 'admin@gmail.com', '$2b$10$wdEvfcUFCDvz6IaSNejofOsZl9y4QdJ1.x/Jc8gCBwtCNe0QXLN1a', 'Admin', 'Male', NOW(), '', '', '', '', '', '', '', 'Active', NOW(), NOW(), NOW(), '', '', '', '', 0, 0, '');
 
 INSERT INTO Admin (userId, role, accessLevel, createdAt, updatedAt, lastActivity, createdBy, updatedBy)
-  VALUES (4, 'Admin', 0, NOW(), NOW(), NOW(), '', '');
+  VALUES (1, 'Admin', 0, NOW(), NOW(), NOW(), '', '');
 
 
 ```
