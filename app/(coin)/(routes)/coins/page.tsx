@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -32,7 +33,7 @@ import * as z from "zod";
 import { DataTable } from "./_components/data-table";
 import { createColumns } from "./_components/column";
 import {  useSearchParams } from "next/navigation";
-
+import CurrencyInput from 'react-currency-input-field';
 const depositSchema = z.object({
   numberCoin: z.string().transform((v) => Number(v) || 0),
 });
@@ -95,6 +96,10 @@ const CoinsPage = () => {
       toast.error("Yêu cầu nạp tiền thất bại");
     }
   };
+  const onChangeMoney = function(value, name, values){
+    form.setValue("numberCoin", value);
+    
+  }
 
   const columns = createColumns();
 
@@ -148,10 +153,16 @@ const CoinsPage = () => {
                       <FormItem>
                         <FormLabel>Số tiền</FormLabel>
                         <FormControl>
-                          <Input
-                            type="string"
-                            placeholder="Nhập số tiền..."
-                            {...field}
+                          <CurrencyInput
+                            className={cn(
+                              "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            )}
+                            id="input-example"
+                            name="input-name"
+                            placeholder="Nhập số tiền"
+                            defaultValue={1000}
+                            decimalsLimit={2}
+                            onValueChange={onChangeMoney}
                           />
                         </FormControl>
                         <FormMessage />
