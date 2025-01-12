@@ -68,7 +68,7 @@ export function DataTable<TData, TValue>({
         <Link href="/admin/documents/create">
           <Button>
             <PlusCircle className="w-4 h-4 mr-2" />
-            Tạo loại tài liệu
+            Tạo tài liệu
           </Button>
         </Link>
       </div>

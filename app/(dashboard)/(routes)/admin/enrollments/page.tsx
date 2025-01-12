@@ -17,11 +17,11 @@ const ListEnrollmentsPage = () => {
     try {
       const params = selectedCourse
         ? [
-            {
-              key: "semesterId",
-              condition: "equal",
-              value: 2,
-            },
+            // {
+            //   key: "semesterId",
+            //   condition: "equal",
+            //   value: 2,
+            // },
             {
               key: "courseId",
               condition: "equal",
@@ -29,11 +29,11 @@ const ListEnrollmentsPage = () => {
             },
           ]
         : [
-            {
-              key: "semesterId",
-              condition: "equal",
-              value: 2,
-            },
+            // {
+            //   key: "semesterId",
+            //   condition: "equal",
+            //   value: 2,
+            // },
           ];
       const response = await getPaginatedEnrollmentsService({
         pageSize: 1000,
@@ -110,7 +110,11 @@ const ListEnrollmentsPage = () => {
 
   return (
     <div className="p-6">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4"
+        style={{
+          width: "25%"
+        }}
+      >
         <Combobox
           options={courses}
           value={selectedCourse}

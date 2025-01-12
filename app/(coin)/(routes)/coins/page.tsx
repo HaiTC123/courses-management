@@ -31,6 +31,7 @@ import { toast } from "react-hot-toast";
 import * as z from "zod";
 import { DataTable } from "./_components/data-table";
 import { createColumns } from "./_components/column";
+import {  useSearchParams } from "next/navigation";
 
 const depositSchema = z.object({
   numberCoin: z.string().transform((v) => Number(v) || 0),
@@ -39,7 +40,9 @@ const depositSchema = z.object({
 const CoinsPage = () => {
   const { user, getCurrentUser } = useAuthStore.getState();
   const [transactions, setTransactions] = useState([]);
-
+  const searchParams = useSearchParams();
+  const tabQuery = searchParams.get("tab");
+  const defaultTab = tabQuery === "2" ? "history" : "deposit";
   useEffect(() => {
     getCurrentUser();
   }, [getCurrentUser]);
@@ -119,7 +122,7 @@ const CoinsPage = () => {
       </div>
 
       <Tabs
-        defaultValue="deposit"
+        defaultValue={defaultTab}
         orientation="vertical"
         className="w-full mt-4"
       >
@@ -153,7 +156,7 @@ const CoinsPage = () => {
                         </FormControl>
                         <FormMessage />
                         <p className="text-sm text-muted-foreground">
-                          Số tiền nạp tối thiểu là 10,000 VND
+                          Số tiền nạp tối thiểu là 2,000 VND
                         </p>
                       </FormItem>
                     )}

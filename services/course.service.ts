@@ -117,7 +117,6 @@ export const registerCourseService = async (
 ) => {
   const response = await axiosInstance.post(`/api/course/register`, {
     courseId,
-    semeterId,
   });
   return response.data;
 };
@@ -125,7 +124,6 @@ export const registerCourseService = async (
 export const buyCourseService = async (courseId: number, semeterId: number) => {
   const response = await axiosInstance.post(`/api/course/buyCourse`, {
     courseId,
-    semeterId,
   });
   return response.data;
 };

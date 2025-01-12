@@ -89,7 +89,7 @@ const DepositCoinsPage = () => {
                     </FormControl>
                     <FormMessage />
                     <p className="text-sm text-muted-foreground">
-                      Số tiền nạp tối thiểu là 10,000 VND
+                      Số tiền nạp tối thiểu là 2,000 VND
                     </p>
                   </FormItem>
                 )}

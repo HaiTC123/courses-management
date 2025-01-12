@@ -22,7 +22,7 @@ export const createColumns = (): ColumnDef<Course>[] => [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Id
+          Mã giao dịch
           <ArrowUpDown className="w-4 h-4 ml-2" />
         </Button>
       );

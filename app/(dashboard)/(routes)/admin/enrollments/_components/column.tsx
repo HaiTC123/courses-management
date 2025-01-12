@@ -32,25 +32,25 @@ import { ENROLLMENT_STATUS } from "@/constants/enrollement-status";
 export const createColumns = (
   onDelete: (id: string, userId: string) => Promise<void>
 ): ColumnDef<any>[] => [
-  {
-    accessorKey: "id",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          ID
-          <ArrowUpDown className="w-4 h-4 ml-2" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => {
-      const id: any = row.getValue("id") || "";
+  // {
+  //   accessorKey: "id",
+  //   header: ({ column }) => {
+  //     return (
+  //       <Button
+  //         variant="ghost"
+  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+  //       >
+  //         ID
+  //         <ArrowUpDown className="w-4 h-4 ml-2" />
+  //       </Button>
+  //     );
+  //   },
+  //   cell: ({ row }) => {
+  //     const id: any = row.getValue("id") || "";
 
-      return <div>{id}</div>;
-    },
-  },
+  //     return <div>{id}</div>;
+  //   },
+  // },
   {
     accessorKey: "student",
     header: ({ column }) => {
@@ -157,13 +157,12 @@ export const createColumns = (
         <Badge
           className={cn(
             "bg-slate-500",
-            enrollmentStatus === ENROLLMENT_STATUS.IN_PROGRESS && "bg-sky-700"
+            enrollmentStatus === ENROLLMENT_STATUS.IN_PROGRESS && "bg-sky-700",
+            enrollmentStatus === ENROLLMENT_STATUS.DONE && "bg-green-500"
           )}
         >
           {enrollmentStatus === ENROLLMENT_STATUS.IN_PROGRESS && "Đang học"}
-          {enrollmentStatus === ENROLLMENT_STATUS.APPROVED && "Đã xong"}
-          {enrollmentStatus === ENROLLMENT_STATUS.PENDING && "Chờ duyệt"}
-          {enrollmentStatus === ENROLLMENT_STATUS.REJECTED && "Đã từ chối"}
+          {enrollmentStatus === ENROLLMENT_STATUS.DONE && "Đã hoàn thành"}
         </Badge>
       );
     },

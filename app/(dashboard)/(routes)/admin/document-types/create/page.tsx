@@ -111,7 +111,7 @@ const CreateDocumentTypePage = () => {
                 </Button>
               </Link>
               <Button type="submit" disabled={!isValid || isSubmitting}>
-                Tạo lộ trình học
+                Tạo loại tài liệu
               </Button>
             </div>
           </form>

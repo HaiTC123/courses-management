@@ -41,7 +41,13 @@ export default function Dashboard() {
     sortOrder: "",
     searchKey: "",
     searchFields: [],
-    includeReferences: [],
+    includeReferences: {
+      instructor: {
+        select: {
+          user: true
+        }
+      }
+    },
   });
 
   const [paramsFree, setParamsFree] = useState<IGetPaginatedCoursesParams>({
@@ -62,12 +68,18 @@ export default function Dashboard() {
     sortOrder: "",
     searchKey: "",
     searchFields: [],
-    includeReferences: [],
+    includeReferences: {
+      instructor: {
+        select: {
+          user: true
+        }
+      }
+    },
   });
 
   useEffect(() => {
     if (!authenticated) {
-      router.push("/sign-in");
+      // router.push("/sign-in");
     }
   }, [authenticated, router]);
 

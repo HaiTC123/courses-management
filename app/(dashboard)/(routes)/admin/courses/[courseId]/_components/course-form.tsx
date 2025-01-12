@@ -34,7 +34,6 @@ interface CourseFormProps {
     courseName: string;
     description: string;
     credits: number;
-    durationWeeks: number;
     category: string;
     isMandatory: boolean;
     price: number;
@@ -55,9 +54,6 @@ const formSchema = z.object({
   }),
   credits: z.number().min(1, {
     message: "Credits is required",
-  }),
-  durationWeeks: z.number().min(1, {
-    message: "Duration weeks is required",
   }),
   category: z.string().min(1, {
     message: "Category is required",
@@ -223,26 +219,6 @@ export const CourseForm = ({ initialData, courseId }: CourseFormProps) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Credits</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      disabled={isSubmitting}
-                      {...field}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-              disabled={isSubmitting || !isEditing}
-            />
-
-            <FormField
-              control={form.control}
-              name="durationWeeks"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Duration (weeks)</FormLabel>
                   <FormControl>
                     <Input
                       type="number"

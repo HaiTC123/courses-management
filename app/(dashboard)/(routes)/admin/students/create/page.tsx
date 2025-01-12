@@ -52,10 +52,10 @@ const CreateUserPage = () => {
     city: z.string(),
     state: z.nativeEnum(UserState),
     postalCode: z.string(),
-    major: z.string().optional(),
-    yearOfStudy: z.number().optional(),
-    gpa: z.number().min(0).max(4).optional(),
-    graduationStatus: z.string().optional(),
+    // major: z.string().optional(),
+    // yearOfStudy: z.number().optional(),
+    // gpa: z.number().min(0).max(4).optional(),
+    // graduationStatus: z.string().optional(),
     department: z.string().optional(),
     profilePictureURL: z.string().optional(),
     bannerPictureURL: z.string().optional(),
@@ -77,10 +77,10 @@ const CreateUserPage = () => {
       city: "",
       state: UserState.ACTIVE,
       postalCode: "",
-      major: "",
-      yearOfStudy: 0,
-      gpa: 0,
-      graduationStatus: "",
+      // major: "",
+      // yearOfStudy: 0,
+      // gpa: 0,
+      // graduationStatus: "",
       department: "",
       profilePictureURL: "",
       bannerPictureURL: "",
@@ -97,10 +97,10 @@ const CreateUserPage = () => {
       const response = await createUserService(
         omit(values, [
           "userId",
-          "major",
-          "yearOfStudy",
-          "gpa",
-          "graduationStatus",
+          // "major",
+          // "yearOfStudy",
+          // "gpa",
+          // "graduationStatus",
           "department",
           "profilePictureURLTmp",
           "bannerPictureURLTmp",
@@ -108,10 +108,10 @@ const CreateUserPage = () => {
       );
       const userId = response.data;
       body.userId = userId;
-      body.major = values.major;
-      body.yearOfStudy = values.yearOfStudy;
-      body.gpa = values.gpa;
-      body.graduationStatus = values.graduationStatus;
+      // body.major = values.major;
+      // body.yearOfStudy = values.yearOfStudy;
+      // body.gpa = values.gpa;
+      // body.graduationStatus = values.graduationStatus;
 
       const studentResponse = await createStudentService(body);
       if (studentResponse) {
@@ -259,7 +259,7 @@ const CreateUserPage = () => {
               )}
             />
 
-            <FormField
+            {/* <FormField
               control={form.control}
               name="major"
               render={({ field }) => (
@@ -271,8 +271,8 @@ const CreateUserPage = () => {
                   <FormMessage />
                 </FormItem>
               )}
-            />
-            <FormField
+            /> */}
+            {/* <FormField
               control={form.control}
               name="yearOfStudy"
               render={({ field }) => (
@@ -321,7 +321,7 @@ const CreateUserPage = () => {
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
             <FormField
               control={form.control}
               name="profilePictureURLTmp"
