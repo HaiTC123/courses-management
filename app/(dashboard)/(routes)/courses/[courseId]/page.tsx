@@ -52,7 +52,7 @@ import { ChapterDetail } from "./_components/chapter-detail";
 const CourseIdPage = () => {
   const router = useRouter();
   const params = useParams();
-  const { user, getCurrentUser } = useAuthStore.getState();
+  const { user, getCurrentUser, authenticated } = useAuthStore.getState();
   const [isOpen, setIsOpen] = useState(true);
   const [enrolledCourseIds, setEnrolledCourseIds] = useState<number[]>([]);
   const certificateRef = useRef<any>(null);
@@ -173,12 +173,16 @@ const CourseIdPage = () => {
   }, [exam, user]);
 
   useEffect(() => {
-    if (exam?.id) {
+    if (exam?.id && authenticated) {
       getExamResult();
     }
   }, [exam, getExamResult]);
 
   const handleRegister = async () => {
+    if (!authenticated){
+      router.push("/sign-in")
+      return;
+    }
     if (course.isFree) {
       try {
         const response = await registerCourseService(Number(courseId), 2);
@@ -212,7 +216,7 @@ const CourseIdPage = () => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    if (courseId) {
+    if (courseId && authenticated) {
       getProgressByCourseId(Number(courseId)).then((res: any) => {
         if (res.data) {
           const completed = res.data.completed;

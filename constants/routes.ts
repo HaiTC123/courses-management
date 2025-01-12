@@ -10,7 +10,9 @@ import {
   User2,
   Presentation,
   ListEnd,
+  NotebookPen
 } from "lucide-react";
+
 
 export const studentRoutes: any[] = [
   {
@@ -22,12 +24,31 @@ export const studentRoutes: any[] = [
     icon: Book,
     label: "Khóa học",
     href: "/courses",
+    auth: true
   },
   {
     icon: LineChart,
     label: "Lộ trình",
     href: "/learning-paths",
   },
+  {
+    icon: NotebookPen,
+    label: "Chứng chỉ",
+    href: "/certificate",
+    auth: true,
+    nestedRoutes: [
+      {
+        icon: Book,
+        label: "Chứng chỉ khóa học",
+        href: "/certificate/courses",
+      },
+      {
+        icon: Book,
+        label: "Chứng chỉ lộ trình",
+        href: "/certificate/learns",
+      },
+    ],
+  }
 ];
 
 export const instructorRoutes: any[] = [
@@ -38,8 +59,20 @@ export const instructorRoutes: any[] = [
   },
   {
     icon: List,
-    label: "Khóa học",
+    label: "Quản lý khóa học",
     href: "/instructor/courses",
+    nestedRoutes: [
+      {
+        icon: Book,
+        label: "Khóa học",
+        href: "/instructor/courses",
+      },
+      {
+        icon: Book,
+        label: "Khóa học đăng ký",
+        href: "/instructor/enrollments",
+      },
+    ],
   },
   {
     icon: ListEnd,

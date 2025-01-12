@@ -1,80 +1,62 @@
 "use client";
 
-import * as z from "zod";
+import React from "react";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
 import { useAuthStore } from "@/store/use-auth-store";
-import { UserRole } from "@/enum/user-role";
-import { Combobox } from "@/components/ui/combobox";
-// import { signUpService } from "@/services/auth";
+
 
 const formSchema = z.object({
   fullName: z.string().min(2, {
-    message: "Name must be at least 2 characters long",
+    message: "Tên phải dài ít nhất 2 ký tự",
   }),
   email: z.string().email({
-    message: "Please enter a valid email address",
+    message: "Vui lòng nhập địa chỉ email hợp lệ",
   }),
   password: z.string().min(6, {
-    message: "Password must be at least 6 characters long",
+    message: "Mật khẩu phải dài ít nhất 6 ký tự",
   }),
-  // role: z.string(),
-  // confirmPassword: z.string(),
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Mật khẩu không khớp",
+  path: ["confirmPassword"],
 });
-// .refine((data) => data.password === data.confirmPassword, {
-//   message: "Passwords don't match",
-//   path: ["confirmPassword"],
-// });
 
 const SignUp = () => {
   const router = useRouter();
-
-  const { signUp } = useAuthStore.getState();
-
-  const form = useForm<z.infer<typeof formSchema>>({
+  const { guestSignUp, getCurrentUser } = useAuthStore.getState();
+  const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       fullName: "",
       email: "",
       password: "",
-      // role: "3",
-      // confirmPassword: "",
+      confirmPassword: "",
     },
+    mode: 'onChange'
   });
 
   const { isSubmitting, isValid } = form.formState;
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values) => {
     try {
-      // Here you would typically call your registration service
-      // For example: await signUp(values.name, values.email, values.password);
-      console.log(
-        "Sign up attempt with:",
-        values.fullName,
-        values.email,
-        values.password
-      );
-      const response = await signUp(values);
-
-      toast.success("Signed up successfully");
-      router.push("/sign-in");
+      const {confirmPassword , ...param} = values;
+      const response = await guestSignUp(param); 
+      if (response?.success) {
+        toast.success("Đăng ký thành công");
+        await getCurrentUser();
+        router.push("/");
+      }
     } catch (error: any) {
       toast.error(
-        error?.response?.data?.message || "Failed to sign up. Please try again."
+        error?.response?.data?.message || "Không thể đăng ký. Vui lòng thử lại"
       );
     }
   };
@@ -83,118 +65,69 @@ const SignUp = () => {
     <div className="flex items-center justify-center w-full h-full px-4 py-12 rounded-md sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
         <div>
-          <h2 className="mt-6 text-3xl font-extrabold text-center">
-            Tạo tài khoản
-          </h2>
+          <h2 className="mt-6 text-3xl font-extrabold text-center">Tạo tài khoản</h2>
         </div>
-        <div className="p-6 mt-8 rounded-lg shadow-sm">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="fullName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Họ và tên</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        disabled={isSubmitting}
-                        placeholder="Nhập họ và tên"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        disabled={isSubmitting}
-                        placeholder="Nhập email"
-                        type="email"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Mật khẩu</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        disabled={isSubmitting}
-                        placeholder="Nhập mật khẩu"
-                        type="password"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {/* <FormField
-                control={form.control}
-                name="role"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>User Role</FormLabel>
-                    <Combobox
-                      options={[
-                        { value: "3", label: UserRole.STUDENT },
-                        { value: "2", label: UserRole.INSTRUCTOR },
-                        { value: "1", label: UserRole.ADMIN },
-                      ]}
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
-              {/* <FormField
-                control={form.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Confirm Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        disabled={isSubmitting}
-                        placeholder="Confirm your password"
-                        type="password"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
-              <Button
-                type="submit"
-                disabled={!isValid || isSubmitting}
-                className="w-full"
-              >
-                Tạo tài khoản
-              </Button>
-            </form>
-          </Form>
-        </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="fullName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Họ và tên</FormLabel>
+                  <FormControl>
+                    <Input disabled={isSubmitting} {...field} placeholder="Nhập họ và tên" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input disabled={isSubmitting} {...field} type="email" placeholder="Nhập email" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Mật khẩu</FormLabel>
+                  <FormControl>
+                    <Input disabled={isSubmitting} {...field} type="password" placeholder="Nhập mật khẩu" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Xác nhận mật khẩu</FormLabel>
+                  <FormControl>
+                    <Input disabled={isSubmitting} {...field} type="password" placeholder="Xác nhận mật khẩu" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" disabled={!isValid || isSubmitting} className="w-full">
+              Tạo tài khoản
+            </Button>
+          </form>
+        </Form>
         <div className="text-sm text-center">
-          <Link
-            href="/sign-in"
-            className="font-medium text-indigo-600 hover:text-indigo-500"
-          >
+          <Link href="/sign-in" className="font-medium text-indigo-600 hover:text-indigo-500">
             Đã có tài khoản? Đăng nhập
           </Link>
         </div>

@@ -10,6 +10,10 @@ export const signUpService = async (params: SignUpParams) => {
   const response = await axiosInstance.post("/api/auth/register", params);
   return response.data;
 };
+export const guestSignUpService = async (params: SignUpParams) => {
+  const response = await axiosInstance.post("/api/auth/guestRegister", params);
+  return response.data;
+};
 
 export interface SignInParams {
   email: string;
