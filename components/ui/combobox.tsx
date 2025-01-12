@@ -24,6 +24,7 @@ interface ComboboxProps {
   value?: any;
   onChange: (value: any) => void;
   disabled?: boolean;
+  placeHolder?: any;
 }
 
 export const Combobox = ({
@@ -31,6 +32,7 @@ export const Combobox = ({
   value,
   onChange,
   disabled,
+  placeHolder
 }: ComboboxProps) => {
   const [open, setOpen] = React.useState(false);
 
@@ -46,7 +48,7 @@ export const Combobox = ({
         >
           {value
             ? options.find((option) => option.value === value)?.label
-            : "Lựa chọn..."}
+            : placeHolder ? placeHolder : "Lựa chọn..."}
           <ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
         </Button>
       </PopoverTrigger>

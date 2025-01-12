@@ -38,6 +38,7 @@ export const CourseList: React.FC<CourseListProps> = ({ title, items }) => {
             id={item.id}
             enrollmentsCount={item.enrollmentsCount}
             isEnrolled={enrolledCourseIds.includes(item.id)}
+            instructor={item.instructor.user}
           />
         ))}
       </div>

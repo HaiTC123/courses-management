@@ -1,6 +1,4 @@
 export const ENROLLMENT_STATUS = {
-  PENDING: "pending",
-  APPROVED: "approved",
-  REJECTED: "rejected",
+  DONE: "Done",
   IN_PROGRESS: "In Progress",
 };

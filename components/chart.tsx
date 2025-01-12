@@ -1,6 +1,6 @@
 "use client";
 
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, LabelList } from "recharts";
 
 import {
   ChartConfig,
@@ -17,11 +17,13 @@ export function BarChartComponent({
   chartConfig,
   title,
   className,
+  formatLabel,
 }: {
   chartData: any[];
   chartConfig: ChartConfig;
   title?: string;
   className?: string;
+  formatLabel?: (value: number) => string;
 }) {
   const keys = Object.keys(chartConfig);
 
@@ -38,9 +40,8 @@ export function BarChartComponent({
             tickLine={false}
             tickMargin={10}
             axisLine={false}
-            tickFormatter={(value) => ""}
-            textDecoration="none"
           />
+          <YAxis domain={[0, 'dataMax + 2']} />
           <ChartTooltip content={<ChartTooltipContent />} />
           <ChartLegend content={<ChartLegendContent />} />
           {keys.map((key, idx) => (
@@ -49,7 +50,9 @@ export function BarChartComponent({
               dataKey={key}
               fill={chartConfig[key].color}
               radius={4}
-            />
+            >
+              <LabelList dataKey={key} position="top" formatter={formatLabel} />
+            </Bar>
           ))}
         </BarChart>
       </ChartContainer>
