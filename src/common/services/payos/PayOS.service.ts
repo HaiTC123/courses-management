@@ -28,10 +28,11 @@ export class PayOSService {
         this.PAYOS_CALLBACKURL = process.env.PAYOS_CALLBACKURL;
         this.LinkPayFail = process.env.LinkPayFail;
         this.LinkPayCoinSuccess = process.env.LinkPayCoinSuccess;
-        this.LinkPayCancel = process.env.LinkPayCoinSuccess;
+        this.LinkPayCancel = process.env.LinkCancel;
     }
 
     async paymentForCoin(request: DepositCoinRequest, coin: CoinEntity): Promise<string> {
+        coin.amount = request.numberCoin;
         const id = await this.createTransaction(JSON.stringify(coin));
         return this.doPayment({
             orderCode: id,
@@ -71,7 +72,8 @@ export class PayOSService {
     private async handlePaymentBasedOnType(orderType: string, returnRequest: ReturnURLRequest): Promise<string | null> {
         switch (orderType) {
             case OrderInfo.DepositCoin:
-                return await this.depositCoin(returnRequest) ? this.LinkPayCoinSuccess : null;
+                const linkProcess = await this.depositCoin(returnRequest);
+                return !linkProcess ? this.LinkPayCoinSuccess : linkProcess;
             default:
                 return this.LinkPayFail;
         }
@@ -89,7 +91,7 @@ export class PayOSService {
                 data: {
                     userId: coin.userId,
                     object: "Coin",// type coin
-                    description: `Hủy đơn hàng ${transactionID}: nạp coin với số tiền: ${coin.amount}`,
+                    description: `Hủy đơn hàng ${transactionID}: nạp coin với số tiền: ${coin.amount} VNĐ`,
                     paymentMethod: PaymentMethod.BankOnline, //
                     orderId: -1
                 }
@@ -108,13 +110,13 @@ export class PayOSService {
             data: {
                 userId: coin.userId,
                 object: "Coin",// type coin
-                description: `Đơn hàng ${transactionID}: nạp coin thành công với số tiền: ${coin.amount}`,
+                description: `Đơn hàng ${transactionID}: nạp coin thành công với số tiền: ${coin.amount} VNĐ`,
                 paymentMethod: PaymentMethod.BankOnline, //
                 orderId: -1
             }
         });
 
-        return true;
+        return this.LinkPayCoinSuccess;
     }
 
     private async logPayFailCoin(userId: number) {
