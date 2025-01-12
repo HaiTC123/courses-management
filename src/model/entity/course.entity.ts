@@ -3,6 +3,7 @@ import { CourseStatus, Instructor } from '@prisma/client';
 import { AutoMap } from '@automapper/classes';
 import { BaseEntity } from 'src/model/entity/base.entity';
 import { EnrollmentEntity } from './enrollment.entity';
+import { ExamEntity } from './exam.entity';
 
 export class CourseEntity extends BaseEntity{
   @AutoMap()
@@ -65,6 +66,8 @@ export class CourseEntity extends BaseEntity{
 
   @AutoMap()
   backgroundUrl?:string;
+
+  exam: ExamEntity[];
 }
 
 // CourseChapterEntity.ts

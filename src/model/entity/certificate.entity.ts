@@ -50,4 +50,7 @@ export class CertificateEntity extends BaseEntity {
 
     @AutoMap()
     fullName?: string;
+
+    @AutoMap()
+    instructorName?: string;
 }

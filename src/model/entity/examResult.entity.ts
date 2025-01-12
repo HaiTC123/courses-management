@@ -1,5 +1,8 @@
 import { AutoMap } from '@automapper/classes';
 import { BaseEntity } from './base.entity';
+import { StudentEntity } from './student.entity';
+import { InstructorEntity } from './instructor.enity';
+import { ExamEntity } from './exam.entity';
 
 
 export class ExamResultEntity extends BaseEntity {
@@ -35,4 +38,9 @@ export class ExamResultEntity extends BaseEntity {
 
     @AutoMap()
     result: string[];
+    @AutoMap()
+    student: StudentEntity;
+    @AutoMap()
+    exam: ExamEntity;
+  
 }

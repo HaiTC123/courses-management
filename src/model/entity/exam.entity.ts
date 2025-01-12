@@ -2,6 +2,7 @@ import { AutoMap } from '@automapper/classes';
 import { BaseEntity } from './base.entity';
 import { QuestionEntity } from './question.entity';
 import { ExamStatus } from '@prisma/client';
+import { StudentEntity } from './student.entity';
 
 export class ExamEntity extends BaseEntity{
   @AutoMap()
@@ -30,5 +31,5 @@ export class ExamEntity extends BaseEntity{
 
   @AutoMap()
   status: ExamStatus;
-
+  
 }

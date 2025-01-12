@@ -197,6 +197,13 @@ export class ExamService extends BaseService<ExamEntity, Prisma.ExamCreateInput>
         const course = await this.prismaService.course.findFirst({
             where: {
                 id: courseId
+            },
+            include: {
+                instructor: {
+                    include: {
+                        user: true
+                    }
+                }
             }
         });
         await this.prismaService.certificate.create({
@@ -212,7 +219,8 @@ export class ExamService extends BaseService<ExamEntity, Prisma.ExamCreateInput>
                 learningPathId: null,
                 isCourse: true,
                 status: CertificateStatus.Active,
-                fullName: fullName
+                fullName: fullName,
+                instructorName: course.instructor.user.fullName
             },
         });
 

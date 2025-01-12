@@ -5,6 +5,7 @@ import { BaseDto } from './base.dto';
 import { CourseStatus } from '@prisma/client';
 import { EnrollmentDto } from './errollment.dto';
 import { InstructorDto } from './instructor.dto';
+import { ExamDto } from './exam.dto';
 
 export class CourseDto extends BaseDto{
   @AutoMap()
@@ -69,6 +70,7 @@ export class CourseDto extends BaseDto{
   backgroundUrl?:string;
 
   instructor: InstructorDto;
+  exam: ExamDto[];
 }
 
 // CourseChapterDto.ts
