@@ -62,8 +62,8 @@ export const submitExamService = async (examId: number, data: any) => {
 };
 
 export const getExamResultService = async (
-  examId: number,
-  studentId: number
+  examId: number| null,
+  studentId: number | null
 ) => {
   const response = await axiosInstance.get(
     `/api/exam/${examId}/${studentId}/result`
